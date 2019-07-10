@@ -24,16 +24,25 @@ class MainPanel(wx.Panel):
         super().__init__(parent)
         self.main_sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.main_sizer)
+
+        self.createStreamController(self.main_sizer)
+
+        self.createCenterController(self.main_sizer)
+
+    def createCenterController(self, mainSizer):
+        self.Center_Screen_Sizer = wx.BoxSizer()
         
+        self.SceneControllerLabel = wx.StaticText(self, label="Scene Options")
+        self.Center_Screen_Sizer.Add(self.SceneControllerLabel, 
+            flag = wx.CENTER|wx.ALL, border=10)
+        self.CurrentSceneLabel = wx.StaticText(self, label="Currently No Scene")
+
+    def createStreamController(self, mainSizer):
         self.Stream_Sizer = wx.BoxSizer(wx.VERTICAL)
-        self.Visible_Screen_Sizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.main_sizer.Add(self.Stream_Sizer, flag=wx.CENTER)
-        self.main_sizer.Add(self.Visible_Screen_Sizer, flag=wx.CENTER)
-
-        StreamToggleButton = wx.Button(self, label = "Toggle Stream Status")
-        StreamToggleButton.Bind(wx.EVT_BUTTON, self.OnToggleButton)
-        self.Stream_Sizer.Add(StreamToggleButton, flag = wx.CENTER|wx.ALL, border=10)
+        self.StreamToggleButton = wx.Button(self, label = "Toggle Stream Status")
+        self.StreamToggleButton.Bind(wx.EVT_BUTTON, self.OnToggleStreamButton)
+        self.Stream_Sizer.Add(self.StreamToggleButton, flag = wx.CENTER|wx.ALL, border=10)
         
         self.StreamToggleLabel = wx.StaticText(self, label="Stream Status:")
 
@@ -45,7 +54,10 @@ class MainPanel(wx.Panel):
         StreamHorizontal.Add(self.StreamStatusLabel, flag=wx.TOP|wx.BOTTOM|wx.ALIGN_RIGHT, border=10)
         self.Stream_Sizer.Add(StreamHorizontal)
 
-    def OnToggleButton(self, event):
+        mainSizer.Add(self.Stream_Sizer, flag=wx.CENTER)
+
+
+    def OnToggleStreamButton(self, event):
         if self.streamingToggle == False:
             self.StreamStatusLabel.LabelText = "Streaming!!!!"
             self.StreamStatusLabel.BackgroundColour = self.ENABLED_COLOR
