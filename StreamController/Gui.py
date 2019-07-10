@@ -31,11 +31,17 @@ class MainPanel(wx.Panel):
 
     def createCenterController(self, mainSizer):
         self.Center_Screen_Sizer = wx.BoxSizer()
-        
-        self.SceneControllerLabel = wx.StaticText(self, label="Scene Options")
-        self.Center_Screen_Sizer.Add(self.SceneControllerLabel, 
-            flag = wx.CENTER|wx.ALL, border=10)
+
         self.CurrentSceneLabel = wx.StaticText(self, label="Currently No Scene")
+        self.Center_Screen_Sizer.Add(self.CurrentSceneLabel,
+            flag=wx.CENTER)
+
+        Radio = wx.RadioBox(self, label = "Radio", choices=["PP Center", "Live Camera"],
+            style=wx.RA_SPECIFY_ROWS)
+
+        self.Center_Screen_Sizer.Add(Radio, flag=wx.CENTER)
+
+        mainSizer.Add(self.Center_Screen_Sizer)
 
     def createStreamController(self, mainSizer):
         self.Stream_Sizer = wx.BoxSizer(wx.VERTICAL)
