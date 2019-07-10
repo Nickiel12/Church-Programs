@@ -16,17 +16,44 @@ class MainFrame(wx.Frame):
 
 class MainPanel(wx.Panel):
 
+    streamingToggle = False
+    ENABLED_COLOR = wx.Colour(0, 255, 0)
+    DISABLED_COLOR = wx.Colour(255, 0, 0)
+
     def __init__(self, parent):
         super().__init__(parent)
         self.main_sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.main_sizer)
-        self.topSizer = wx.BoxSizer(wx.VERTICAL)
+        
+        self.Stream_Sizer = wx.BoxSizer(wx.VERTICAL)
+        self.Visible_Screen_Sizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.topLeftButton = wx.Button(self, label="Press Me!!!!",)
+        self.main_sizer.Add(self.Stream_Sizer, flag=wx.CENTER)
+        self.main_sizer.Add(self.Visible_Screen_Sizer, flag=wx.CENTER)
 
-        self.topSizer.Add(self.topLeftButton, 0, wx.ALIGN_CENTER_HORIZONTAL)
+        StreamToggleButton = wx.Button(self, label = "Toggle Stream Status")
+        StreamToggleButton.Bind(wx.EVT_BUTTON, self.OnToggleButton)
+        self.Stream_Sizer.Add(StreamToggleButton, flag = wx.CENTER|wx.ALL, border=10)
+        
+        self.StreamToggleLabel = wx.StaticText(self, label="Stream Status:")
 
-        self.main_sizer.Add(self.topSizer, 0, flag = wx.ALIGN_CENTER_HORIZONTAL | wx.ALIGN_CENTER_VERTICAL)
+        self.StreamStatusLabel = wx.StaticText(self, label="Not Streaming")
+        self.StreamStatusLabel.BackgroundColour = wx.Colour(200, 0, 0)
+        
+        StreamHorizontal = wx.BoxSizer(wx.HORIZONTAL)
+        StreamHorizontal.Add(self.StreamToggleLabel, flag=wx.TOP|wx.BOTTOM|wx.RIGHT|wx.ALIGN_LEFT, border=10)
+        StreamHorizontal.Add(self.StreamStatusLabel, flag=wx.TOP|wx.BOTTOM|wx.ALIGN_RIGHT, border=10)
+        self.Stream_Sizer.Add(StreamHorizontal)
+
+    def OnToggleButton(self, event):
+        if self.streamingToggle == False:
+            self.StreamStatusLabel.LabelText = "Streaming!!!!"
+            self.StreamStatusLabel.BackgroundColour = self.ENABLED_COLOR
+            self.streamingToggle = True
+        else:
+            self.StreamStatusLabel.LabelText = "Not Streaming"
+            self.StreamStatusLabel.BackgroundColour = self.DISABLED_COLOR
+            self.streamingToggle = False
 
 
 def createWindow():
