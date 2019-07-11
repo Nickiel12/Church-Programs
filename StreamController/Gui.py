@@ -2,11 +2,6 @@ import wx
 from enum import Enum
 from types import SimpleNamespace
 
-myEnum = Enum("GuiEnums", ' '.join([
-    "button1",
-    "button2"
-]))
-
 class MainFrame(wx.Frame):
 
     def __init__(self):
@@ -14,54 +9,70 @@ class MainFrame(wx.Frame):
                         title = 'Stream Controller')
         self.panel = MainPanel(self)
 
-class MainPanel(wx.Panel):
+        filemenu= wx.Menu()
+        menuBar = wx.MenuBar()
+        menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
+        self.SetMenuBar(menuBar)  # Adding the MenuBar to the Frame content.
 
-    streamingToggle = False
-    ENABLED_COLOR = wx.Colour(0, 255, 0)
-    DISABLED_COLOR = wx.Colour(255, 0, 0)
+        self.SetDimensions(0, 0, 400, 400)
+        self.Center()
+
+        self.Access = self.panel.Access
+
+class MainPanel(wx.Panel):
 
     def __init__(self, parent):
         super().__init__(parent)
         self.main_sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.main_sizer)
 
-        self.createStreamController(self.main_sizer)
+        self.stream_panel = StreamControllerPanel(self)
+        self.scene_panel = ScenePanel(self)
 
-        self.createCenterController(self.main_sizer)
+        self.main_sizer.Add(self.stream_panel, 
+            flag=wx.ALIGN_CENTER_HORIZONTAL|wx.TOP|wx.BOTTOM, border=10)
+        
+        self.main_sizer.Add(self.scene_panel, 
+            flag=wx.ALIGN_CENTER_HORIZONTAL|wx.TOP|wx.BOTTOM, border=10)
+        
+        self.Access = SimpleNamespace(**{"StreamPanel":self.stream_panel.AccessOptions,
+            "ScenePanel":self.scene_panel})
 
-    def createCenterController(self, mainSizer):
-        self.Center_Screen_Sizer = wx.BoxSizer()
+class StreamControllerPanel(wx.Panel):
+    streamingToggle = False
+    ENABLED_COLOR = wx.Colour(0, 255, 0)
+    DISABLED_COLOR = wx.Colour(255, 0, 0)
 
-        self.CurrentSceneLabel = wx.StaticText(self, label="Currently No Scene")
-        self.Center_Screen_Sizer.Add(self.CurrentSceneLabel,
-            flag=wx.CENTER)
+    def __init__(self, parent):
+        super().__init__(parent)
 
-        Radio = wx.RadioBox(self, label = "Radio", choices=["PP Center", "Live Camera"],
-            style=wx.RA_SPECIFY_ROWS)
+        mainSizer = wx.BoxSizer()
+        self.SetBackgroundColour(wx.Colour(255, 0, 0))
+        self.SetSizer(mainSizer)
 
-        self.Center_Screen_Sizer.Add(Radio, flag=wx.CENTER)
+        self.create_stream_controller(mainSizer)
 
-        mainSizer.Add(self.Center_Screen_Sizer)
-
-    def createStreamController(self, mainSizer):
-        self.Stream_Sizer = wx.BoxSizer(wx.VERTICAL)
+        self.AccessOptions = SimpleNamespace(**{"ToggleButton": self.StreamToggleButton})
+        
+    def create_stream_controller(self, mainSizer):
+        Stream_Sizer = wx.BoxSizer(wx.VERTICAL)
 
         self.StreamToggleButton = wx.Button(self, label = "Toggle Stream Status")
         self.StreamToggleButton.Bind(wx.EVT_BUTTON, self.OnToggleStreamButton)
-        self.Stream_Sizer.Add(self.StreamToggleButton, flag = wx.CENTER|wx.ALL, border=10)
+        Stream_Sizer.Add(self.StreamToggleButton, flag = wx.CENTER|wx.ALL, border=10)
         
-        self.StreamToggleLabel = wx.StaticText(self, label="Stream Status:")
+        StreamHorizontal = wx.BoxSizer(wx.HORIZONTAL)
+        
+        StreamToggleLabel = wx.StaticText(self, label="Stream Status:")
+        StreamHorizontal.Add(StreamToggleLabel, flag=wx.TOP|wx.BOTTOM|wx.RIGHT|wx.ALIGN_LEFT, border=10)
 
         self.StreamStatusLabel = wx.StaticText(self, label="Not Streaming")
         self.StreamStatusLabel.BackgroundColour = wx.Colour(200, 0, 0)
         
-        StreamHorizontal = wx.BoxSizer(wx.HORIZONTAL)
-        StreamHorizontal.Add(self.StreamToggleLabel, flag=wx.TOP|wx.BOTTOM|wx.RIGHT|wx.ALIGN_LEFT, border=10)
         StreamHorizontal.Add(self.StreamStatusLabel, flag=wx.TOP|wx.BOTTOM|wx.ALIGN_RIGHT, border=10)
-        self.Stream_Sizer.Add(StreamHorizontal)
+        Stream_Sizer.Add(StreamHorizontal)
 
-        mainSizer.Add(self.Stream_Sizer, flag=wx.CENTER)
-
+        mainSizer.Add(Stream_Sizer, flag=wx.CENTER)
 
     def OnToggleStreamButton(self, event):
         if self.streamingToggle == False:
@@ -73,6 +84,27 @@ class MainPanel(wx.Panel):
             self.StreamStatusLabel.BackgroundColour = self.DISABLED_COLOR
             self.streamingToggle = False
 
+class ScenePanel(wx.Panel):
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        main_sizer = wx.BoxSizer()
+
+        self.create_center_controller(main_sizer)
+
+        self.SetBackgroundColour(wx.Colour(0, 255, 0))
+
+        self.AccessOption = SimpleNamespace(**{"SceneRadio":self.scene_radio})
+
+    def create_center_controller(self, mainSizer):
+        center_screen_sizer = wx.BoxSizer()
+
+        self.scene_radio = wx.RadioBox(self, label = "Scene Selection", choices=["PP Center", "Live Camera"],
+            style=wx.RA_SPECIFY_ROWS)
+
+        center_screen_sizer.Add(self.scene_radio, flag=wx.CENTER)
+
+        mainSizer.Add(center_screen_sizer)
 
 def createWindow():
     mainApp = wx.App()
