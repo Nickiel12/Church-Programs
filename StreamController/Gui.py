@@ -14,7 +14,7 @@ class MainFrame(wx.Frame):
         menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
         self.SetMenuBar(menuBar)  # Adding the MenuBar to the Frame content.
 
-        self.SetDimensions(0, 0, 400, 400)
+        self.SetSize(0, 0, 400, 400)
         self.Center()
 
         self.Access = self.panel.Access
@@ -32,8 +32,8 @@ class MainPanel(wx.Panel):
         self.main_sizer.Add(self.stream_panel, 
             flag=wx.ALIGN_CENTER_HORIZONTAL|wx.TOP|wx.BOTTOM, border=10)
         
-        self.main_sizer.Add(self.scene_panel, 
-            flag=wx.ALIGN_CENTER_HORIZONTAL|wx.TOP|wx.BOTTOM, border=10)
+        self.main_sizer.Add(self.scene_panel, 1, 
+            flag=wx.CENTER|wx.EXPAND|wx.ALL, border=10)
         
         self.Access = SimpleNamespace(**{"StreamPanel":self.stream_panel.AccessOptions,
             "ScenePanel":self.scene_panel})
@@ -90,21 +90,31 @@ class ScenePanel(wx.Panel):
         super().__init__(parent)
         main_sizer = wx.BoxSizer()
 
-        self.create_center_controller(main_sizer)
+        self.create_panel(main_sizer)
 
         self.SetBackgroundColour(wx.Colour(0, 255, 0))
 
-        self.AccessOption = SimpleNamespace(**{"SceneRadio":self.scene_radio})
+        self.AccessOption = SimpleNamespace(**{"SceneRadio":self.scene_radio,
+            "SceneCheckbox":self.scene_checkbox})
+        
+        self.SetSizer(main_sizer)
 
-    def create_center_controller(self, mainSizer):
-        center_screen_sizer = wx.BoxSizer()
+    def create_panel(self, mainSizer:wx.BoxSizer):
+        mainSizer.AddStretchSpacer()
+        center_screen_sizer = wx.BoxSizer(wx.VERTICAL)
 
         self.scene_radio = wx.RadioBox(self, label = "Scene Selection", choices=["PP Center", "Live Camera"],
             style=wx.RA_SPECIFY_ROWS)
 
-        center_screen_sizer.Add(self.scene_radio, flag=wx.CENTER)
+        self.scene_checkbox = wx.CheckBox(self, label="Auto")
 
-        mainSizer.Add(center_screen_sizer)
+        center_screen_sizer.Add(self.scene_radio, flag=wx.CENTER|wx.EXPAND)
+
+        center_screen_sizer.Add(self.scene_checkbox, wx.SizerFlags(0).Center())
+
+        mainSizer.Add(center_screen_sizer, wx.SizerFlags(0).Expand().Center())
+        mainSizer.AddStretchSpacer()
+
 
 def createWindow():
     mainApp = wx.App()
