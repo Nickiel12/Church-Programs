@@ -2,6 +2,16 @@ import wx
 from enum import Enum
 from types import SimpleNamespace
 
+from functools import partial
+
+class ChurchGui():
+    
+    def __init__(self, *args, **kwargs):
+        self.App = wx.App()
+        self.Frame = MainFrame()
+        self.Frame.Show()
+        self.Access = self.Frame.Access
+
 class MainFrame(wx.Frame):
 
     def __init__(self):
@@ -36,7 +46,7 @@ class MainPanel(wx.Panel):
             flag=wx.CENTER|wx.EXPAND|wx.ALL, border=10)
         
         self.Access = SimpleNamespace(**{"StreamPanel":self.stream_panel.AccessOptions,
-            "ScenePanel":self.scene_panel})
+            "ScenePanel":self.scene_panel.AccessOption})
 
 class StreamControllerPanel(wx.Panel):
     streamingToggle = False
@@ -115,13 +125,12 @@ class ScenePanel(wx.Panel):
         mainSizer.Add(center_screen_sizer, wx.SizerFlags(0).Expand().Center())
         mainSizer.AddStretchSpacer()
 
-
-def createWindow():
-    mainApp = wx.App()
-    mainFrame = MainFrame()
-    mainFrame.Show()
-    return SimpleNamespace(**{"App": mainApp, "Frame": mainFrame})
+def createGui():
+    return ChurchGui()
 
 if __name__ == "__main__":
-    window = createWindow()
+    window = createGui()
+    print(window.Access.ScenePanel.SceneRadio.Bind(wx.EVT_RADIOBOX, lambda event:
+        print(window.Access.ScenePanel.SceneRadio.GetSelection())))
+    window.Access.ScenePanel
     window.App.MainLoop()
