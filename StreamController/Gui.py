@@ -24,7 +24,7 @@ class MainFrame(wx.Frame):
         menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
         self.SetMenuBar(menuBar)  # Adding the MenuBar to the Frame content.
 
-        self.SetSize(0, 0, 400, 400)
+        self.SetSize(0, 0, 400, 350)
         self.Center()
 
         self.Access = self.panel.Access
@@ -33,6 +33,9 @@ class MainPanel(wx.Panel):
 
     def __init__(self, parent):
         super().__init__(parent)
+
+        self.BackgroundColour = wx.Colour(200, 200, 220)
+
         self.main_sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.main_sizer)
 
@@ -40,10 +43,10 @@ class MainPanel(wx.Panel):
         self.scene_panel = ScenePanel(self)
 
         self.main_sizer.Add(self.stream_panel, 
-            flag=wx.ALIGN_CENTER_HORIZONTAL|wx.TOP|wx.BOTTOM, border=10)
+            flag=wx.CENTER|wx.TOP|wx.BOTTOM, border=10)
         
-        self.main_sizer.Add(self.scene_panel, 1, 
-            flag=wx.CENTER|wx.EXPAND|wx.ALL, border=10)
+        self.main_sizer.Add(self.scene_panel,  
+            flag=wx.CENTER|wx.ALL, border=10)
         
         self.Access = SimpleNamespace(**{"StreamPanel":self.stream_panel.AccessOptions,
             "ScenePanel":self.scene_panel.AccessOption})
@@ -62,7 +65,8 @@ class StreamControllerPanel(wx.Panel):
 
         self.create_stream_controller(mainSizer)
 
-        self.AccessOptions = SimpleNamespace(**{"ToggleButton": self.StreamToggleButton})
+        self.AccessOptions = SimpleNamespace(**{"ToggleButton": self.StreamToggleButton,
+            "StreamStatusLabel": self.StreamStatusLabel})
         
     def create_stream_controller(self, mainSizer):
         Stream_Sizer = wx.BoxSizer(wx.VERTICAL)
@@ -74,12 +78,12 @@ class StreamControllerPanel(wx.Panel):
         StreamHorizontal = wx.BoxSizer(wx.HORIZONTAL)
         
         StreamToggleLabel = wx.StaticText(self, label="Stream Status:")
-        StreamHorizontal.Add(StreamToggleLabel, flag=wx.TOP|wx.BOTTOM|wx.RIGHT|wx.ALIGN_LEFT, border=10)
+        StreamHorizontal.Add(StreamToggleLabel, flag=wx.ALL|wx.ALIGN_LEFT, border=10)
 
         self.StreamStatusLabel = wx.StaticText(self, label="Not Streaming")
         self.StreamStatusLabel.BackgroundColour = wx.Colour(200, 0, 0)
         
-        StreamHorizontal.Add(self.StreamStatusLabel, flag=wx.TOP|wx.BOTTOM|wx.ALIGN_RIGHT, border=10)
+        StreamHorizontal.Add(self.StreamStatusLabel, flag=wx.ALL|wx.ALIGN_RIGHT, border=10)
         Stream_Sizer.Add(StreamHorizontal)
 
         mainSizer.Add(Stream_Sizer, flag=wx.CENTER)
@@ -110,20 +114,21 @@ class ScenePanel(wx.Panel):
         self.SetSizer(main_sizer)
 
     def create_panel(self, mainSizer:wx.BoxSizer):
-        mainSizer.AddStretchSpacer()
-        center_screen_sizer = wx.BoxSizer(wx.VERTICAL)
+        center_screen_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.scene_radio = wx.RadioBox(self, label = "Scene Selection", choices=["PP Center", "Live Camera"],
+        self.scene_radio = wx.RadioBox(self, 
+            label = "Scene Selection", 
+            choices=["PP Center", "Live Camera"],
             style=wx.RA_SPECIFY_ROWS)
 
         self.scene_checkbox = wx.CheckBox(self, label="Auto")
+        self.scene_checkbox.SetValue(True)
 
         center_screen_sizer.Add(self.scene_radio, flag=wx.CENTER|wx.EXPAND)
 
-        center_screen_sizer.Add(self.scene_checkbox, wx.SizerFlags(0).Center())
+        center_screen_sizer.Add(self.scene_checkbox, wx.SizerFlags(0).Border(wx.LEFT, 10).Center())
 
-        mainSizer.Add(center_screen_sizer, wx.SizerFlags(0).Expand().Center())
-        mainSizer.AddStretchSpacer()
+        mainSizer.Add(center_screen_sizer, wx.SizerFlags(0).Center())
 
 def createGui():
     return ChurchGui()
