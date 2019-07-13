@@ -31,9 +31,15 @@ class AHKHandeler():
         return self.ProPresenter
 
     def propresenter_send(self, key, window=None):
+        old_window = self.ahk.active_window
         if window == None:
             window = self.get_ProPresenter()
-        window.send(key)
+        logging.warning(f"sending {key} to ProPresenter")
+        window.activate()
+        time.sleep(1)
+        self.ahk.send(key)
+        time.sleep(.5)
+        old_window.activate()
 
     def get_OBS(self):
         self.OBS = self.ahk.win_get("OBS")
