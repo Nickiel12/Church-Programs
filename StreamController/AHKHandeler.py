@@ -7,8 +7,10 @@ if __name__=="__main__":
 	logging.basicConfig(level=logging.DEBUG,
 		format= '%(asctime)s - %(levelname)s - %(message)s')
 
+import pathlib2
 from threading import Thread
 import time
+import os
 import webbrowser
 
 class AHKHandeler():
@@ -22,10 +24,6 @@ class AHKHandeler():
 
         self.stream_title = "PlaceHolder Title"
 
-    def get_OBS(self):
-        self.OBS = self.ahk.win_get("OBS")
-        return self.OBS
-
     def get_ProPresenter(self):
         self.ProPresenter = self.ahk.win_get("ProPresenter")
         return self.ProPresenter
@@ -34,6 +32,13 @@ class AHKHandeler():
         if window == None:
             window = self.get_ProPresenter()
         window.send(key)
+
+    def get_OBS(self):
+        self.OBS = self.ahk.win_get("OBS")
+        return self.OBS
+
+    def open_OBS(self):
+        os.system(pathlib2.Path("C:\Program Files\obs-studio\bin\64bit\obs64.exe"))
 
     def OBS_send(self, key, window=None):
         old_window = self.ahk.active_window
@@ -96,4 +101,4 @@ class AHKHandeler():
 
 if __name__ == "__main__":
     ahker = AHKHandeler()
-    ahker.propresenter_send("{PgUp}")
+    ahker.open_OBS()
