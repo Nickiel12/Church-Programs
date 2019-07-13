@@ -61,15 +61,6 @@ class AHKHandeler():
 
     def chrome_facebook_live_start(self):
         webbrowser.open("https://www.facebook.com/CenterEvents1/")
-<<<<<<< HEAD
-        # Upstairs deployment settings
-        thread = Thread(target = self.start_stream, args=(8000, (430, 593),
-        (719, 152), self.stream_title, (1018, 518), (1174, 922)))
-
-        # Nick's Laptop
-        # thread = Thread(target=self.start_stream, args=(8000, (711, 741), 
-        # (1084, 190), "A really cool title", (1577, 649), (1804, 960)))
-=======
 
         # Upstairs deployment settings
         thread = Thread(target = self.start_stream, args=(8000, (430, 593),
@@ -78,7 +69,6 @@ class AHKHandeler():
         # Nick's Laptop
         # thread = Thread(target=self.start_stream, args=(8000, (711, 741), 
         # (1084, 190), "A really cool title", (1577, 649), (1804, 960)))
->>>>>>> be8b504076140719c547089f7b3710307d38120e
         thread.start()
 
     def start_stream_facebook(
