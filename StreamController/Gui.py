@@ -1,8 +1,14 @@
-import wx
 from enum import Enum
-from types import SimpleNamespace
-
 from functools import partial
+from types import SimpleNamespace
+import wx
+
+import logging
+from logging import debug
+if __name__=="__main__":
+	logging.basicConfig(level=logging.DEBUG,
+		format= '%(asctime)s - %(levelname)s - %(message)s')
+
 
 class ChurchGui():
     
@@ -108,8 +114,8 @@ class ScenePanel(wx.Panel):
 
         self.SetBackgroundColour(wx.Colour(0, 255, 0))
 
-        self.AccessOption = SimpleNamespace(**{"SceneRadio":self.scene_radio,
-            "SceneCheckbox":self.scene_checkbox})
+        self.AccessOption = SimpleNamespace(**{"Radio":self.scene_radio,
+            "Checkbox":self.scene_checkbox})
         
         self.SetSizer(main_sizer)
 
@@ -123,6 +129,7 @@ class ScenePanel(wx.Panel):
 
         self.scene_checkbox = wx.CheckBox(self, label="Auto")
         self.scene_checkbox.SetValue(True)
+        self.scene_checkbox.Disable()
 
         center_screen_sizer.Add(self.scene_radio, flag=wx.CENTER|wx.EXPAND)
 
@@ -135,7 +142,7 @@ def createGui():
 
 if __name__ == "__main__":
     window = createGui()
-    print(window.Access.ScenePanel.SceneRadio.Bind(wx.EVT_RADIOBOX, lambda event:
-        print(window.Access.ScenePanel.SceneRadio.GetSelection())))
+    print(window.Access.ScenePanel.Radio.Bind(wx.EVT_RADIOBOX, lambda event:
+        print(window.Access.ScenePanel.Radio.GetSelection())))
     window.Access.ScenePanel
     window.App.MainLoop()
