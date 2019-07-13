@@ -46,11 +46,11 @@ class AHKHandeler():
 
     def chrome_facebook_live_start(self):
         webbrowser.open("https://www.facebook.com/CenterEvents1/")
-        thread = Thread(target=self.start_stream, args=(8000, (711, 741), 
+        thread = Thread(target=self.start_stream_facebook, args=(8000, (711, 741), 
         (1084, 190), "A really cool title", (1577, 649), (1804, 960)))
         thread.start()
 
-    def start_stream(
+    def start_stream_facebook(
         self,
         # Facebook related
         wait_time:int, live_position:tuple, connect_position:tuple, stream_title:str,
@@ -75,10 +75,11 @@ class AHKHandeler():
             f"\n Click \n Send {stream_title} \n"
                 )
 
-        # Start the stream
+        # Start the OBS stream
         self.OBS_send(self.obs_start_stream_hotkey)
         time.sleep(2)
 
+        # Click go live button on facebook
         self.ahk.run_script(f"#NoEnv \n"+
             f"MouseMove, {stream_go_live_position[0]}, {stream_go_live_position[1]}\n"+
             "Click")
