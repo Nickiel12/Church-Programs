@@ -8,9 +8,9 @@ if __name__=="__main__":
 		format= '%(asctime)s - %(levelname)s - %(message)s')
 
 import pathlib2
+import subprocess
 from threading import Thread
 import time
-import os
 import webbrowser
 
 class AHKHandeler():
@@ -21,6 +21,8 @@ class AHKHandeler():
         self.get_ProPresenter()
         self.obs_start_stream_hotkey = obs_start_hotkey
         debug(self.obs_start_stream_hotkey)
+
+        time.sleep(1)
 
         self.stream_title = "PlaceHolder Title"
 
@@ -35,10 +37,16 @@ class AHKHandeler():
 
     def get_OBS(self):
         self.OBS = self.ahk.win_get("OBS")
+        if self.OBS.id == "":
+            self.open_OBS()
+            self.OBS = self.ahk.win_get("OBS")
         return self.OBS
 
     def open_OBS(self):
-        os.system(pathlib2.Path("C:\Program Files\obs-studio\bin\64bit\obs64.exe"))
+       self.ahk.run_script("CoordMode, Mouse, Screen\n"+
+       "MouseMove, 516, 998 \n Click")
+       time.sleep(1)
+       return
 
     def OBS_send(self, key, window=None):
         old_window = self.ahk.active_window
@@ -101,4 +109,4 @@ class AHKHandeler():
 
 if __name__ == "__main__":
     ahker = AHKHandeler()
-    ahker.open_OBS()
+    ahker.chrome_facebook_live_start()
