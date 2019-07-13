@@ -77,10 +77,7 @@ class AHKHandeler():
             "Click \n Sleep 5000 \n"+
             # Click connect
             f"MouseMove, {connect_position[0]}, {connect_position[1]} \n"+
-            "Click \n Sleep 1500 \n"+
-            # Click Title label
-            f"MouseMove, {stream_label_position[0]}, {stream_label_position[1]},"
-            f"\n Click \n Send {stream_title} \n"
+            "Click \n Sleep 1500 \n"
                 )
 
         # Start the stream
@@ -88,6 +85,9 @@ class AHKHandeler():
         time.sleep(2)
 
         self.ahk.run_script(f"#NoEnv \n"+
+            # Click Title label
+            f"MouseMove, {stream_label_position[0]}, {stream_label_position[1]},"+
+            f"\n Click \n Send {stream_title} \n"+
             f"MouseMove, {stream_go_live_position[0]}, {stream_go_live_position[1]}\n"#+
             #"Click"
             )
@@ -96,4 +96,4 @@ class AHKHandeler():
 
 if __name__ == "__main__":
     ahker = AHKHandeler()
-    ahker.chrome_facebook_live_start()
+    ahker.propresenter_send("{PgUp}")
