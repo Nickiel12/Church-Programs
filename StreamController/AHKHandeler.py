@@ -20,6 +20,8 @@ class AHKHandeler():
         self.obs_start_stream_hotkey = obs_start_hotkey
         debug(self.obs_start_stream_hotkey)
 
+        self.stream_title = "PlaceHolder Title"
+
     def get_OBS(self):
         self.OBS = self.ahk.win_get("OBS")
         return self.OBS
@@ -46,8 +48,14 @@ class AHKHandeler():
 
     def chrome_facebook_live_start(self):
         webbrowser.open("https://www.facebook.com/CenterEvents1/")
-        thread = Thread(target=self.start_stream, args=(8000, (711, 741), 
-        (1084, 190), "A really cool title", (1577, 649), (1804, 960)))
+
+        # Upstairs deployment settings
+        thread = Thread(target = self.start_stream, args=(8000, (430, 593),
+        (719, 152), self.stream_title, (1018, 518), (1174, 922)))
+
+        # Nick's Laptop
+        # thread = Thread(target=self.start_stream, args=(8000, (711, 741), 
+        # (1084, 190), "A really cool title", (1577, 649), (1804, 960)))
         thread.start()
 
     def start_stream(
@@ -80,8 +88,9 @@ class AHKHandeler():
         time.sleep(2)
 
         self.ahk.run_script(f"#NoEnv \n"+
-            f"MouseMove, {stream_go_live_position[0]}, {stream_go_live_position[1]}\n"+
-            "Click")
+            f"MouseMove, {stream_go_live_position[0]}, {stream_go_live_position[1]}\n"#+
+            #"Click"
+            )
 
         return
 
