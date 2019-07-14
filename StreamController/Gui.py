@@ -11,23 +11,60 @@ if __name__=="__main__":
 	logging.basicConfig(level=logging.DEBUG,
 		format= '%(asctime)s - %(levelname)s - %(message)s')
 
-import AHKHandeler
+import StreamController.AHKHandeler as AHKHandeler
 
 class ChurchGui():
     
     def __init__(self, *args, **kwargs):
         self.App = wx.App()
+        self.startFrame = StartupFrame()
         self.Frame = MainFrame()
-        self.Frame.Show()
+        self.startFrame.Show()
+        self.startFrame.button.Bind(wx.EVT_BUTTON, lambda event: self.show_popup())
         self.Access = self.Frame.Access
+
+    def show_popup(self):
+        popup = wx.TextEntryDialog(self, "What would you like the name of the stream to be?")
+        if popup.ShowModal() == wx.OK:
+            self.stream_title = popup.GetValue()
+        switch_frames()
+        self.ahk_handeler = AHKHandeler(self.stream_title)
+        self.ahk_handeler.chrome_facebook_live_start()
+
+    def switch_frames(self):
+        self.startFrame.Close()
+        self.Frame.Show()
+
+class StartupFrame(wx.Frame):
+
+    def __init__(self, *args, **kw):
+        super().__init__(parent = None, title="Start Stream")
+        self.startup_panel()
+
+        self.SetSize(0, 0, 300, 250)
+        self.Center()
+
+    def startup_panel(self)->wx.Panel:
+        panel = wx.Panel()
+        sizer = wx.BoxSizer()
+        panel.SetSizer(sizer)
+
+        vert_sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(vert_sizer, wx.SizerFlags().Center())
+
+        path = pathlib2.Path(os.path.abspath("."))/"StreamController" / "resources" / "Play Button copy.jpg"
+        image = wx.Image(str(path))
+        image.Rescale(100, 100, wx.IMAGE_QUALITY_HIGH)
+        bit_image = wx.Bitmap(image)
+
+        self.button = wx.BitmapButton(self, bitmap=bit_image)
+        vert_sizer.Add(self.button, wx.SizerFlags().Center())
 
 class MainFrame(wx.Frame):
 
     def __init__(self):
         super().__init__(parent = None,
                         title = 'Stream Controller')
-        self.panel = MainPanel(self)
-        self.startup_panel()
 
         filemenu= wx.Menu()
         menuBar = wx.MenuBar()
@@ -37,17 +74,8 @@ class MainFrame(wx.Frame):
         self.SetSize(0, 0, 400, 350)
         self.Center()
 
+        self.panel = MainPanel(self)
         self.Access = self.panel.Access
-
-    def startup_panel(self)->wx.Panel:
-        panel = wx.Panel()
-        sizer = wx.BoxSizer()
-        panel.SetSizer(sizer)
-        path = pathlib2.Path(os.path.abspath("."))/"StreamController" / "resources" / "Play Button copy.jpg"
-        image = wx.Image(str(path))
-        bit_image = wx.BitmapFromImage(image)
-        button = wx.BitmapButton(self, bitmap=bit_image)
-        sizer.Add(button)
 
 class MainPanel(wx.Panel):
 
