@@ -11,7 +11,7 @@ if __name__=="__main__":
 	logging.basicConfig(level=logging.DEBUG,
 		format= '%(asctime)s - %(levelname)s - %(message)s')
 
-import StreamController.AHKHandeler as AHKHandeler
+from AHKHandeler import AHKHandeler
 
 class ChurchGui():
     
@@ -24,12 +24,14 @@ class ChurchGui():
         self.Access = self.Frame.Access
 
     def show_popup(self):
-        popup = wx.TextEntryDialog(self, "What would you like the name of the stream to be?")
-        if popup.ShowModal() == wx.OK:
+        popup = wx.TextEntryDialog(self.startFrame, "What would you like the name of the stream to be?")
+        if popup.ShowModal() == wx.ID_OK:
             self.stream_title = popup.GetValue()
-        switch_frames()
-        self.ahk_handeler = AHKHandeler(self.stream_title)
-        self.ahk_handeler.chrome_facebook_live_start()
+            self.switch_frames()
+            self.ahk_handeler = AHKHandeler(self.stream_title)
+            self.ahk_handeler.chrome_facebook_live_start()
+        else:
+            raise ValueError
 
     def switch_frames(self):
         self.startFrame.Close()
