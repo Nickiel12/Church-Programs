@@ -23,7 +23,8 @@ class ChurchGui():
         self.Frame = MainFrame()
         self.startFrame.Show()
         self.startFrame.button.Bind(wx.EVT_BUTTON, lambda event: self.show_popup())
-        self.Frame.Access.StreamPanel.ToggleButton.Bind(wx.EVT_BUTTON, self.OnToggleStreamButton)
+        self.Frame.Access.StreamPanel.ToggleButton.Bind(
+            wx.EVT_BUTTON, self.OnToggleStreamButton)
         self.Access = self.Frame.Access
 
     def show_popup(self):
@@ -33,17 +34,17 @@ class ChurchGui():
             self.switch_frames()
 
             self.ahk_handeler = AHKHandeler(self.stream_title)
-            self.ahk_handeler.ahk.run_script("MsgBox, 16, Computer Working, The Computer "+
-                "is working, please do not touch the keyboard or move the mouse!", 
+            self.ahk_handeler.ahk.run_script("MsgBox, 4112, Computer Working, The Computer "+
+                "is setting up the strea, please do not touch the keyboard or move the mouse!", 
                 blocking = False)
             time.sleep(.25)
             popup_window = self.ahk_handeler.ahk.win_get("Computer Working")
-            popup_window.activate()
             popup_window.disable()
-            popup_window.always_on_top = True
-
             self.ahk_handeler.chrome_facebook_live_start()
+            time.sleep(21)
             popup_window.enable()
+            popup_window.activate()
+            popup_window.send("{Enter}")
         else:
             raise ValueError
 
