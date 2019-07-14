@@ -89,12 +89,12 @@ class AHKHandeler():
 		webbrowser.open("https://www.facebook.com/CenterEvents1/")
 
 		# Upstairs deployment settings
-		thread = Thread(target = self.setup_stream_facebook, args=(8000, (430, 593),
-		(719, 152), self.stream_title, (1018, 518)))
+		# thread = Thread(target = self.setup_stream_facebook, args=(8000, (430, 593),
+		# (719, 152), self.stream_title, (1018, 518)))
 
 		# Nick's Laptop
-		# thread = Thread(target=self.setup_stream_facebook, args=(8000, (711, 741), 
-		# (1084, 190), "A really cool title", (1577, 649), (1804, 960)))
+		thread = Thread(target=self.setup_stream_facebook, args=(8000, (711, 741), 
+		(1084, 190), "A really cool title", (1577, 649)))
 		thread.start()
 
 	def setup_stream_facebook(
