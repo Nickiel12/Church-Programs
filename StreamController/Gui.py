@@ -39,7 +39,7 @@ class ChurchGui():
         self.Frame.Show()
     
     def OnToggleStreamButton(self, event):
-        popup = wx.MessageDialog(self, "Are you sure", "Are you sure you want to"+
+        popup = wx.MessageDialog(self.Frame, "Are you sure", "Are you sure you want to"+
             " stop the live stream?", wx.YES_NO)
         if popup.ShowModal() == wx.ID_YES:
             self.ahk_handeler.stop_facebook_stream((1174, 922))

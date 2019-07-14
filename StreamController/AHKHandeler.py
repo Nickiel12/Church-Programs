@@ -118,7 +118,7 @@ class AHKHandeler():
             f"MouseMove, {stream_label_position[0]}, {stream_label_position[1]},"+
             f"\n Sleep 250 \n Click \n Send {stream_title} \n"+
             f"MouseMove, {stream_go_live_position[0]}, {stream_go_live_position[1]}\n"#+
-            "Sleep 250 \n Click"
+            "Sleep 3000 \n Click"
             )
 
         return
