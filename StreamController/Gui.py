@@ -51,7 +51,9 @@ class ChurchGui():
             popup_window.activate()
             popup_window.send("{Enter}")
         else:
-            raise ValueError
+            self.Frame.Destroy()
+            self.startFrame.Destroy()
+
 
     def switch_frames(self):
         self.startFrame.Close()
