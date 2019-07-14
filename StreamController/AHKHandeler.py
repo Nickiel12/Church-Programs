@@ -12,7 +12,6 @@ import subprocess
 from threading import Thread
 import time
 import webbrowser
-
 class AHKHandeler():
 
     def __init__(self, stream_name:str, obs_start_hotkey="^+J", obs_stop_hotkey="^!J"):

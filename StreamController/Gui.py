@@ -2,6 +2,7 @@ from enum import Enum
 from functools import partial
 import pathlib2
 from types import SimpleNamespace
+import threading
 import os
 import wx
 
@@ -29,8 +30,20 @@ class ChurchGui():
         if popup.ShowModal() == wx.ID_OK:
             self.stream_title = popup.GetValue()
             self.switch_frames()
+
+            computer_working_popup = wx.MessageDialog(self.Frame, "Computer Working",
+            "The computer is working, please do not touch the keyboard of move the mouse!",
+            style=wx.OK|wx.CANCEL)
+            computer_working_popup.Show()
+
             self.ahk_handeler = AHKHandeler(self.stream_title)
+            popup_window = self.ahk_handeler.ahk.win_get("Computer Working")
+            popup_window.activate()
+            popup_window.disable()
+            popup_window.always_on_top = True
+
             self.ahk_handeler.chrome_facebook_live_start()
+            popup_window.enable()
         else:
             raise ValueError
 
