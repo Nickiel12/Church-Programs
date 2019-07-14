@@ -12,7 +12,8 @@ from logging import debug
 if __name__=="__main__":
 	logging.basicConfig(level=logging.DEBUG,
 		format= '%(asctime)s - %(levelname)s - %(message)s')
-
+if __name__ != "__main__":
+    from StreamController.AHKHandeler import AHKHandeler
 from AHKHandeler import AHKHandeler
 
 class ChurchGui():
@@ -21,10 +22,6 @@ class ChurchGui():
     test_stream = False
     ENABLED_COLOR = wx.Colour(0, 255, 0)
     DISABLED_COLOR = wx.Colour(255, 0, 0)
-    scene_hotkey_dict = {
-        ScenePanel.scene_radio_choices["Live Camera"]: "F24",
-        ScenePanel.scene_radio_choices["PP Center"]: "F23",
-        }
     
     def __init__(self, *args, **kwargs):
         self.App = wx.App()
@@ -40,6 +37,11 @@ class ChurchGui():
         ))
         self.Access = self.Frame.Access
 
+        self.scene_hotkey_dict = {
+            ScenePanel.scene_radio_choices["Live Camera"]: "{F24}",
+            ScenePanel.scene_radio_choices["PP Center"]: "{F23}",
+            }
+
     def on_exit(self, event):
         self.startFrame.Destroy()
         self.Frame.Destroy()
@@ -47,9 +49,8 @@ class ChurchGui():
 
     def on_radio_change(self, radio, event):
         radio_selec = radio.GetSelection()
-        debug(radio_selec)
-        radio_selec = radio.GetStringSelection()
-        debug(radio_selec)
+        hotkey = self.scene_hotkey_dict[radio_selec]
+        self.ahk_handeler.OBS_send(hotkey)
 
     def show_popup(self):
         popup = wx.TextEntryDialog(self.startFrame, "What would you like the name of the stream to be?")
@@ -58,8 +59,8 @@ class ChurchGui():
             self.stream_title = popup.GetValue()
             self.switch_frames()
 
+            self.ahk_handeler = AHKHandeler(self.stream_title)
             if self.stream_title != "test stream":
-                self.ahk_handeler = AHKHandeler(self.stream_title)
                 self.ahk_handeler.ahk.run_script("MsgBox, 4112, Computer Working, The Computer "+
                     "is setting up the stream, please do not touch the keyboard or move the mouse!", 
                     blocking = False)
