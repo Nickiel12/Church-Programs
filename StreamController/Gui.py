@@ -1,6 +1,8 @@
 from enum import Enum
 from functools import partial
+import pathlib2
 from types import SimpleNamespace
+import os
 import wx
 
 import logging
@@ -9,6 +11,7 @@ if __name__=="__main__":
 	logging.basicConfig(level=logging.DEBUG,
 		format= '%(asctime)s - %(levelname)s - %(message)s')
 
+import AHKHandeler
 
 class ChurchGui():
     
@@ -24,6 +27,7 @@ class MainFrame(wx.Frame):
         super().__init__(parent = None,
                         title = 'Stream Controller')
         self.panel = MainPanel(self)
+        self.startup_panel()
 
         filemenu= wx.Menu()
         menuBar = wx.MenuBar()
@@ -34,6 +38,16 @@ class MainFrame(wx.Frame):
         self.Center()
 
         self.Access = self.panel.Access
+
+    def startup_panel(self)->wx.Panel:
+        panel = wx.Panel()
+        sizer = wx.BoxSizer()
+        panel.SetSizer(sizer)
+        path = pathlib2.Path(os.path.abspath("."))/"StreamController" / "resources" / "Play Button copy.jpg"
+        image = wx.Image(str(path))
+        bit_image = wx.BitmapFromImage(image)
+        button = wx.BitmapButton(self, bitmap=bit_image)
+        sizer.Add(button)
 
 class MainPanel(wx.Panel):
 
