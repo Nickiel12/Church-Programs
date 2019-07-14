@@ -16,6 +16,10 @@ if __name__=="__main__":
 from AHKHandeler import AHKHandeler
 
 class ChurchGui():
+
+    stream_live = False
+    ENABLED_COLOR = wx.Colour(0, 255, 0)
+    DISABLED_COLOR = wx.Colour(255, 0, 0)
     
     def __init__(self, *args, **kwargs):
         self.App = wx.App()
@@ -35,9 +39,10 @@ class ChurchGui():
 
             self.ahk_handeler = AHKHandeler(self.stream_title)
             self.ahk_handeler.ahk.run_script("MsgBox, 4112, Computer Working, The Computer "+
-                "is setting up the strea, please do not touch the keyboard or move the mouse!", 
+                "is setting up the stream, please do not touch the keyboard or move the mouse!", 
                 blocking = False)
             time.sleep(.25)
+
             popup_window = self.ahk_handeler.ahk.win_get("Computer Working")
             popup_window.disable()
             self.ahk_handeler.chrome_facebook_live_start()
@@ -51,14 +56,34 @@ class ChurchGui():
     def switch_frames(self):
         self.startFrame.Close()
         self.Frame.Show()
+        self.stream_live = False
+        self.Frame.Access.StreamPanel.ToggleButton.label = "Go Live"
+        self.Frame.Access.StreamPanel.StreamStatusLabel.label = "Not Live"
+        self.Frame.Access.StreamPanel.StreamStatusLabel.BackgroundColour=self.DISABLED_COLOR
     
     def OnToggleStreamButton(self, event):
-        popup = wx.MessageDialog(self.Frame, "Are you sure", "Are you sure you want to"+
-            " stop the live stream?", wx.YES_NO)
-        if popup.ShowModal() == wx.ID_YES:
-            self.ahk_handeler.stop_facebook_stream((1174, 922))
+        if self.stream_live == True:
+            popup = wx.MessageDialog(self.Frame, "Are you sure you want to"+
+                " stop the live stream?", "Are you sure", wx.YES_NO)
+            if popup.ShowModal() == wx.ID_YES:
+                self.ahk_handeler.stop_facebook_stream((1174, 922))
+                self.stream_live = False
+                self.Frame.Access.StreamPanel.ToggleButton.label = "Go Live"
+                self.Frame.Access.StreamPanel.StreamStatusLabel.label = "Not Live"
+                self.Frame.Access.StreamPanel.StreamStatusLabel.BackgroundColour=self.DISABLED_COLOR
+            else:
+                event.Skip()
         else:
-            event.Skip()
+            popup = wx.MessageDialog(self.Frame, "Are you sure you want to"+
+                " start the live stream?", "Are you sure", wx.YES_NO)
+            if popup.ShowModal() == wx.ID_YES:
+                self.ahk_handeler.start_facebook_stream()
+                self.stream_live = True
+                self.Frame.Access.StreamPanel.ToggleButton.label = "End Stream"
+                self.Frame.Access.StreamPanel.StreamStatusLabel.label = "Stream Live"
+                self.Frame.Access.StreamPanel.StreamStatusLabel.BackgroundColour=self.ENABLED_COLOR
+            else:
+                event.Skip()
 
 class StartupFrame(wx.Frame):
 
@@ -126,9 +151,6 @@ class MainPanel(wx.Panel):
 
 class StreamControllerPanel(wx.Panel):
 
-    ENABLED_COLOR = wx.Colour(0, 255, 0)
-    DISABLED_COLOR = wx.Colour(255, 0, 0)
-
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -144,7 +166,7 @@ class StreamControllerPanel(wx.Panel):
     def create_stream_controller(self, mainSizer):
         Stream_Sizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.StreamToggleButton = wx.Button(self, label = "Stop Stream")
+        self.StreamToggleButton = wx.Button(self, label = "Go Live")
         Stream_Sizer.Add(self.StreamToggleButton, flag = wx.CENTER|wx.ALL, border=10)
         
         StreamHorizontal = wx.BoxSizer(wx.HORIZONTAL)
