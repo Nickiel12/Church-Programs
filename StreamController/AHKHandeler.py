@@ -75,7 +75,7 @@ class AHKHandeler():
         webbrowser.open("https://www.facebook.com/CenterEvents1/")
 
         # Upstairs deployment settings
-        thread = Thread(target = self.start_stream, args=(8000, (430, 593),
+        thread = Thread(target = self.start_stream_facebook, args=(8000, (430, 593),
         (719, 152), self.stream_title, (1018, 518), (1174, 922)))
 
         # Nick's Laptop
