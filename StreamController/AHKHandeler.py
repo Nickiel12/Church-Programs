@@ -15,7 +15,10 @@ import webbrowser
 
 class AHKHandeler():
 
-    def __init__(self, stream_name, obs_start_hotkey="^+J", obs_stop_hotkey="^!J"):
+    def __init__(self, stream_name:str, obs_start_hotkey="^+J", obs_stop_hotkey="^!J"):
+        """
+            Stream name
+        """
         self.ahk = AHK()
         self.get_OBS()
         self.get_ProPresenter()
