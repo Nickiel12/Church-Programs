@@ -15,7 +15,7 @@ import webbrowser
 
 class AHKHandeler():
 
-    def __init__(self, obs_start_hotkey="^+J", obs_stop_hotkey="^!J"):
+    def __init__(self, stream_name, obs_start_hotkey="^+J", obs_stop_hotkey="^!J"):
         self.ahk = AHK()
         self.get_OBS()
         self.get_ProPresenter()
@@ -25,22 +25,24 @@ class AHKHandeler():
 
         time.sleep(1)
 
-        self.stream_title = "PlaceHolder Title"
+        self.stream_title = stream_name
 
     def get_ProPresenter(self):
-        self.ProPresenter = self.ahk.win_get("ProPresenter")
+        self.ProPresenter = self.ahk.win_get("ProPresenter - Registered To: VALLEY CHRISTAIN CENTER")
         return self.ProPresenter
 
     def propresenter_send(self, key, window=None):
         old_window = self.ahk.active_window
+        if self.ahk.active_window == self.get_ProPresenter():
+            self.ahk.send(key)
         if window == None:
             window = self.get_ProPresenter()
-        logging.warning(f"sending {key} to ProPresenter")
-        window.activate()
-        time.sleep(1)
-        self.ahk.send(key)
-        time.sleep(.5)
-        old_window.activate()
+            logging.warning(f"sending {key} to ProPresenter")
+            window.activate()
+            time.sleep(2)
+            self.ahk.send(key)
+            time.sleep(.5)
+            old_window.activate()
 
     def get_OBS(self):
         self.OBS = self.ahk.win_get("OBS")
