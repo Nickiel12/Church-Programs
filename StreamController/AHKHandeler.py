@@ -74,7 +74,7 @@ class AHKHandeler():
         (719, 152), self.stream_title, (1018, 518), (1174, 922)))
 
         # Nick's Laptop
-        # thread = Thread(target=self.start_stream, args=(8000, (711, 741), 
+        # thread = Thread(target=self.start_stream_facebook, args=(8000, (711, 741), 
         # (1084, 190), "A really cool title", (1577, 649), (1804, 960)))
         thread.start()
 
@@ -94,11 +94,14 @@ class AHKHandeler():
         self.ahk.run_script(f"#NoEnv \n Sleep {wait_time} \n "+
             # Click Live
             f"MouseMove, {live_position[0]}, {live_position[1]} \n"+
-            "Click \n Sleep 5000 \n"+
+            "Sleep 250 \n Click \n Sleep 5000 \n"+
             # Click connect
-            f"MouseMove, {connect_position[0]}, {connect_position[1]} \n"+
+            f"MouseMove, {connect_position[0]}, {connect_position[1]} \n Sleep 250 \n"+
             "Click \n Sleep 1500 \n"
                 )
+
+        self.chrome_window = self.ahk.active_window
+        self.end_stream_position = stream_go_live_position
 
         # Start the OBS stream
         self.OBS_send(self.obs_start_stream_hotkey)
@@ -108,9 +111,9 @@ class AHKHandeler():
         self.ahk.run_script(f"#NoEnv \n"+
             # Click Title label
             f"MouseMove, {stream_label_position[0]}, {stream_label_position[1]},"+
-            f"\n Click \n Send {stream_title} \n"+
+            f"\n Sleep 250 \n Click \n Send {stream_title} \n"+
             f"MouseMove, {stream_go_live_position[0]}, {stream_go_live_position[1]}\n"#+
-            #"Click"
+            "Sleep 250 \n Click"
             )
 
         return
@@ -118,9 +121,17 @@ class AHKHandeler():
     def stop_facebook_stream(self, end_stream_position:tuple):
 
         #self.OBS_send(self.obs_stop_stream_hotkey)
-        chrome_window = self.ahk.win_get("The Center Calender")
-        chrome_window.activate()
+        if self.chrome_window != None:
+            self.chrome_window.activate()
+            self.ahk.run_script(f"MouseMove, {self.end_stream_position[0]},"+
+                f" {self.end_stream_position[1]}"+
+                "\n Sleep 250 \n Click")
+            self.OBS_send("^!j")
+
+        raise ReferenceError
 
 if __name__ == "__main__":
     ahker = AHKHandeler()
-    ahker.stop_facebook_stream((500, 200))
+    ahker.chrome_facebook_live_start()
+    time.sleep(30)
+    ahker.stop_facebook_stream((1804, 960))
