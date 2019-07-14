@@ -21,6 +21,10 @@ class ChurchGui():
     test_stream = False
     ENABLED_COLOR = wx.Colour(0, 255, 0)
     DISABLED_COLOR = wx.Colour(255, 0, 0)
+    scene_hotkey_dict = {
+        ScenePanel.scene_radio_choices["Live Camera"]: "F24",
+        ScenePanel.scene_radio_choices["PP Center"]: "F23",
+        }
     
     def __init__(self, *args, **kwargs):
         self.App = wx.App()
@@ -29,14 +33,23 @@ class ChurchGui():
         self.startFrame.Show()
         self.startFrame.button.Bind(wx.EVT_BUTTON, lambda event: self.show_popup())
         self.startFrame.Bind(wx.EVT_CLOSE, self.on_exit)
-        self.Frame.Access.StreamPanel.ToggleButton.Bind(
+        self.Frame.Access.stream_panel.StreamToggleButton.Bind(
             wx.EVT_BUTTON, self.OnToggleStreamButton)
+        self.Frame.Access.scene_panel.scene_radio.Bind(wx.EVT_RADIOBOX, lambda event: self.on_radio_change(
+            self.Frame.Access.scene_panel.scene_radio, event
+        ))
         self.Access = self.Frame.Access
 
     def on_exit(self, event):
         self.startFrame.Destroy()
         self.Frame.Destroy()
         event.Skip()
+
+    def on_radio_change(self, radio, event):
+        radio_selec = radio.GetSelection()
+        debug(radio_selec)
+        radio_selec = radio.GetStringSelection()
+        debug(radio_selec)
 
     def show_popup(self):
         popup = wx.TextEntryDialog(self.startFrame, "What would you like the name of the stream to be?")
@@ -69,9 +82,9 @@ class ChurchGui():
         self.startFrame.Close()
         self.Frame.Show()
         self.stream_live = False
-        self.Frame.Access.StreamPanel.ToggleButton.SetLabel("Go Live")
-        self.Frame.Access.StreamPanel.StreamStatusLabel.SetLabel("Not Live")
-        self.Frame.Access.StreamPanel.StreamStatusLabel.BackgroundColour=self.DISABLED_COLOR
+        self.Frame.Access.stream_panel.StreamToggleButton.SetLabel("Go Live")
+        self.Frame.Access.stream_panel.StreamStatusLabel.SetLabel("Not Live")
+        self.Frame.Access.stream_panel.StreamStatusLabel.BackgroundColour=self.DISABLED_COLOR
     
     def OnToggleStreamButton(self, event):
         if self.stream_live == True:
@@ -81,9 +94,9 @@ class ChurchGui():
                 if self.test_stream == False:
                     self.ahk_handeler.stop_facebook_stream((1804, 960)) # Nick's Laptop, (1804, 960), Upstairs, (1174, 922)
                 self.stream_live = False
-                self.Frame.Access.StreamPanel.ToggleButton.SetLabel("Go Live")
-                self.Frame.Access.StreamPanel.StreamStatusLabel.SetLabel("Not Live")
-                self.Frame.Access.StreamPanel.StreamStatusLabel.BackgroundColour=self.DISABLED_COLOR
+                self.Frame.Access.stream_panel.StreamToggleButton.SetLabel("Go Live")
+                self.Frame.Access.stream_panel.StreamStatusLabel.SetLabel("Not Live")
+                self.Frame.Access.stream_panel.StreamStatusLabel.BackgroundColour=self.DISABLED_COLOR
             else:
                 event.Skip()
         else:
@@ -93,9 +106,9 @@ class ChurchGui():
                 if self.test_stream == False:
                     self.ahk_handeler.start_facebook_stream((1804, 960)) # Nick's Laptop, (1804, 960), Upstairs, (1174, 922)
                 self.stream_live = True
-                self.Frame.Access.StreamPanel.ToggleButton.SetLabel("End Stream")
-                self.Frame.Access.StreamPanel.StreamStatusLabel.SetLabel("Stream Live")
-                self.Frame.Access.StreamPanel.StreamStatusLabel.BackgroundColour=self.ENABLED_COLOR
+                self.Frame.Access.stream_panel.StreamToggleButton.SetLabel("End Stream")
+                self.Frame.Access.stream_panel.StreamStatusLabel.SetLabel("Stream Live")
+                self.Frame.Access.stream_panel.StreamStatusLabel.BackgroundColour=self.ENABLED_COLOR
             else:
                 event.Skip()
 
@@ -139,7 +152,7 @@ class MainFrame(wx.Frame):
         self.Center()
 
         self.panel = MainPanel(self)
-        self.Access = self.panel.Access
+        self.Access = self.panel
 
 class MainPanel(wx.Panel):
 
@@ -160,9 +173,6 @@ class MainPanel(wx.Panel):
         self.main_sizer.Add(self.scene_panel,  
             flag=wx.CENTER|wx.ALL, border=10)
         
-        self.Access = SimpleNamespace(**{"StreamPanel":self.stream_panel.AccessOptions,
-            "ScenePanel":self.scene_panel.AccessOption})
-
 class StreamControllerPanel(wx.Panel):
 
     def __init__(self, parent):
@@ -173,9 +183,6 @@ class StreamControllerPanel(wx.Panel):
         self.SetSizer(mainSizer)
 
         self.create_stream_controller(mainSizer)
-
-        self.AccessOptions = SimpleNamespace(**{"ToggleButton": self.StreamToggleButton,
-            "StreamStatusLabel": self.StreamStatusLabel})
         
     def create_stream_controller(self, mainSizer):
         Stream_Sizer = wx.BoxSizer(wx.VERTICAL)
@@ -199,6 +206,8 @@ class StreamControllerPanel(wx.Panel):
 
 class ScenePanel(wx.Panel):
 
+    scene_radio_choices = {"PP Center":0, "Live Camera":1}
+
     def __init__(self, parent):
         super().__init__(parent)
         main_sizer = wx.BoxSizer()
@@ -206,9 +215,6 @@ class ScenePanel(wx.Panel):
         self.create_panel(main_sizer)
 
         self.SetBackgroundColour(wx.Colour(0, 255, 0))
-
-        self.AccessOption = SimpleNamespace(**{"Radio":self.scene_radio,
-            "Checkbox":self.scene_checkbox})
         
         self.SetSizer(main_sizer)
 
@@ -217,7 +223,7 @@ class ScenePanel(wx.Panel):
 
         self.scene_radio = wx.RadioBox(self, 
             label = "Scene Selection", 
-            choices=["PP Center", "Live Camera"],
+            choices=list(self.scene_radio_choices.keys()),
             style=wx.RA_SPECIFY_ROWS)
 
         self.scene_checkbox = wx.CheckBox(self, label="Auto")
@@ -235,6 +241,4 @@ def createGui():
 
 if __name__ == "__main__":
     window = createGui()
-    print(window.Access.ScenePanel.Radio.Bind(wx.EVT_RADIOBOX, lambda event:
-        print(window.Access.ScenePanel.Radio.GetSelection())))
     window.App.MainLoop()
