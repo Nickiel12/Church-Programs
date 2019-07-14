@@ -3,6 +3,7 @@ from functools import partial
 import pathlib2
 from types import SimpleNamespace
 import threading
+import time
 import os
 import wx
 
@@ -31,12 +32,11 @@ class ChurchGui():
             self.stream_title = popup.GetValue()
             self.switch_frames()
 
-            computer_working_popup = wx.MessageDialog(self.Frame, "Computer Working",
-            "The computer is working, please do not touch the keyboard of move the mouse!",
-            style=wx.OK|wx.CANCEL)
-            computer_working_popup.Show()
-
             self.ahk_handeler = AHKHandeler(self.stream_title)
+            self.ahk_handeler.ahk.run_script("MsgBox, 16, Computer Working, The Computer "+
+                "is working, please do not touch the keyboard or move the mouse!", 
+                blocking = False)
+            time.sleep(.25)
             popup_window = self.ahk_handeler.ahk.win_get("Computer Working")
             popup_window.activate()
             popup_window.disable()
