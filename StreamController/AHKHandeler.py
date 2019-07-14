@@ -83,6 +83,7 @@ class AHKHandeler():
 		time.sleep(.5)
 		self.ahk.send(key)
 		time.sleep(.5)
+		window.to_bottom()
 		old_window.activate()
 
 	def chrome_facebook_live_start(self):
