@@ -20,6 +20,7 @@ class AHKHandeler():
         self.get_OBS()
         self.get_ProPresenter()
         self.obs_start_stream_hotkey = obs_start_hotkey
+        self.obs_stop_stream_hotkey = obs_stop_hotkey
         debug(self.obs_start_stream_hotkey)
 
         time.sleep(1)
@@ -114,6 +115,12 @@ class AHKHandeler():
 
         return
 
+    def stop_facebook_stream(self, end_stream_position:tuple):
+
+        #self.OBS_send(self.obs_stop_stream_hotkey)
+        chrome_window = self.ahk.win_get("The Center Calender")
+        chrome_window.activate()
+
 if __name__ == "__main__":
     ahker = AHKHandeler()
-    ahker.chrome_facebook_live_start()
+    ahker.stop_facebook_stream((500, 200))
