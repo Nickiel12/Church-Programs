@@ -46,6 +46,13 @@ class AHKHandeler():
             time.sleep(.5)
             old_window.activate()
 
+    def bring_to_front(self, window_class=None, preset_classes="Chrome"):
+        if window_class == None:
+            if preset_classes == "Chrome":
+                window_class = "Chrome_WidgetWin_1"
+        self.ahk.run_script(f"WinActivate, ahk_class {window_class}")
+        return
+
     def get_OBS(self):
         self.OBS = self.ahk.win_get("OBS")
         if self.OBS.id == "":
@@ -104,7 +111,6 @@ class AHKHandeler():
             "Click \n Sleep 1500 \n"
                 )
 
-        self.chrome_window = self.ahk.active_window
         self.end_stream_position = stream_go_live_position
 
         # Start the OBS stream
@@ -125,12 +131,12 @@ class AHKHandeler():
     def stop_facebook_stream(self, end_stream_position:tuple):
 
         #self.OBS_send(self.obs_stop_stream_hotkey)
-        if self.chrome_window != None:
-            self.chrome_window.activate()
-            self.ahk.run_script(f"MouseMove, {self.end_stream_position[0]},"+
-                f" {self.end_stream_position[1]}"+
-                "\n Sleep 250 \n Click")
-            self.OBS_send("^!j")
+        self.bring_to_front()
+        
+        self.ahk.run_script(f"MouseMove, {self.end_stream_position[0]},"+
+            f" {self.end_stream_position[1]}"+
+            "\n Sleep 250 \n Click")
+        self.OBS_send("^!j")
 
         raise ReferenceError
 
