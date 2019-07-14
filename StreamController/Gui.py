@@ -21,6 +21,7 @@ class ChurchGui():
         self.Frame = MainFrame()
         self.startFrame.Show()
         self.startFrame.button.Bind(wx.EVT_BUTTON, lambda event: self.show_popup())
+        self.Frame.Access.StreamPanel.ToggleButton.Bind(wx.EVT_BUTTON, self.OnToggleStreamButton)
         self.Access = self.Frame.Access
 
     def show_popup(self):
@@ -36,6 +37,14 @@ class ChurchGui():
     def switch_frames(self):
         self.startFrame.Close()
         self.Frame.Show()
+    
+    def OnToggleStreamButton(self, event):
+        popup = wx.MessageDialog(self, "Are you sure", "Are you sure you want to"+
+            " stop the live stream?", wx.YES_NO)
+        if popup.ShowModal() == wx.ID_YES:
+            self.ahk_handeler.stop_facebook_stream((1174, 922))
+        else:
+            event.Skip()
 
 class StartupFrame(wx.Frame):
 
@@ -102,7 +111,7 @@ class MainPanel(wx.Panel):
             "ScenePanel":self.scene_panel.AccessOption})
 
 class StreamControllerPanel(wx.Panel):
-    streamingToggle = False
+
     ENABLED_COLOR = wx.Colour(0, 255, 0)
     DISABLED_COLOR = wx.Colour(255, 0, 0)
 
@@ -121,8 +130,7 @@ class StreamControllerPanel(wx.Panel):
     def create_stream_controller(self, mainSizer):
         Stream_Sizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.StreamToggleButton = wx.Button(self, label = "Toggle Stream Status")
-        self.StreamToggleButton.Bind(wx.EVT_BUTTON, self.OnToggleStreamButton)
+        self.StreamToggleButton = wx.Button(self, label = "Stop Stream")
         Stream_Sizer.Add(self.StreamToggleButton, flag = wx.CENTER|wx.ALL, border=10)
         
         StreamHorizontal = wx.BoxSizer(wx.HORIZONTAL)
@@ -138,15 +146,6 @@ class StreamControllerPanel(wx.Panel):
 
         mainSizer.Add(Stream_Sizer, flag=wx.CENTER)
 
-    def OnToggleStreamButton(self, event):
-        if self.streamingToggle == False:
-            self.StreamStatusLabel.LabelText = "Streaming!!!!"
-            self.StreamStatusLabel.BackgroundColour = self.ENABLED_COLOR
-            self.streamingToggle = True
-        else:
-            self.StreamStatusLabel.LabelText = "Not Streaming"
-            self.StreamStatusLabel.BackgroundColour = self.DISABLED_COLOR
-            self.streamingToggle = False
 
 class ScenePanel(wx.Panel):
 
