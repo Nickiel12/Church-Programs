@@ -41,6 +41,7 @@ class ChurchGui():
     def show_popup(self):
         popup = wx.TextEntryDialog(self.startFrame, "What would you like the name of the stream to be?")
         if popup.ShowModal() == wx.ID_OK:
+            self.startFrame.Unbind(wx.EVT_CLOSE, handler=self.on_exit)
             self.stream_title = popup.GetValue()
             self.switch_frames()
 
@@ -64,7 +65,6 @@ class ChurchGui():
             self.Frame.Destroy()
             self.startFrame.Destroy()
 
-
     def switch_frames(self):
         self.startFrame.Close()
         self.Frame.Show()
@@ -76,7 +76,7 @@ class ChurchGui():
     def OnToggleStreamButton(self, event):
         if self.stream_live == True:
             popup = wx.MessageDialog(self.Frame, "Are you sure you want to"+
-                " stop the live stream?", "Are you sure", wx.YES_NO)
+                " stop the live stream?", "Are you sure", wx.YES_NO|wx.NO_DEFAULT)
             if popup.ShowModal() == wx.ID_YES:
                 if self.test_stream == False:
                     self.ahk_handeler.stop_facebook_stream((1804, 960)) # Nick's Laptop, (1804, 960), Upstairs, (1174, 922)
@@ -88,7 +88,7 @@ class ChurchGui():
                 event.Skip()
         else:
             popup = wx.MessageDialog(self.Frame, "Are you sure you want to"+
-                " start the live stream?", "Are you sure", wx.YES_NO)
+                " start the live stream?", "Are you sure", wx.YES_NO|wx.NO_DEFAULT)
             if popup.ShowModal() == wx.ID_YES:
                 if self.test_stream == False:
                     self.ahk_handeler.start_facebook_stream((1804, 960)) # Nick's Laptop, (1804, 960), Upstairs, (1174, 922)
@@ -237,5 +237,4 @@ if __name__ == "__main__":
     window = createGui()
     print(window.Access.ScenePanel.Radio.Bind(wx.EVT_RADIOBOX, lambda event:
         print(window.Access.ScenePanel.Radio.GetSelection())))
-    window.Access.ScenePanel
     window.App.MainLoop()
