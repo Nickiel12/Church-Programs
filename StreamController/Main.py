@@ -4,5 +4,4 @@ if __name__ != "__main__":
 else:
     import Gui
 
-controllerGui = Gui.createWindow()
-controllerGui.App.MainLoop()
+controllerGui = Gui.ChurchGui()
