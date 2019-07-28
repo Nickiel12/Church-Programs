@@ -1,0 +1,9 @@
+{
+    "obs_start_stream" : "^+j",
+    "obs_stop_stream" : "^!j",
+    
+    "camera_scene_hotkey" : "1", 
+    "center_screen_hotkey" : "2",
+    "camera_scene_obs_key" : "{F24}", 
+    "center_screen_scene_obs_key" : "{F23}"
+}
