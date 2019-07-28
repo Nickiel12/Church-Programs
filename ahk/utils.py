@@ -1,3 +1,4 @@
+import os
 import logging
 
 ESCAPE_SEQUENCE_MAP = {
@@ -45,4 +46,3 @@ def escape_sequence_replace(s):
     'Hello`, World{!}'
     """
     return s.translate(_TRANSLATION_TABLE)
-

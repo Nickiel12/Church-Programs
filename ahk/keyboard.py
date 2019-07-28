@@ -1,11 +1,99 @@
 import ast
 import warnings
+import logging
 
 from ahk.script import ScriptEngine
 from ahk.utils import escape_sequence_replace
 from ahk.keys import Key
 from ahk.directives import InstallKeybdHook, InstallMouseHook
 
+import pathlib
+import random
+import os
+import string
+
+logging.basicConfig(level=logging.DEBUG)
+
+class Bindable_Hotkey:
+
+    def __init__(self, engine: ScriptEngine, hotkey: str,
+            script = "", check_wait=.1):
+        """
+            Takes an instance of AHK as first arg, the AHK hotkey, (optional) the function
+            to bind to the hotkey, (optional) the script to run on hotkey press, 
+            (optional) check_wait the amount of time between hotkey checks, defines precision.
+        """
+        self.script = script
+        self.script_code = ''.join(random.choices(string.ascii_uppercase + 
+            string.digits, k=9))+".txt"
+        self.hotkey = hotkey
+        self.engine = engine
+        self.bound_function = []
+        self.path = pathlib.Path(os.path.abspath(os.path.dirname(__file__))).parents[0]/"tmp"
+        self.path.resolve()
+
+        self.listener = engine.EventListener
+        self.listener.add(self.script_code, self._on_hotkey)   
+
+    @property
+    def running(self):
+        return hasattr(self, '_proc')
+
+    def unbind(self, function_to_unbind):
+        for i in range(0, len(self.bound_function) - 1):
+            if self.bound_function[i] == function_to_unbind:
+                del self.bound_function[i]
+                return True
+            else:
+                return False
+
+    def bind(self, function_to_bind):
+        self.bound_function.append(function_to_bind)
+
+    def _on_hotkey(self):
+        for i in self.bound_function:
+            i()
+
+    def _start(self, script):
+        try:
+            proc = self.engine.run_script(script, blocking=False)
+            print(script)
+            yield proc
+        finally:
+            self._stop()
+
+    def start(self):
+        """
+        Starts an AutoHotkey process with the hotkey script
+        """
+        if self.running:
+            raise RuntimeError('Hotkey is already running')
+        script = self.engine.render_template('bindable_hotkey.ahk', blocking=False, script=self.script,
+         hotkey=self.hotkey, file_path=(str(self.path/self.script_code)))
+        self._gen = self._start(script)
+        proc = next(self._gen)
+        self._proc = proc
+
+    def _stop(self):
+        if not self.running:
+            return
+        self._proc.terminate()
+        del self._proc
+
+    def stop(self):
+        """
+        Stops the process if it is running
+        """
+        if not self.running:
+            raise RuntimeError('Hotkey is not running')
+        try:
+            next(self._gen)
+        except StopIteration:
+            pass
+        finally:
+            self.listener.remove(self.script_code, self._on_hotkey)
+            del self._gen
+   
 class Hotkey:
     def __init__(self, engine: ScriptEngine, hotkey: str, script: str):
         self.hotkey = hotkey

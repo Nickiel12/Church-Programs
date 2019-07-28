@@ -1,25 +1,34 @@
 from ahk import AHK, Bindable_Hotkey
 from ahk.window import Window
 from enum import Enum
-
-import logging
-from logging import debug
-if __name__=="__main__":
-	logging.basicConfig(level=logging.DEBUG,
-		format= '%(asctime)s - %(levelname)s - %(message)s')
-
 import pathlib2
 import subprocess
 from threading import Thread
 import time
 import webbrowser
 
+if __name__=="__main__":
+	import logging
+	from logging import debug
+	logging.basicConfig(level=logging.DEBUG,
+		format= '%(asctime)s - %(levelname)s - %(message)s')
+
 class WindowClassEnum(Enum):
 	CHROME = 1    
+
+class OBSSceneEum(Enum):
+	LIVE_CAMERA_SCENE = 0
+	CENTER_SCREEN_SCENE = 1
+
+	Hotkey_Decoder = {
+		self.LIVE_CAMERA_SCENE : "{F24}",
+		self.CENTER_SCREEN_SCENE : "{F23}"
+	}
 
 class AHKHandeler():
 
 	WINDOW_CLASSES = WindowClassEnum
+	OBS_SCENES = OBSSceneEum
 
 	def __init__(self, stream_name:str, obs_start_hotkey="^+J", obs_stop_hotkey="^!J"):
 		"""
