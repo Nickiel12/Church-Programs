@@ -7,6 +7,8 @@ from threading import Thread
 import time
 import webbrowser
 
+import option_loader
+
 if __name__=="__main__":
 	import logging
 	from logging import debug
@@ -17,33 +19,31 @@ class WindowClassEnum(Enum):
 	CHROME = 1    
 
 class OBSSceneEum(Enum):
-	LIVE_CAMERA_SCENE = 0
-	CENTER_SCREEN_SCENE = 1
-
-	Hotkey_Decoder = {
-		self.LIVE_CAMERA_SCENE : "{F24}",
-		self.CENTER_SCREEN_SCENE : "{F23}"
-	}
+	LIVE_CAMERA_SCENE = "camera_scene_obs_key"
+	CENTER_SCREEN_SCENE = "center_screen_scene_obs_key"
+	
+	CAMERA_
 
 class AHKHandeler():
 
 	WINDOW_CLASSES = WindowClassEnum
 	OBS_SCENES = OBSSceneEum
 
-	def __init__(self, stream_name:str, obs_start_hotkey="^+J", obs_stop_hotkey="^!J"):
+	def __init__(self, stream_name:str, shelf):
 		"""
 			Stream name
 		"""
 		self.ahk = AHK()
 		self.get_OBS()
 		self.get_ProPresenter()
-		self.obs_start_stream_hotkey = obs_start_hotkey
-		self.obs_stop_stream_hotkey = obs_stop_hotkey
-		debug(self.obs_start_stream_hotkey)
 
 		time.sleep(1)
 
 		self.stream_title = stream_name
+
+	def load_options(self):
+		opt = option_loader.OptHandle()
+		
 
 	def start_hotkeys(self):
 		hotkey_scene_1 = Bindable_Hotkey(self.ahk, '1')
