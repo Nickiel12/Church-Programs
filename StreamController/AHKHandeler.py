@@ -133,7 +133,7 @@ class AHKHandeler():
 
 		return
 
-	def start_facebook_stream(self, stream_go_live_position=(1174, 922)):
+	def start_facebook_stream(self, stream_go_live_position=(1018, 518)):
 		original_window = self.ahk.active_window
 		self.bring_to_front(self.WINDOW_CLASSES.CHROME)
 		time.sleep(1)
@@ -142,7 +142,7 @@ class AHKHandeler():
 			"Sleep 250 \n Click", blocking = False)
 		original_window.activate()
 
-	def stop_facebook_stream(self, end_stream_position=(1174, 922)):
+	def stop_facebook_stream(self, end_stream_position=(1018, 518)):
 
 		self.OBS_send(self.obs_stop_stream_hotkey)
 		self.bring_to_front(self.WINDOW_CLASSES.CHROME)
