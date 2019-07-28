@@ -27,9 +27,11 @@ class ChurchGui():
         self.App = wx.App()
         self.startFrame = StartupFrame()
         self.Frame = MainFrame()
+
         self.startFrame.Show()
         self.startFrame.button.Bind(wx.EVT_BUTTON, lambda event: self.show_popup())
         self.startFrame.Bind(wx.EVT_CLOSE, self.on_exit)
+
         self.Frame.Access.stream_panel.StreamToggleButton.Bind(
             wx.EVT_BUTTON, self.OnToggleStreamButton)
         self.Frame.Access.scene_panel.scene_radio.Bind(wx.EVT_RADIOBOX, lambda event: self.on_radio_change(

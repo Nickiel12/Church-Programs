@@ -1,4 +1,4 @@
-from ahk import AHK
+from ahk import AHK, Bindable_Hotkey
 from ahk.window import Window
 from enum import Enum
 
@@ -35,6 +35,13 @@ class AHKHandeler():
 		time.sleep(1)
 
 		self.stream_title = stream_name
+
+	def start_hotkeys(self):
+		hotkey_scene_1 = Bindable_Hotkey(self.ahk, '1')
+		hotkey_scene_1.bind(lambda:self.OBS_send("{F24}"))
+
+	def stop_hotkeys(self):
+		pass
 
 	def get_ProPresenter(self):
 		self.ProPresenter = self.ahk.win_get("ProPresenter - Registered To:" +
