@@ -1,9 +1,22 @@
 {
+    "propresenter_window_title" : "ProPresenter - Registered To: VALLEY CHRISTAIN CENTER",
+
     "obs_start_stream" : "^+j",
     "obs_stop_stream" : "^!j",
     
     "camera_scene_hotkey" : "1", 
+    "camera_scene_obs_key" : "{F24}",
+
     "center_screen_hotkey" : "2",
-    "camera_scene_obs_key" : "{F24}", 
-    "center_screen_scene_obs_key" : "{F23}"
+    "center_screen_scene_obs_key" : "{F23}",
+
+    "clicker_forward" : "{PgUp}", 
+    "clicker_backward" : "{PgDn}",
+
+    "obs_tray_position" : [516, 998],
+
+    "facebook_live_button" : [430, 593],
+    "facebook_connect_button" : [719, 152],
+    "facebook_stream_label" : [1018, 518],
+    "facebook_golive_button" : [1174, 922]
 }
