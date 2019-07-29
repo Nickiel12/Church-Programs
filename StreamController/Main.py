@@ -8,3 +8,4 @@ if __name__=="__main__":
 		format= '%(asctime)s - %(levelname)s - %(message)s')
 
 controllerGui = Gui.ChurchGui()
+controllerGui.App.MainLoop()
