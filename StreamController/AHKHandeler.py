@@ -10,11 +10,8 @@ import webbrowser
 
 from option_loader import JSD
 
-if __name__=="__main__":
-	import logging
-	from logging import debug
-	logging.basicConfig(level=logging.DEBUG,
-		format= '%(asctime)s - %(levelname)s - %(message)s')
+import logging
+from logging import debug
 
 class WindowClassEnum(Enum):
 	CHROME = 1    
