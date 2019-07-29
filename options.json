@@ -8,7 +8,7 @@
     "camera_scene_obs_key" : "{F24}",
 
     "center_screen_hotkey" : "2",
-    "center_screen_scene_obs_key" : "{F23}",
+    "center_screen_obs_key" : "{F23}",
 
     "clicker_forward" : "{PgUp}", 
     "clicker_backward" : "{PgDn}",

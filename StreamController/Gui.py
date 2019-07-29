@@ -13,12 +13,12 @@ if __name__=="__main__":
 	logging.basicConfig(level=logging.DEBUG,
 		format= '%(asctime)s - %(levelname)s - %(message)s')
         
-from StreamController.AHKHandeler import AHKHandeler
+from AHKHandeler import AHKHandeler
 
-from StreamController import option_loader
-from StreamController.Main import JSD
+import option_loader
+from option_loader import JSD
 
-class ChurchGui():
+class ChurchGui:
 
     stream_live = False
     test_stream = False
@@ -26,7 +26,8 @@ class ChurchGui():
     DISABLED_COLOR = wx.Colour(255, 0, 0)
     
     def __init__(self, *args, **kwargs):
-        self.decoder = option_loader.OptHandle()
+        self.opt_hndl = option_loader.OptHandle()
+        self.decoder = self.opt_hndl.dict
         self.App = wx.App()
         self.startFrame = StartupFrame()
         self.Frame = MainFrame()
@@ -154,7 +155,7 @@ class MainFrame(wx.Frame):
         filemenu= wx.Menu()
         menuBar = wx.MenuBar()
         menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
-        edit_bar = wx.MenuItem(menuBar, wx.ID_EDIT)
+        edit_bar = wx.MenuItem(id=wx.ID_EDIT)
         self.SetMenuBar(menuBar)  # Adding the MenuBar to the Frame content.
 
         self.SetSize(0, 0, 400, 350)

@@ -8,8 +8,7 @@ from threading import Thread
 import time
 import webbrowser
 
-from StreamController.Main import JSD
-import StreamController.option_loader
+from option_loader import JSD
 
 if __name__=="__main__":
 	import logging
