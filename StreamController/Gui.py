@@ -12,9 +12,11 @@ from logging import debug
 if __name__=="__main__":
 	logging.basicConfig(level=logging.DEBUG,
 		format= '%(asctime)s - %(levelname)s - %(message)s')
-if __name__ != "__main__":
-    from StreamController.AHKHandeler import AHKHandeler
-from AHKHandeler import AHKHandeler
+        
+from StreamController.AHKHandeler import AHKHandeler
+
+from StreamController import option_loader
+from StreamController.Main import JSD
 
 class ChurchGui():
 
@@ -24,6 +26,7 @@ class ChurchGui():
     DISABLED_COLOR = wx.Colour(255, 0, 0)
     
     def __init__(self, *args, **kwargs):
+        self.decoder = option_loader.OptHandle()
         self.App = wx.App()
         self.startFrame = StartupFrame()
         self.Frame = MainFrame()
@@ -40,8 +43,10 @@ class ChurchGui():
         self.Access = self.Frame.Access
 
         self.scene_hotkey_dict = {
-            ScenePanel.scene_radio_choices["Live Camera"]: "{F24}",
-            ScenePanel.scene_radio_choices["PP Center"]: "{F23}",
+            ScenePanel.scene_radio_choices["Live Camera"]: self.decoder[
+                JSD.CAMERA_SCENE_OBS],
+            ScenePanel.scene_radio_choices["PP Center"]: self.decoder[
+                JSD.CENTER_SCREEN_OBS],
             }
 
     def on_exit(self, event):
@@ -132,7 +137,7 @@ class StartupFrame(wx.Frame):
         vert_sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(vert_sizer, wx.SizerFlags().Center())
 
-        path = pathlib2.Path(os.path.abspath("."))/"StreamController" / "resources" / "Play Button copy.jpg"
+        path = pathlib2.Path(os.path.abspath(__file__)).parent / "resources" / "Play Button copy.jpg"
         image = wx.Image(str(path))
         image.Rescale(100, 100, wx.IMAGE_QUALITY_HIGH)
         bit_image = wx.Bitmap(image)
