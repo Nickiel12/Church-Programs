@@ -50,6 +50,18 @@ class ChurchGui:
                 JSD.CENTER_SCREEN_OBS],
             }
 
+    def bind_hokeys(self):
+        self.ahk_handeler.camera_scene_hotkey.bind(self.on_camera_hotkey)
+        self.ahk_handeler.screen_scene_hotkey.bind(self.on_center_hotkey)
+
+    def on_camera_hotkey(self):
+        self.Access.scene_panel.scene_radio.SetSelection(ScenePanel.scene_radio_choices[
+            "Live Camera"])
+
+    def on_center_hotkey(self):
+        self.Access.scene_panel.scene_radio.SetSelection(ScenePanel.scene_radio_choices[
+            "PP Center"])
+
     def on_exit(self, event):
         self.startFrame.Destroy()
         self.Frame.Destroy()
@@ -83,6 +95,7 @@ class ChurchGui:
                 popup_window.send("{Enter}")
             else:
                 self.test_stream = True
+            self.bind_hokeys()
         else:
             self.Frame.Destroy()
             self.startFrame.Destroy()
@@ -222,7 +235,7 @@ class StreamControllerPanel(wx.Panel):
 
 class ScenePanel(wx.Panel):
 
-    scene_radio_choices = {"PP Center":0, "Live Camera":1}
+    scene_radio_choices = {"Live Camera":0, "PP Center":1}
 
     def __init__(self, parent):
         super().__init__(parent)
