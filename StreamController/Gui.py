@@ -155,7 +155,10 @@ class MainFrame(wx.Frame):
         filemenu= wx.Menu()
         menuBar = wx.MenuBar()
         menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
-        #edit_bar = wx.MenuItem(id=wx.ID_EDIT)
+        edit_menu = wx.Menu()
+        settings = edit_menu.Append(wx.NewId(), "Settings", "Edit the settings.")
+        edit_menu.Bind(wx.EVT_MENU,self.open_settings)
+        menuBar.Append(edit_menu, "&Edit")
         self.SetMenuBar(menuBar)  # Adding the MenuBar to the Frame content.
 
         self.SetSize(0, 0, 400, 350)
@@ -163,6 +166,9 @@ class MainFrame(wx.Frame):
 
         self.panel = MainPanel(self)
         self.Access = self.panel
+
+    def open_settings(self, event):
+        pass
 
 class MainPanel(wx.Panel):
 
