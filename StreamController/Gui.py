@@ -67,7 +67,7 @@ class ChurchGui:
             self.stream_title = popup.GetValue()
             self.switch_frames()
 
-            self.ahk_handeler = AHKHandeler(self.stream_title)
+            self.ahk_handeler = AHKHandeler(self.stream_title, self.decoder)
             if self.stream_title != "test stream":
                 self.ahk_handeler.ahk.run_script("MsgBox, 4112, Computer Working, The Computer "+
                     "is setting up the stream, please do not touch the keyboard or move the mouse!", 
@@ -155,7 +155,7 @@ class MainFrame(wx.Frame):
         filemenu= wx.Menu()
         menuBar = wx.MenuBar()
         menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
-        edit_bar = wx.MenuItem(id=wx.ID_EDIT)
+        #edit_bar = wx.MenuItem(id=wx.ID_EDIT)
         self.SetMenuBar(menuBar)  # Adding the MenuBar to the Frame content.
 
         self.SetSize(0, 0, 400, 350)
