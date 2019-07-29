@@ -154,6 +154,7 @@ class MainFrame(wx.Frame):
         filemenu= wx.Menu()
         menuBar = wx.MenuBar()
         menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
+        edit_bar = wx.MenuItem(menuBar, wx.ID_EDIT)
         self.SetMenuBar(menuBar)  # Adding the MenuBar to the Frame content.
 
         self.SetSize(0, 0, 400, 350)
