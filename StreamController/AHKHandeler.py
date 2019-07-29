@@ -28,12 +28,13 @@ class AHKHandeler:
 			Stream name
 		"""
 		self.decoder = json_dict
-		atexit.register(self.stop_hotkeys)
 		self.stream_title = stream_name
 		
 		self.ahk = AHK()
 		self.get_OBS()
 		self.get_ProPresenter()
+		self.start_hotkeys()
+		atexit.register(self.stop_hotkeys)
 		 
 	def start_hotkeys(self):
 		self.camera_scene_hotkey = Bindable_Hotkey(self.ahk, self.decoder[
@@ -84,8 +85,8 @@ class AHKHandeler:
 
 	def open_OBS(self):
 		self.ahk.run_script("CoordMode, Mouse, Screen\n"+
-			f"MouseMove, {self.decoder[JSD.TRAY_OBS_POS[0]]}, "+
-			f"{self.decoder[JSD.TRAY_OBS_POS[0]]} \n Click")
+			f"MouseMove, {self.decoder[JSD.TRAY_OBS_POS][0]}, "+
+			f"{self.decoder[JSD.TRAY_OBS_POS][1]} \n Click")
 		time.sleep(1)
 		return
  
