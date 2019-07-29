@@ -1,5 +1,6 @@
 from ahk import AHK, Bindable_Hotkey
 from ahk.window import Window
+import atexit
 from enum import Enum
 import pathlib2
 import subprocess
@@ -7,7 +8,8 @@ from threading import Thread
 import time
 import webbrowser
 
-import option_loader
+from StreamController.Main import JSD
+import StreamController.option_loader
 
 if __name__=="__main__":
 	import logging
@@ -18,43 +20,41 @@ if __name__=="__main__":
 class WindowClassEnum(Enum):
 	CHROME = 1    
 
-class OBSSceneEum(Enum):
-	LIVE_CAMERA_SCENE = "camera_scene_obs_key"
-	CENTER_SCREEN_SCENE = "center_screen_scene_obs_key"
-	
-	CAMERA_
-
-class AHKHandeler():
+class AHKHandeler:
 
 	WINDOW_CLASSES = WindowClassEnum
-	OBS_SCENES = OBSSceneEum
 
-	def __init__(self, stream_name:str, shelf):
+	def __init__(self, stream_name:str, json_dict):
 		"""
 			Stream name
 		"""
+		self.decoder = json_dict
+		atexit.register(self.stop_hotkeys)
+		self.stream_title = stream_name
+		
 		self.ahk = AHK()
 		self.get_OBS()
 		self.get_ProPresenter()
-
-		time.sleep(1)
-
-		self.stream_title = stream_name
-
-	def load_options(self):
-		opt = option_loader.OptHandle()
-		
-
+		 
 	def start_hotkeys(self):
-		hotkey_scene_1 = Bindable_Hotkey(self.ahk, '1')
-		hotkey_scene_1.bind(lambda:self.OBS_send("{F24}"))
+		self.camera_scene_hotkey = Bindable_Hotkey(self.ahk, self.decoder[
+			JSD.CAMERA_SCENE_HOTKEY])
+		self.camera_scene_hotkey.bind(lambda:self.OBS_send(self.decoder[
+			JSD.CAMERA_SCENE_OBS]))
+		self.screen_scene_hotkey = Bindable_Hotkey(self.ahk, self.decoder[
+			JSD.CENTER_SCREEN_HOTKEY])
+		self.screen_scene_hotkey.bind(lambda:self.OBS_send(self.decoder[
+			JSD.CENTER_SCREEN_OBS]))
+
+		self.camera_scene_hotkey.start()
+		self.screen_scene_hotkey.start()
 
 	def stop_hotkeys(self):
-		pass
+		self.camera_scene_hotkey.stop()
+		self.screen_scene_hotkey.stop()
 
 	def get_ProPresenter(self):
-		self.ProPresenter = self.ahk.win_get("ProPresenter - Registered To:" +
-		" VALLEY CHRISTAIN CENTER")
+		self.ProPresenter = self.ahk.win_get(self.decoder[JSD.WINDOW_PROPRESENTER])
 		return self.ProPresenter
 
 	def propresenter_send(self, key, window=None):
@@ -63,7 +63,6 @@ class AHKHandeler():
 			self.ahk.send(key)
 		if window == None:
 			window = self.get_ProPresenter()
-			logging.warning(f"sending {key} to ProPresenter")
 			window.activate()
 			time.sleep(2)
 			self.ahk.send(key)
@@ -86,7 +85,8 @@ class AHKHandeler():
 
 	def open_OBS(self):
 		self.ahk.run_script("CoordMode, Mouse, Screen\n"+
-			"MouseMove, 516, 998 \n Click")
+			f"MouseMove, {self.decoder[JSD.TRAY_OBS_POS[0]]}, "+
+			f"{self.decoder[JSD.TRAY_OBS_POS[0]]} \n Click")
 		time.sleep(1)
 		return
  
@@ -101,6 +101,7 @@ class AHKHandeler():
 		time.sleep(.5)
 		window.to_bottom()
 		old_window.activate()
+		return
 
 	def chrome_facebook_live_start(self):
 		webbrowser.open("https://www.facebook.com/CenterEvents1/")
