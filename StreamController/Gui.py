@@ -80,7 +80,7 @@ class ChurchGui:
             self.switch_frames()
 
             self.ahk_handeler = AHKHandeler(self.stream_title, self.decoder)
-            if "test" in self.stream_title:
+            if not "test" in self.stream_title:
                 self.ahk_handeler.ahk.run_script("MsgBox, 4112, Computer Working, The Computer "+
                     "is setting up the stream, please do not touch the keyboard or move the mouse!", 
                     blocking = False)
@@ -93,8 +93,10 @@ class ChurchGui:
                 popup_window.enable()
                 popup_window.activate()
                 popup_window.send("{Enter}")
+                self.test_stream = False
+                self.full_test = False
             else:
-                if self.stream_title == "test stream":
+                if stream_title == "test stream":
                     self.test_stream = True
                 else:
                     self.full_test = True

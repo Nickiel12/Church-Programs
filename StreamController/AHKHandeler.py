@@ -30,7 +30,7 @@ class AHKHandeler:
 		self.ahk = AHK()
 		self.get_OBS()
 		self.get_ProPresenter()
-		self.start_hotkeys()
+		#self.start_hotkeys()
 		atexit.register(self.stop_hotkeys)
 		 
 	def start_hotkeys(self):
@@ -45,6 +45,7 @@ class AHKHandeler:
 
 		self.camera_scene_hotkey.start()
 		self.screen_scene_hotkey.start()
+		return
 
 	def stop_hotkeys(self):
 		self.camera_scene_hotkey.stop()
@@ -102,8 +103,6 @@ class AHKHandeler:
 
 	def chrome_facebook_live_start(self):
 		webbrowser.open("https://www.facebook.com/CenterEvents1/")
-		time.sleep(.5)
-		self.bring_to_front(self.WINDOW_CLASSES.CHROME)
 
 		# Upstairs deployment settings
 		thread = Thread(target = self.setup_stream_facebook, args=(8000, (430, 593),
@@ -127,6 +126,7 @@ class AHKHandeler:
 		if stream_title == None:
 			raise ValueError("No stream title was given")
 
+		self.bring_to_front(self.WINDOW_CLASSES.CHROME)
 		self.ahk.run_script(f"#NoEnv \n Sleep {wait_time} \n "+
 			# Click Live
 			f"MouseMove, {live_position[0]}, {live_position[1]} \n"+
