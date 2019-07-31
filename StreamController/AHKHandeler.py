@@ -135,7 +135,7 @@ class AHKHandeler:
 				)
 
 		# Start the OBS stream
-		self.OBS_send(self.obs_start_stream_hotkey)
+		self.OBS_send(self.decoder[JSD.OBS_START_HOTKEY])
 		time.sleep(2)
 
 		# Click go live button on facebook
@@ -158,7 +158,7 @@ class AHKHandeler:
 
 	def stop_facebook_stream(self, end_stream_position=(1174, 922)):
 
-		self.OBS_send(self.obs_stop_stream_hotkey)
+		self.OBS_send(self.decoder[JSD.OBS_STOP_HOTKEY])
 		self.bring_to_front(self.WINDOW_CLASSES.CHROME)
 		
 		self.ahk.run_script(f"MouseMove, {self.end_stream_position[0]},"+
