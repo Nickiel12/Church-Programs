@@ -1,44 +1,57 @@
-from ahk import AHK
+from ahk import AHK, Bindable_Hotkey
 from ahk.window import Window
+import atexit
 from enum import Enum
-
-import logging
-from logging import debug
-if __name__=="__main__":
-	logging.basicConfig(level=logging.DEBUG,
-		format= '%(asctime)s - %(levelname)s - %(message)s')
-
 import pathlib2
 import subprocess
 from threading import Thread
 import time
 import webbrowser
 
+from option_loader import JSD
+
+import logging
+from logging import debug
+
 class WindowClassEnum(Enum):
 	CHROME = 1    
 
-class AHKHandeler():
+class AHKHandeler:
 
 	WINDOW_CLASSES = WindowClassEnum
 
-	def __init__(self, stream_name:str, obs_start_hotkey="^+J", obs_stop_hotkey="^!J"):
+	def __init__(self, stream_name:str, json_dict):
 		"""
 			Stream name
 		"""
+		self.decoder = json_dict
+		self.stream_title = stream_name
+		
 		self.ahk = AHK()
 		self.get_OBS()
 		self.get_ProPresenter()
-		self.obs_start_stream_hotkey = obs_start_hotkey
-		self.obs_stop_stream_hotkey = obs_stop_hotkey
-		debug(self.obs_start_stream_hotkey)
+		self.start_hotkeys()
+		atexit.register(self.stop_hotkeys)
+		 
+	def start_hotkeys(self):
+		self.camera_scene_hotkey = Bindable_Hotkey(self.ahk, self.decoder[
+			JSD.CAMERA_SCENE_HOTKEY])
+		self.camera_scene_hotkey.bind(lambda:self.OBS_send(self.decoder[
+			JSD.CAMERA_SCENE_OBS]))
+		self.screen_scene_hotkey = Bindable_Hotkey(self.ahk, self.decoder[
+			JSD.CENTER_SCREEN_HOTKEY])
+		self.screen_scene_hotkey.bind(lambda:self.OBS_send(self.decoder[
+			JSD.CENTER_SCREEN_OBS]))
 
-		time.sleep(1)
+		self.camera_scene_hotkey.start()
+		self.screen_scene_hotkey.start()
 
-		self.stream_title = stream_name
+	def stop_hotkeys(self):
+		self.camera_scene_hotkey.stop()
+		self.screen_scene_hotkey.stop()
 
 	def get_ProPresenter(self):
-		self.ProPresenter = self.ahk.win_get("ProPresenter - Registered To:" +
-		" VALLEY CHRISTAIN CENTER")
+		self.ProPresenter = self.ahk.win_get(self.decoder[JSD.WINDOW_PROPRESENTER])
 		return self.ProPresenter
 
 	def propresenter_send(self, key, window=None):
@@ -47,7 +60,6 @@ class AHKHandeler():
 			self.ahk.send(key)
 		if window == None:
 			window = self.get_ProPresenter()
-			logging.warning(f"sending {key} to ProPresenter")
 			window.activate()
 			time.sleep(2)
 			self.ahk.send(key)
@@ -58,7 +70,7 @@ class AHKHandeler():
 		if window_class == None:
 			if preset_classes == self.WINDOW_CLASSES.CHROME:
 				window_class = "Chrome_WidgetWin_1"
-		self.ahk.run_script(f"WinActivate, ahk_class {window_class}")
+		self.ahk.run_script(f"WinActivate, ahk_class {window_class} \n WinMaximize")
 		return
 
 	def get_OBS(self):
@@ -70,7 +82,8 @@ class AHKHandeler():
 
 	def open_OBS(self):
 		self.ahk.run_script("CoordMode, Mouse, Screen\n"+
-			"MouseMove, 516, 998 \n Click")
+			f"MouseMove, {self.decoder[JSD.TRAY_OBS_POS][0]}, "+
+			f"{self.decoder[JSD.TRAY_OBS_POS][1]} \n Click")
 		time.sleep(1)
 		return
  
@@ -85,9 +98,12 @@ class AHKHandeler():
 		time.sleep(.5)
 		window.to_bottom()
 		old_window.activate()
+		return
 
 	def chrome_facebook_live_start(self):
 		webbrowser.open("https://www.facebook.com/CenterEvents1/")
+		time.sleep(.5)
+		self.bring_to_front(self.WINDOW_CLASSES.CHROME)
 
 		# Upstairs deployment settings
 		thread = Thread(target = self.setup_stream_facebook, args=(8000, (430, 593),
@@ -121,7 +137,7 @@ class AHKHandeler():
 				)
 
 		# Start the OBS stream
-		self.OBS_send(self.obs_start_stream_hotkey)
+		self.OBS_send(self.decoder[JSD.OBS_START_STREAM])
 		time.sleep(2)
 
 		# Click go live button on facebook
@@ -142,14 +158,11 @@ class AHKHandeler():
 			"Sleep 250 \n Click", blocking = False)
 		original_window.activate()
 
-	def stop_facebook_stream(self, end_stream_position=(1018, 518)):
+	def stop_facebook_stream(self):
 
-		self.OBS_send(self.obs_stop_stream_hotkey)
+		self.OBS_send(self.decoder[JSD.OBS_STOP_STREAM])
 		self.bring_to_front(self.WINDOW_CLASSES.CHROME)
 		
-		self.ahk.run_script(f"MouseMove, {self.end_stream_position[0]},"+
-			f" {self.end_stream_position[1]}"+
-			"\n Sleep 250 \n Click", blocking = False)
 		self.OBS_send("^!j")
 
 		raise ReferenceError

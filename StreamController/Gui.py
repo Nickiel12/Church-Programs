@@ -12,11 +12,13 @@ from logging import debug
 if __name__=="__main__":
 	logging.basicConfig(level=logging.DEBUG,
 		format= '%(asctime)s - %(levelname)s - %(message)s')
-if __name__ != "__main__":
-    from StreamController.AHKHandeler import AHKHandeler
+        
 from AHKHandeler import AHKHandeler
 
-class ChurchGui():
+import option_loader
+from option_loader import JSD
+
+class ChurchGui:
 
     stream_live = False
     test_stream = False
@@ -24,12 +26,16 @@ class ChurchGui():
     DISABLED_COLOR = wx.Colour(255, 0, 0)
     
     def __init__(self, *args, **kwargs):
+        self.opt_hndl = option_loader.OptHandle()
+        self.decoder = self.opt_hndl.dict
         self.App = wx.App()
         self.startFrame = StartupFrame()
         self.Frame = MainFrame()
+
         self.startFrame.Show()
         self.startFrame.button.Bind(wx.EVT_BUTTON, lambda event: self.show_popup())
         self.startFrame.Bind(wx.EVT_CLOSE, self.on_exit)
+
         self.Frame.Access.stream_panel.StreamToggleButton.Bind(
             wx.EVT_BUTTON, self.OnToggleStreamButton)
         self.Frame.Access.scene_panel.scene_radio.Bind(wx.EVT_RADIOBOX, lambda event: self.on_radio_change(
@@ -38,9 +44,23 @@ class ChurchGui():
         self.Access = self.Frame.Access
 
         self.scene_hotkey_dict = {
-            ScenePanel.scene_radio_choices["Live Camera"]: "{F24}",
-            ScenePanel.scene_radio_choices["PP Center"]: "{F23}",
+            ScenePanel.scene_radio_choices["Live Camera"]: self.decoder[
+                JSD.CAMERA_SCENE_OBS],
+            ScenePanel.scene_radio_choices["PP Center"]: self.decoder[
+                JSD.CENTER_SCREEN_OBS],
             }
+
+    def bind_hokeys(self):
+        self.ahk_handeler.camera_scene_hotkey.bind(self.on_camera_hotkey)
+        self.ahk_handeler.screen_scene_hotkey.bind(self.on_center_hotkey)
+
+    def on_camera_hotkey(self):
+        self.Access.scene_panel.scene_radio.SetSelection(ScenePanel.scene_radio_choices[
+            "Live Camera"])
+
+    def on_center_hotkey(self):
+        self.Access.scene_panel.scene_radio.SetSelection(ScenePanel.scene_radio_choices[
+            "PP Center"])
 
     def on_exit(self, event):
         self.startFrame.Destroy()
@@ -97,9 +117,9 @@ class ChurchGui():
             if popup.ShowModal() == wx.ID_YES:
                 if self.test_stream == False:
                     if self.full_test == True:
-                        self.ahk_handeler.stop_facebook_stream((1804, 960))
+                        self.ahk_handeler.stop_facebook_stream(()
                     else:
-                        self.ahk_handeler.stop_facebook_stream((1174, 922)) # Nick's Laptop, (1804, 960), Upstairs, (1174, 922)
+                        self.ahk_handeler.stop_facebook_stream() # Nick's Laptop, (1804, 960), Upstairs, (1174, 922)
                 self.stream_live = False
                 self.Frame.Access.stream_panel.StreamToggleButton.SetLabel("Go Live")
                 self.Frame.Access.stream_panel.StreamStatusLabel.SetLabel("Not Live")
@@ -139,7 +159,7 @@ class StartupFrame(wx.Frame):
         vert_sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(vert_sizer, wx.SizerFlags().Center())
 
-        path = pathlib2.Path(os.path.abspath("."))/"StreamController" / "resources" / "Play Button copy.jpg"
+        path = pathlib2.Path(os.path.abspath(__file__)).parent / "resources" / "Play Button copy.jpg"
         image = wx.Image(str(path))
         image.Rescale(100, 100, wx.IMAGE_QUALITY_HIGH)
         bit_image = wx.Bitmap(image)
@@ -156,6 +176,10 @@ class MainFrame(wx.Frame):
         filemenu= wx.Menu()
         menuBar = wx.MenuBar()
         menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
+        edit_menu = wx.Menu()
+        settings = edit_menu.Append(wx.NewId(), "Settings", "Edit the settings.")
+        edit_menu.Bind(wx.EVT_MENU,self.open_settings)
+        menuBar.Append(edit_menu, "&Edit")
         self.SetMenuBar(menuBar)  # Adding the MenuBar to the Frame content.
 
         self.SetSize(0, 0, 400, 350)
@@ -163,6 +187,9 @@ class MainFrame(wx.Frame):
 
         self.panel = MainPanel(self)
         self.Access = self.panel
+
+    def open_settings(self, event):
+        pass
 
 class MainPanel(wx.Panel):
 
@@ -216,7 +243,7 @@ class StreamControllerPanel(wx.Panel):
 
 class ScenePanel(wx.Panel):
 
-    scene_radio_choices = {"PP Center":0, "Live Camera":1}
+    scene_radio_choices = {"Live Camera":0, "PP Center":1}
 
     def __init__(self, parent):
         super().__init__(parent)
