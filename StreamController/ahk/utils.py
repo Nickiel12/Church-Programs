@@ -45,4 +45,3 @@ def escape_sequence_replace(s):
     'Hello`, World{!}'
     """
     return s.translate(_TRANSLATION_TABLE)
-
