@@ -70,7 +70,7 @@ class AHKHandeler:
 		if window_class == None:
 			if preset_classes == self.WINDOW_CLASSES.CHROME:
 				window_class = "Chrome_WidgetWin_1"
-		self.ahk.run_script(f"WinActivate, ahk_class {window_class}")
+		self.ahk.run_script(f"WinActivate, ahk_class {window_class} \n WinMaximize")
 		return
 
 	def get_OBS(self):
@@ -102,14 +102,16 @@ class AHKHandeler:
 
 	def chrome_facebook_live_start(self):
 		webbrowser.open("https://www.facebook.com/CenterEvents1/")
+		time.sleep(.5)
+		self.bring_to_front(self.WINDOW_CLASSES.CHROME)
 
 		# Upstairs deployment settings
-		# thread = Thread(target = self.setup_stream_facebook, args=(8000, (430, 593),
-		# (719, 152), self.stream_title, (1018, 518)))
+		thread = Thread(target = self.setup_stream_facebook, args=(8000, (430, 593),
+		(719, 152), self.stream_title, (1018, 518)))
 
 		# Nick's Laptop
-		thread = Thread(target=self.setup_stream_facebook, args=(8000, (711, 741), 
-		(1084, 190), "A really cool title", (1577, 649)))
+		# thread = Thread(target=self.setup_stream_facebook, args=(8000, (711, 741), 
+		# (1084, 190), "A really cool title", (1577, 649)))
 		thread.start()
 
 	def setup_stream_facebook(
@@ -135,7 +137,7 @@ class AHKHandeler:
 				)
 
 		# Start the OBS stream
-		self.OBS_send(self.decoder[JSD.OBS_START_HOTKEY])
+		self.OBS_send(self.decoder[JSD.OBS_START_STREAM])
 		time.sleep(2)
 
 		# Click go live button on facebook
@@ -156,14 +158,11 @@ class AHKHandeler:
 			"Sleep 250 \n Click", blocking = False)
 		original_window.activate()
 
-	def stop_facebook_stream(self, end_stream_position=(1174, 922)):
+	def stop_facebook_stream(self):
 
-		self.OBS_send(self.decoder[JSD.OBS_STOP_HOTKEY])
+		self.OBS_send(self.decoder[JSD.OBS_STOP_STREAM])
 		self.bring_to_front(self.WINDOW_CLASSES.CHROME)
 		
-		self.ahk.run_script(f"MouseMove, {self.end_stream_position[0]},"+
-			f" {self.end_stream_position[1]}"+
-			"\n Sleep 250 \n Click", blocking = False)
 		self.OBS_send("^!j")
 
 		raise ReferenceError

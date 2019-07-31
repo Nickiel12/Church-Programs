@@ -114,7 +114,7 @@ class ChurchGui:
                 " stop the live stream?", "Are you sure", wx.YES_NO|wx.NO_DEFAULT)
             if popup.ShowModal() == wx.ID_YES:
                 if self.test_stream == False:
-                    self.ahk_handeler.stop_facebook_stream((1174, 922)) # Nick's Laptop, (1804, 960), Upstairs, (1174, 922)
+                    self.ahk_handeler.stop_facebook_stream() # Nick's Laptop, (1804, 960), Upstairs, (1174, 922)
                 self.stream_live = False
                 self.Frame.Access.stream_panel.StreamToggleButton.SetLabel("Go Live")
                 self.Frame.Access.stream_panel.StreamStatusLabel.SetLabel("Not Live")
