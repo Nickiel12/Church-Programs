@@ -1,3 +1,4 @@
+import atexit
 from collections import deque
 from ahk.mouse import MouseMixin
 from ahk.window import Window, WindowMixin
@@ -12,11 +13,13 @@ class AHK(WindowMixin, MouseMixin, KeyboardMixin, ScreenMixin, SoundMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
         is_main = kwargs.pop("use_event_loop", None)
-        if is_main == None:
+        if is_main == None or is_main == True:
             self.EventListener = EventListener()
-
-    def __del__(self):
-        self.EventListener.stop()
+        atexit.register(self._on_exit)
+        
+    def _on_exit(self):
+        if self.EventListener:
+            self.EventListener.stop()
 
 
 class ActionChain(AHK):

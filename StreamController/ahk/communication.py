@@ -19,7 +19,8 @@ class Abstract_Communicator(metaclass=abc.ABCMeta):
     def __init__(self, directory):
         if type(directory) == str:
             self.path = pathlib.Path(directory)     
-        self.path = pathlib.Path(directory)
+        else:
+            self.path = directory
         
         # "Cover your ass in assert statements" - Unremembered Author.
         if not type(self.path) == pathlib.Path and not type(self.path) == pathlib.WindowsPath:
@@ -27,6 +28,7 @@ class Abstract_Communicator(metaclass=abc.ABCMeta):
                 f" type {type(self.path)}")
 
         if not self.path.exists():
+            logger.debug(f"The given path didn't exist, created directory at {str(self.path)}")
             os.mkdir(self.path)
 
         assert self.path.exists() == True, f"The given path doesn't exist: {str(self.path)}"
@@ -65,6 +67,7 @@ class Abstract_Communicator(metaclass=abc.ABCMeta):
         pass
 
     def event_loop(self):
+        logger.debug("Starting event notification loop")
         change_handle = win32file.FindFirstChangeNotification (
         str(self.path),
         0,
@@ -95,8 +98,9 @@ class EventListener(Abstract_Communicator):
 
     def __init__(self):
         atexit.register(self.cleanup)
-        super().__init__(pathlib.Path(
-            os.path.abspath(os.path.dirname(__file__))).parents[0]/"tmp")
+        self.directory = pathlib.Path(
+            os.path.abspath(os.path.dirname(__file__))).parents[0]/"tmp"
+        super().__init__(self.directory)
 
     def on_event(self):
         changed_files = self.get_changed_file()
@@ -105,9 +109,7 @@ class EventListener(Abstract_Communicator):
 
     def cleanup(self):
         self.stop()
-        for i in os.listdir(str(self.path)):
-            print(os.path.join(self.path, i))
-            os.remove(os.path.join(self.path, i))
+        
 
     def _call_keycode(self, code):
         try:
