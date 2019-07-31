@@ -124,7 +124,7 @@ class AHKHandeler:
 
         if obs_window == None:
             obs_window = self.get_OBS()
-        if stream_title == None:
+        if self.stream_title == None:
             raise ValueError("No stream title was given")
 
         self.bring_to_front(self.WINDOW_CLASSES.CHROME)
