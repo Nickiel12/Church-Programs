@@ -79,8 +79,8 @@ class ChurchGui:
             self.stream_title = popup.GetValue()
             self.switch_frames()
 
-            self.ahk_handeler = AHKHandeler(self.stream_title, self.decoder)
-            if self.stream_title != "test stream":
+            self.ahk_handeler = AHKHandeler(self.stream_title)
+            if "test" in self.stream_title:
                 self.ahk_handeler.ahk.run_script("MsgBox, 4112, Computer Working, The Computer "+
                     "is setting up the stream, please do not touch the keyboard or move the mouse!", 
                     blocking = False)
@@ -94,8 +94,10 @@ class ChurchGui:
                 popup_window.activate()
                 popup_window.send("{Enter}")
             else:
-                self.test_stream = True
-            self.bind_hokeys()
+                if stream_title == "test stream":
+                    self.test_stream = True
+                else:
+                    self.full_test = True
         else:
             self.Frame.Destroy()
             self.startFrame.Destroy()
@@ -114,7 +116,10 @@ class ChurchGui:
                 " stop the live stream?", "Are you sure", wx.YES_NO|wx.NO_DEFAULT)
             if popup.ShowModal() == wx.ID_YES:
                 if self.test_stream == False:
-                    self.ahk_handeler.stop_facebook_stream() # Nick's Laptop, (1804, 960), Upstairs, (1174, 922)
+                    if self.full_test == True:
+                        self.ahk_handeler.stop_facebook_stream(()
+                    else:
+                        self.ahk_handeler.stop_facebook_stream() # Nick's Laptop, (1804, 960), Upstairs, (1174, 922)
                 self.stream_live = False
                 self.Frame.Access.stream_panel.StreamToggleButton.SetLabel("Go Live")
                 self.Frame.Access.stream_panel.StreamStatusLabel.SetLabel("Not Live")
@@ -126,7 +131,10 @@ class ChurchGui:
                 " start the live stream?", "Are you sure", wx.YES_NO|wx.NO_DEFAULT)
             if popup.ShowModal() == wx.ID_YES:
                 if self.test_stream == False:
-                    self.ahk_handeler.start_facebook_stream((1174, 922)) # Nick's Laptop, (1804, 960), Upstairs, (1174, 922)
+                    if self.full_test == True:
+                        self.ahk_handeler.start_facebook_stream((1804, 960))
+                    else:
+                        self.ahk_handeler.start_facebook_stream((1174, 922)) # Nick's Laptop, (1804, 960), Upstairs, (1174, 922)
                 self.stream_live = True
                 self.Frame.Access.stream_panel.StreamToggleButton.SetLabel("End Stream")
                 self.Frame.Access.stream_panel.StreamStatusLabel.SetLabel("Stream Live")

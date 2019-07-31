@@ -149,7 +149,7 @@ class AHKHandeler:
 
 		return
 
-	def start_facebook_stream(self, stream_go_live_position=(1174, 922)):
+	def start_facebook_stream(self, stream_go_live_position=(1018, 518)):
 		original_window = self.ahk.active_window
 		self.bring_to_front(self.WINDOW_CLASSES.CHROME)
 		time.sleep(1)
