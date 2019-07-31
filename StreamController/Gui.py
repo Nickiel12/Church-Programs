@@ -10,8 +10,8 @@ import wx
 import logging
 from logging import debug
 if __name__=="__main__":
-	logging.basicConfig(level=logging.DEBUG,
-		format= '%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.DEBUG,
+        format= '%(asctime)s - %(levelname)s - %(message)s')
         
 from AHKHandeler import AHKHandeler
 
@@ -79,7 +79,7 @@ class ChurchGui:
             self.stream_title = popup.GetValue()
             self.switch_frames()
 
-            self.ahk_handeler = AHKHandeler(self.stream_title)
+            self.ahk_handeler = AHKHandeler(self.stream_title, self.decoder)
             if "test" in self.stream_title:
                 self.ahk_handeler.ahk.run_script("MsgBox, 4112, Computer Working, The Computer "+
                     "is setting up the stream, please do not touch the keyboard or move the mouse!", 
@@ -94,7 +94,7 @@ class ChurchGui:
                 popup_window.activate()
                 popup_window.send("{Enter}")
             else:
-                if stream_title == "test stream":
+                if self.stream_title == "test stream":
                     self.test_stream = True
                 else:
                     self.full_test = True
@@ -117,7 +117,7 @@ class ChurchGui:
             if popup.ShowModal() == wx.ID_YES:
                 if self.test_stream == False:
                     if self.full_test == True:
-                        self.ahk_handeler.stop_facebook_stream(()
+                        self.ahk_handeler.stop_facebook_stream()
                     else:
                         self.ahk_handeler.stop_facebook_stream() # Nick's Laptop, (1804, 960), Upstairs, (1174, 922)
                 self.stream_live = False
