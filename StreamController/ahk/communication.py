@@ -26,6 +26,9 @@ class Abstract_Communicator(metaclass=abc.ABCMeta):
             raise TypeError("Expected pathlib.path or pathlib.WindowsPath but got"+ 
                 f" type {type(self.path)}")
 
+        if not self.path.exists():
+            os.mkdir(self.path)
+
         assert self.path.exists() == True, f"The given path doesn't exist: {str(self.path)}"
         assert self.path.is_dir() == True, ("The given path must"+
             f" be a directory: {str(self.path)}")
