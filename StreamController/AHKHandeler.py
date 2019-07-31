@@ -106,7 +106,7 @@ class AHKHandeler:
         webbrowser.open("https://www.facebook.com/CenterEvents1/")
 
         # Upstairs deployment settings
-        thread = Thread(target = self.setup_stream_facebook, args=(8000, (430, 593),
+        thread = Thread(target = self.setup_stream_facebook, args=(10000, (430, 593),
         (719, 152), self.stream_title, (1018, 518)))
 
         # Nick's Laptop
@@ -129,9 +129,8 @@ class AHKHandeler:
 
         self.bring_to_front(self.WINDOW_CLASSES.CHROME)
         self.ahk.run_script(f"#NoEnv \n CoordMode, Mouse, Screen"+
-            " \n Sleep {wait_time} \n "+
+            f" \n Sleep {wait_time} \n "+
             # Click Live
-            f"MouseMove, 500, 500 \n Sleep 500 \n"+
             f"MouseMove, {live_position[0]}, {live_position[1]} \n"+
             "Sleep 250 \n Click \n Sleep 5000 \n"+
             # Click connect
