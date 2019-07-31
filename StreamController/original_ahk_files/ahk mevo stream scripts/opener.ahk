@@ -1,1 +1,0 @@
-Run, "C:\Users\nicho\Desktop\ahk mevo stream scripts\SceneChange.ahk"
