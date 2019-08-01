@@ -7,16 +7,19 @@
         anchor_y: "center"
         BoxLayout:
             orientation: "vertical"
-            text: "hello"
             size_hint: .85, .85
-            StreamController:
-                id: "StreamPanel"
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "center"
+                StreamController:
+                    size_hint: .9, .8
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    id: "StreamPanel"
             SceneController:
                 id: "ScenePanel"
 
 <StreamController>:
-    anchor_x: "center"
-    anchor_y: "center"
     canvas:
         Color:
             rgba: .1, .2, .3, 1
@@ -27,6 +30,7 @@
         id: "go_live_button"
         text: "A Cool Button"
         size_hint: .85, .75
+        background_color: .1, 0, 0, .5
 
 <SceneController>:
     canvas:
@@ -35,24 +39,53 @@
         Rectangle:
             pos: self.pos
             size: self.size
-    GridLayout:
-        rows: 2
-        cols: 2
-        MCQLabelCheckBox:
-            row: 1
-            col: 1
-            text: "options 1"
-            group: "radio_group"
-        MCQLabelCheckBox:
-            row: 2
-            col: 1
-            text: "options 2"
-            group: "radio_group"
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: "Scene Options"
+            font_size: "35px"
+            padding: 0, 10
+            size_hint: 1, .3
+        BoxLayout:
+            orientation: "horizontal"
+            BoxLayout:
+                orientation: "vertical"
+                AnchorLayout:
+                    padding: [10, 10, 0, 10]
+                    BoxLayout:
+                        orientation: "vertical"
+                        canvas:
+                            Color:
+                                rgba: .5, .3, .3, 1
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+                        Label:
+                            text: "Scenes"
+                            size_hint: 1, .5
+                            font_size: "20px"
+                        GridLayout:
+                            rows: 2
+                            size_hint: .8, .8
+                            padding: "1px", "1px"
+                            MCQLabelCheckBox:
+                                id: "Live_Camera"
+                                text: "Live Camera"
+                                group: "radio_group"
+                                text_size: "10px"
+                            MCQLabelCheckBox:
+                                id: "Center_PP_Out"
+                                text: "Center Screen"
+                                group: "radio_group"
+            SCQLabelCheckBox:
+                text: "Automatic"
+                test_size: "20px"
+
 
 
 <MCQCheckBox@CheckBox>:
     #color: 0, 0, 0, 1
-    size_hint: .2, 1
+    size_hint: .3, 1
 
 <MCQLabel@ButtonBehavior+Label>:
     text_size: self.size
@@ -69,3 +102,15 @@
     MCQLabel:
         on_press: cb._do_press()
         text: root.text
+
+<SCQLabelCheckBox@BoxLayout>:
+    text: ''
+    text_size: ''
+
+    MCQCheckBox:
+        id: cb
+
+    MCQLabel:
+        on_press: cb._do_press()
+        text: root.text
+        text_size: root.text_size
