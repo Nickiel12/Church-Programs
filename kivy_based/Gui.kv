@@ -1,5 +1,32 @@
 #:kivy 1.10.1
 
 <Controller>:
-    Button:
-        text: "I am an amazzzzing button!"
+    
+    AnchorLayout:
+        anchor_x: "center"
+        anchor_y: "center"
+        BoxLayout:
+            orientation: "vertical"
+            text: "hello"
+            size_hint: .85, .85
+            StreamController:
+                size_hint: 1, .75
+            SceneController:
+
+            
+
+<StreamController>:
+    canvas:
+        Color:
+            rgba: .1, .2, .3, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<SceneController>:
+    canvas:
+        Color:
+            rgba: .1, .3, .3, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
