@@ -1,8 +1,19 @@
 from kivy.app import App
-from kivy.uix.relativelayout import RelativeLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
+from kivy.core.window import Window
 
-class Controller(RelativeLayout):
+Window.size = (300, 400)
+
+class StreamController(FloatLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+class SceneController(FloatLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+class Controller(FloatLayout):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
