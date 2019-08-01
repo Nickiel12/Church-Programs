@@ -10,18 +10,23 @@
             text: "hello"
             size_hint: .85, .85
             StreamController:
-                size_hint: 1, .75
+                id: "StreamPanel"
             SceneController:
-
-            
+                id: "ScenePanel"
 
 <StreamController>:
+    anchor_x: "center"
+    anchor_y: "center"
     canvas:
         Color:
             rgba: .1, .2, .3, 1
         Rectangle:
             pos: self.pos
             size: self.size
+    Button:
+        id: "go_live_button"
+        text: "A Cool Button"
+        size_hint: .85, .75
 
 <SceneController>:
     canvas:
@@ -30,3 +35,37 @@
         Rectangle:
             pos: self.pos
             size: self.size
+    GridLayout:
+        rows: 2
+        cols: 2
+        MCQLabelCheckBox:
+            row: 1
+            col: 1
+            text: "options 1"
+            group: "radio_group"
+        MCQLabelCheckBox:
+            row: 2
+            col: 1
+            text: "options 2"
+            group: "radio_group"
+
+
+<MCQCheckBox@CheckBox>:
+    #color: 0, 0, 0, 1
+    size_hint: .2, 1
+
+<MCQLabel@ButtonBehavior+Label>:
+    text_size: self.size
+    valign: 'center'
+
+<MCQLabelCheckBox@BoxLayout>:
+    text: ''
+    group: ''
+
+    MCQCheckBox:
+        id: cb
+        group: root.group
+
+    MCQLabel:
+        on_press: cb._do_press()
+        text: root.text
