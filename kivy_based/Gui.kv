@@ -1,7 +1,16 @@
 #:kivy 1.10.1
 
 <Controller>:
-    
+    id: "Controller"
+    StartupScreen:
+    MainScreen:
+
+<StartupScreen>:
+    name: "StartupScreen"
+    StartupController:
+
+<MainScreen>:
+    name: "MainScreen"
     AnchorLayout:
         anchor_x: "center"
         anchor_y: "center"
@@ -18,6 +27,28 @@
                     id: "StreamPanel"
             SceneController:
                 id: "ScenePanel"
+
+<StartupController>:
+    id: StartupControl
+    BoxLayout:
+        size_hint: .8, .2
+        orientation: 'vertical'
+        TextInput:
+            hint_text: "Stream Title"
+            font_size: 30
+        BoxLayout:
+            size_hint: 1, .5
+            orientation: "horizontal"    
+            Button:
+                text: "Skip"
+                size_hint: .1, 1
+                on_release: StartupControl.parent.parent.current = "MainScreen"
+            Button:
+                size_hint: .9, 1
+                pos_hint: {"right": 1}
+                id: "SubmitButton"
+                text: "A cool button"
+                on_release: StartupControl.parent.parent.current = "MainScreen"
 
 <StreamController>:
     canvas:
