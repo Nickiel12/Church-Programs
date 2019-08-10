@@ -16,12 +16,13 @@
         anchor_y: "center"
         BoxLayout:
             orientation: "vertical"
-            size_hint: .85, .85
+            size_hint: .85, .75
             AnchorLayout:
+                size_hint: 1, .5
                 anchor_x: "center"
                 anchor_y: "center"
                 StreamController:
-                    size_hint: .9, .8
+                    size_hint: .9, .9
                     anchor_x: "center"
                     anchor_y: "center"
                     id: "StreamPanel"
@@ -40,14 +41,14 @@
             size_hint: 1, .5
             orientation: "horizontal"    
             Button:
-                text: "Skip"
-                size_hint: .1, 1
+                text: "Already live"
+                size_hint: .3, 1
                 on_release: StartupControl.parent.parent.current = "MainScreen"
             Button:
-                size_hint: .9, 1
+                size_hint: .7, 1
                 pos_hint: {"right": 1}
                 id: "SubmitButton"
-                text: "A cool button"
+                text: "Setup Stream"
                 on_release: StartupControl.parent.parent.current = "MainScreen"
 
 <StreamController>:
@@ -59,7 +60,7 @@
             size: self.size
     Button:
         id: "go_live_button"
-        text: "A Cool Button"
+        text: "Stream Toggle"
         size_hint: .85, .75
         background_color: .1, 0, 0, .5
 
@@ -73,7 +74,7 @@
     BoxLayout:
         orientation: "vertical"
         Label:
-            text: "Scene Options"
+            text: "Scene Controller"
             font_size: "35px"
             padding: 0, 10
             size_hint: 1, .3

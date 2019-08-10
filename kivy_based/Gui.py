@@ -22,7 +22,8 @@ class StartupController(AnchorLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     
-    def on_submit(self)
+    def on_submit(self):
+        pass
 
 class MainScreen(Screen):
     def __init__(self, *args, **kwargs):
