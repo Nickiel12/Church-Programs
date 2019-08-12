@@ -1,5 +1,15 @@
 {
     "setup_facebook":{
-        
+        "url": "https://www.facebook.com/CenterEvents1/",
+        "wait_0": 8,
+        "one": [711, 741],
+        "wait_1": 5,
+        "two": [1084, 190],
+        "wait_2": 1.5,
+        "three": [1577, 649],
+        "go_live": [1790, 966]
+    },
+    "dev_setup_facebook":{
+
     }
 }
