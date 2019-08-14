@@ -35,8 +35,8 @@ class WarningPopup:
     def __init__(self, *args, **kwargs):
         self.win_x_size = 400
         self.win_y_size = 150
-        self.current_label_text = ChangeableText("", "No current Process")    
-        self.time_till_label_text = ChangeableText("Time will next process:", "0.0")
+        self.current_label_text = ChangeableText("Current Task:", "No current task")    
+        self.time_till_label_text = ChangeableText("Time till next task:", "0.0")
 
     def start_timer(self, secs_to_count, blocking=False):
         self.timer_run = True
@@ -63,6 +63,13 @@ class WarningPopup:
                         break
             except KeyboardInterrupt:
                 break
+
+    def set_task(self, task_name:str, task_time:int):
+        self.set_current_task(task_name)
+        self.start_timer(task_time)
+
+    def set_current_task(self, current_task:str):
+        self.current_label_text.set_value(current_task)
 
     def open(self):
         self.thread = threading.Thread(target=self.create)
@@ -137,9 +144,12 @@ if __name__ == "__main__":
         popup = WarningPopup()
         popup.open()
         
-        popup.start_timer(20, blocking = False)
+        popup.set_task("Waiting", 10)
         time.sleep(20)
-        
+
+        popup.start_timer(10, blocking=False)
+        time.sleep(10)
+
         popup.close()
     except KeyboardInterrupt:
         if popup.timer_thread and popup.timer_thread.isAlive():
