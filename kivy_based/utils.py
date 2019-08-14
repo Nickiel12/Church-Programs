@@ -30,6 +30,11 @@ class ChangeableText:
         return f"{self.text} {self.value}"
 
 class WarningPopup:  
+    """
+    functions to remember:
+    popup.open()
+    popup.set_task("task name", 10: int time tasks takes)
+    """
     stop = False
     
     def __init__(self, *args, **kwargs):
