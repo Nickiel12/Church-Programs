@@ -83,6 +83,7 @@ class WarningPopup:
     def create(self, run_wait_time = .1):
         self.run_wait_time = run_wait_time
         self.root = Tk()
+        self.root.wm_attributes("-topmost", 1)
         pos_right = int(self.root.winfo_screenwidth()/2 -self.win_x_size/2)
         pos_up = int(self.root.winfo_screenheight()/3 - self.win_y_size/2) 
         self.root.geometry(f"{self.win_x_size}x{self.win_y_size}+{pos_right}+{pos_up}")
