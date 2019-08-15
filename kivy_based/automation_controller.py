@@ -2,7 +2,11 @@ import pyautogui
 import time
 import threading
 import webbrowser
-from utils import Settings, WarningPopup
+from utils import Settings
+from dialogs import WarningPopup
+if True == False:
+    from kivy_based.utils import Settings
+    from kivy_based.dialogs import WarningPopup
 
 import logging
 from logging import debug
