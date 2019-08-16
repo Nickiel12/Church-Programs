@@ -12,11 +12,14 @@ from tkinter import messagebox
 import time
 import threading
 
-from exceptions import PopupError, PopupNotExist, PopupClosed, PrematureExit
+from automation_controller import Setup
+from exceptions import PopupError, PopupNotExist, PrematureExit
 from dialogs import Question, WarningPopup
+from utils import make_functions
 if True == False:
-    from kivy_based.exceptions import PopupError, PopupNotExist, PopupClosed, PrematureExit
-    from kivy_based.utils import WarningPopup
+    from kivy_based.automation_controller import Setup
+    from kivy_based.exceptions import PopupError, PopupNotExist, PrematureExit
+    from kivy_based.utils import make_functions
     from kivy_based.dialogs import Question, WarningPopup
 
 import logging
@@ -32,24 +35,6 @@ def on_startup_button_submit(stream_name, startup_controller):
     thread = threading.Thread(target=_run_startup, args=(stream_name,))
     thread.start()
 
-def sleep_check(time_to_sleep, event_to_check:threading.Event):
-    last_time = 0
-    end_time = time.time() + time_to_sleep
-    while True:
-        try:
-            if event_to_check.is_set():
-                raise PrematureExit("Timer caught event set")
-            time_left = end_time - time.time()
-            #debug(f"time_left is {time_left}")
-            #debug(f"end_time is {end_time}")
-            if time_left != last_time:
-                last_time = time_left
-                if time_left <= 0:
-                    break
-            time.sleep(.1)
-        except KeyboardInterrupt:
-            raise PrematureExit("Keyboard Inturrupt caught in sleep_check")
-
 def redo_startup():
     App.get_running_app().root.current = "StartupScreen"
 
@@ -58,10 +43,18 @@ def _run_startup(stream_name, *args):
         popup = WarningPopup()
         popup.open()
         
-        popup.set_task("Task One", 20)
-        sleep_check(20, popup.timer_event)
-        popup.set_task("Task Two", 10)
-        sleep_check(10, popup.timer_event)
+        setup = Setup(popup, stream_name)
+        settings = make_functions(setup)
+        for i in settings:
+            try:
+                if popup.timer_thread.is_set():
+                    raise PrematureExit("Timer caught event set")
+                i[0]()
+                time.sleep(i[1])
+            except KeyboardInterrupt:
+                raise PrematureExit("Keyboard Inturrupt caught in sleep_check")
+        setup.del_popup()
+
     except KeyboardInterrupt:
         if popup.timer_thread and popup.timer_thread.isAlive():
             popup.timer_event.set()
@@ -69,24 +62,14 @@ def _run_startup(stream_name, *args):
         debug("Popup was closed unexpectedly")
         if Question("Setup was canceled before it was finished\n"+
             "Would you like to restart the program?", "Python"):
-            try:
-                popup.close()
-            except PopupClosed:
-                pass
+            
+            popup.close()
             redo_startup()
         else:
-            print("the user said no to the question")
+            logging.getLogger().debug("the user said no to the question")
         print("done with the question")
     finally:
-        try:
-            popup.close()
-        except PopupClosed:
-            if Question("Setup was canceled before it was finished\n"+
-                "Would you like to restart the program?", "Python"):
-                debug("yes")
-                redo_startup()
-            else:
-                debug("no")    
+        popup.close()  
 
 class Controller(ScreenManager):
     def __init__(self, *args, **kwargs):
