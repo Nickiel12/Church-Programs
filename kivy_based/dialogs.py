@@ -4,9 +4,9 @@ from tkinter.font import Font
 import threading
 import time
 
-from exceptions import PopupError, PopupClosed, PopupNotExist, PrematureExit
+from exceptions import PopupError, PopupNotExist, PrematureExit
 if True == False:
-    from kivy_based.exceptions import PopupError, PopupClosed, PopupNotExist, PrematureExit
+    from kivy_based.exceptions import PopupError, PopupNotExist, PrematureExit
 
 import logging
 from logging import debug

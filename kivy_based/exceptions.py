@@ -4,5 +4,5 @@ class PopupError(Exception):
 class PopupNotExist(PopupError):
     pass
 
-class PopupClosed(PopupError):
+class PrematureExit(PopupError):
     pass
