@@ -38,7 +38,50 @@ class StartupScreen(Screen):
 class StartupController(AnchorLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        
+    def on_submit(self, stream_name, *args):
+        debug(f"stream_name is: {stream_name}")
+        debug(f"on_submit args are: {args}")
+        self.complete_flag = threading.Event()
+        thread = threading.Thread(target=self._run_startup, args=(stream_name,))
+        thread.start()
 
+    def _run_startup(self, stream_name, *args):
+        try:
+            popup = WarningPopup()
+            popup.open()
+            
+            popup.set_task("Task One", 20)
+            time.sleep(20)
+            popup.set_task("Task Two", 10)
+            time.sleep(10)
+        except KeyboardInterrupt:
+            if popup.timer_thread and popup.timer_thread.isAlive():
+                popup.timer_event.set()
+        except PopupNotExist:
+            debug("Popup was closed unexpectedly")
+            if Question("Setup was canceled before it was finished\n"+
+                "Would you like to restart the program?", "Python"):
+                debug("yes")
+                try:
+                    popup.close()
+                except PopupClosed:
+                    pass
+                self._run_startup(stream_name)
+            else:
+                debug("no")
+            debug("done with the question")
+        finally:
+            try:
+                popup.close()
+                self.complete_flag.set()
+            except PopupClosed:
+                if Question("Setup was canceled before it was finished\n"+
+                    "Would you like to restart the program?", "Python"):
+                    debug("yes")
+                    self._run_startup(stream_name)
+                else:
+                    debug("no")
 class MainScreen(Screen):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
