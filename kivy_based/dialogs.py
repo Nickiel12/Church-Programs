@@ -77,10 +77,10 @@ class WarningPopup:
         if not self.popup_open:
             raise PopupNotExist("The Popup has been closed, You shouldn't start a task")
         print(f"Starting task: {task_name} which takes {task_time} seconds")
-        self.set_current_task(task_name)
+        self.set_current_label(task_name)
         self.start_timer(task_time)
 
-    def set_current_task(self, current_task:str):
+    def set_current_label(self, current_task:str):
         self.current_label_text.set_value(current_task)
 
     def open(self):
