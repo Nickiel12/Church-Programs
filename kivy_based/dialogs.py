@@ -4,9 +4,9 @@ from tkinter.font import Font
 import threading
 import time
 
-from exceptions import PopupError, PopupClosed, PopupNotExist
+from exceptions import PopupError, PopupClosed, PopupNotExist, PrematureExit
 if True == False:
-    from kivy_based.exceptions import PopupError, PopupClosed, PopupNotExist
+    from kivy_based.exceptions import PopupError, PopupClosed, PopupNotExist, PrematureExit
 
 import logging
 from logging import debug
@@ -68,12 +68,15 @@ class WarningPopup:
                     last_time = time_left
                     if time_left <= 0:
                         break
+                time.sleep(.06)
             except KeyboardInterrupt:
                 break
+        print("timer done")
 
     def set_task(self, task_name:str, task_time:int):
         if not self.popup_open:
             raise PopupNotExist("The Popup has been closed, You shouldn't start a task")
+        print(f"Starting task: {task_name} which takes {task_time} seconds")
         self.set_current_task(task_name)
         self.start_timer(task_time)
 
@@ -109,11 +112,12 @@ class WarningPopup:
         self.loop()
     
     def on_exit(self, *args):
+        self.timer_event.set()
+        print("exited prematurely")
         self.stop = True
-        raise PopupClosed("The popup is closing")
         
     def loop(self):
-        while self.stop == False:
+        while self.stop == False and not self.timer_event.is_set():
             if self.time_till_label_text.changed:
                 self.time_var.set(self.time_till_label_text)
                 self.time_till_label_text.changed = False
@@ -125,6 +129,7 @@ class WarningPopup:
             except tkinter._tkinter.TclError:
                 return
             time.sleep(self.run_wait_time)
+
         self.root.quit()
         self.popup_open = False
         return
@@ -138,12 +143,16 @@ class WarningPopup:
 
 def Question(question:str, window_name:str, style="YesNo"):
     question = QuestionDialog(question, window_name, style)
+    while question.has_answer == False:
+        time.sleep(.05)
     return question.value
 
 class QuestionDialog():
     def __init__(self, question:str, window_name:str, style="YesNo"):
         self.value = False
+        self.has_answer = False
         self.root = tkinter.Tk()
+        self.root.wm_attributes("-topmost", 1)
         self.root.winfo_toplevel().title(window_name)
         self.win_x_size = 400
         self.win_y_size = 100
@@ -168,10 +177,12 @@ class QuestionDialog():
 
     def msg_yes(self):
         self.value = True
+        self.has_answer = True
         self.root.quit()
     
     def msg_no(self):
         self.value = False
+        self.has_answer = True
         self.root.quit()
 
 if __name__ == "__main__":
