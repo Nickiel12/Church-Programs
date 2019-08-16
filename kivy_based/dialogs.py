@@ -40,6 +40,7 @@ class WarningPopup:
     def __init__(self, *args, **kwargs):
         self.win_x_size = 400
         self.win_y_size = 150
+        self.timer_event = threading.Event()
         self.current_label_text = ChangeableText("Current Task:", "No current task")    
         self.time_till_label_text = ChangeableText("Time till next task:", "0.0")
 

@@ -11,17 +11,20 @@ if __name__=="__main__":
     logging.basicConfig(level=logging.DEBUG,
     format= '%(asctime)s - %(levelname)s - %(message)s')
     
-from utils import Settings
+from exceptions import PopupNotExist 
 from dialogs import WarningPopup
+from utils import Settings
 if True == False:
     from kivy_based.utils import Settings
     from kivy_based.dialogs import WarningPopup
+    from kivy_based.exceptions import PopupNotExist
 
 def threaded(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         thread = threading.Thread(target=func, args=args, kwargs=kwargs)
         thread.start()
+        print(f"thread with target \"{func}\" has been started")
         return thread
     return wrapper
 
@@ -29,7 +32,7 @@ def with_popup(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         if self.popup == False:
-            return
+            raise PopupNotExist
     return wrapper
 
 class Setup:
@@ -38,7 +41,7 @@ class Setup:
         self.popup = popup
         self.stream_title = stream_title
         self.settings = Settings()
-        self.platform_settings = self.settings[f"setup_{settings['streaming_service']}"]
+        self.platform_settings = self.settings[f"setup_{self.settings['streaming_service']}"]
 
     def del_popup(self):
         self.popup = False
@@ -53,6 +56,8 @@ class Setup:
     @with_popup
     @threaded
     def sleep(self, time_to_sleep):
+        print(f"setup is sleeping for {time_to_sleep}")
+        self.popup.set_task("Waiting", time_to_sleep)
         time.sleep(time_to_sleep)
 
     @with_popup
@@ -70,7 +75,7 @@ class Setup:
     
     @threaded
     def go_live(self):
-        mouse_pos = self.settings[f"setup_{settings['streaming_service']}"].go_live
+        mouse_pos = self.platform_settings.go_live
         mouse.move(mouse_pos[0], mouse_pos[1])
         mouse.click()
 

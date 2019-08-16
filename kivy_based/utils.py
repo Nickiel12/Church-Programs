@@ -21,13 +21,14 @@ def make_functions(setup_inst):
     platform_settings = setup_inst.platform_settings
     for i in platform_settings:
         if i[:3] == "url": output.append([partial(setup_inst.open_url, 
-            platform_settings[i], 2), .2])
+            platform_settings[i], .2), .2])
         elif i[:4] == "wait": output.append([partial(setup_inst.sleep, 
             platform_settings[i]), platform_settings[i]])
         elif i[:3] == "mos": output.append([partial(setup_inst.mouse_click,
             platform_settings[i], .5), .5])
-        elif i == "title": output.append([partial(setup_inst.input_text,
+        elif i == "title": output.append([partial(setup_inst.write,
             setup_inst.stream_title, 1), 1])
+    return output
 
 def Settings():
     path = pathlib2.Path(os.path.abspath(__file__)).parent/"options.json"

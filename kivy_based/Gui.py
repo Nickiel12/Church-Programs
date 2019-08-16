@@ -47,9 +47,11 @@ def _run_startup(stream_name, *args):
         settings = make_functions(setup)
         for i in settings:
             try:
-                if popup.timer_thread.is_set():
+                if popup.timer_event.is_set():
                     raise PrematureExit("Timer caught event set")
+                print(f"current function: {i[0]}")
                 i[0]()
+                print(f"sleeping for {i[1]} seconds")
                 time.sleep(i[1])
             except KeyboardInterrupt:
                 raise PrematureExit("Keyboard Inturrupt caught in sleep_check")
