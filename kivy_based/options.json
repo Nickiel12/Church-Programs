@@ -13,5 +13,20 @@
     },
     "dev_setup_facebook":{
 
+    },
+    "hotkeys":{
+        "obs_start_stream" : "ctrl+shift+j",
+        "obs_stop_stream" : "ctrl+alt+j",
+        
+        "camera_scene_hotkey" : "1", 
+        "camera_scene_obs_key" : "F24",
+
+        "center_screen_hotkey" : "2",
+        "center_screen_obs_key" : "F23",
+
+        "clicker_forward" : "PgUp", 
+        "clicker_backward" : "page down"
+
     }
+    
 }

@@ -33,10 +33,29 @@ def with_popup(func):
     def wrapper(self, *args, **kwargs):
         if self.popup == False:
             raise PopupNotExist
+        func(self, *args, **kwargs)
     return wrapper
 
-class Setup:
+class Controller:
+    def __init__(self, settings, default_browser="CHROME"):
+        self.sett = settings
+        self.register_hotkeys()
+# TODO
+    def give_window_focus(self, window_to_focus):
+        pass 
+    #pip install pywinauto
+    #from pywinauto.findwindows import find_window
+    #from pywinauto.win32functions import SetForegroundWindow
+    #SetForgroundWindow(find_window(title = #?"taskeng.exe"))
+
+    def register_hotkeys(self):
+        for i in self.sett.hotkeys:
+            keyboard.add_hotkey(self.sett.hotkeys[i], self.on_hotkey, args=(i))
+
+    def on_hotkey(self, *args, **kwargs):
+        print("".join(args))
         
+class Setup:
     def __init__(self, popup:WarningPopup, stream_title:str, *args, **kwargs):
         self.popup = popup
         self.stream_title = stream_title
@@ -50,6 +69,7 @@ class Setup:
         self.popup = popup
 
     def open_url(self, url, timer_time):
+        print(f"Opening {url}")
         self.popup.set_task("Opening Browser", timer_time)
         webbrowser.open(url)
  
@@ -57,7 +77,7 @@ class Setup:
     @threaded
     def sleep(self, time_to_sleep):
         print(f"setup is sleeping for {time_to_sleep}")
-        self.popup.set_task("Waiting", time_to_sleep)
+        self.popup.set_task("Next Task In", time_to_sleep)
         time.sleep(time_to_sleep)
 
     @with_popup
@@ -65,7 +85,7 @@ class Setup:
     def mouse_click(self, mouse_pos:tuple, timer_time):
         self.popup.set_task("Moving & Clicking Mouse", timer_time)
         mouse.move(mouse_pos[0], mouse_pos[1])
-        mouse.click
+        mouse.click()
 
     @with_popup
     @threaded
@@ -80,4 +100,5 @@ class Setup:
         mouse.click()
 
 if __name__ == "__main__":
-    setup_facebook("it'sa supera coolera")
+    Controller(Settings())
+    keyboard.wait("ESC")

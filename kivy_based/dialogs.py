@@ -42,7 +42,7 @@ class WarningPopup:
         self.win_y_size = 150
         self.timer_event = threading.Event()
         self.current_label_text = ChangeableText("Current Task:", "No current task")    
-        self.time_till_label_text = ChangeableText("Time till next task:", "0.0")
+        self.time_till_label_text = ChangeableText("", "0.0")
 
     def start_timer(self, secs_to_count, blocking=False):
         if not self.popup_open:
@@ -103,8 +103,11 @@ class WarningPopup:
         top_text = "Do Not Touch The Computer"
         top_2_text = "This window will close when\n the program is finished"
 
-        top_label = Label(self.root, text = top_text, font="Arno_15").pack()
-        top_2_label = Label(self.root, text = top_2_text, font = "Arno_10").pack()
+        top_label = Label(self.root, text = top_text, font="Arno_15")
+        top_label.config(fg="Red")
+        top_label.pack()
+        top_2_label = Label(self.root, text = top_2_text, font = "Arno_10")
+        top_2_label.pack()
         self.current_var = StringVar() 
         current_label = Label(self.root, textvariable=self.current_var).pack()
         self.time_var = StringVar()
