@@ -115,6 +115,7 @@
                                 id: "Live_Camera"
                                 text: "Live Camera"
                                 group: "radio_group"
+                                active: root.on
                                 text_size: "10px"
                             MCQLabelCheckBox:
                                 id: "Center_PP_Out"
@@ -122,6 +123,7 @@
                                 group: "radio_group"
             SCQLabelCheckBox:
                 text: "Automatic"
+                active: root.on
                 test_size: "20px"
 
 
@@ -137,10 +139,12 @@
 <MCQLabelCheckBox@BoxLayout>:
     text: ''
     group: ''
+    active: True
 
     MCQCheckBox:
         id: cb
         group: root.group
+        active: root.active
 
     MCQLabel:
         on_press: cb._do_press()
@@ -149,9 +153,11 @@
 <SCQLabelCheckBox@BoxLayout>:
     text: ''
     text_size: ''
+    active: True
 
     MCQCheckBox:
         id: cb
+        active: root.active
 
     MCQLabel:
         on_press: cb._do_press()
