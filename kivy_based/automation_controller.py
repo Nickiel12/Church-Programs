@@ -1,5 +1,6 @@
 import pyautogui
 import keyboard
+from kivy.app import App
 import mouse
 import time
 import threading
@@ -39,6 +40,7 @@ def with_popup(func):
 class Controller:
     def __init__(self, settings, default_browser="CHROME"):
         self.sett = settings
+        self.app = App.get_running_app()
         self.register_hotkeys()
 # TODO
     def give_window_focus(self, window_to_focus):
@@ -46,15 +48,50 @@ class Controller:
     #pip install pywinauto
     #from pywinauto.findwindows import find_window
     #from pywinauto.win32functions import SetForegroundWindow
-    #SetForgroundWindow(find_window(title = #?"taskeng.exe"))
+    #old = ??Get Foreground Window??
+    #if window_to_focues == "OBS":
+    #   SetForgroundWindow(find_window(title = #?"taskeng.exe"))
+    #   return old
+    #elif window_to_focus == "CHROME":
+    #   Set for ground...
+    #   return old
+    #elif window_to_focus == "PROPRESENTER":
+    #   Set for ground...
+    #   return old
+    #else:
+    # Set forground(window_to_focus)
 
     def register_hotkeys(self):
         for i in self.sett.hotkeys:
             keyboard.add_hotkey(self.sett.hotkeys[i], self.on_hotkey, args=(i))
 
     def on_hotkey(self, *args, **kwargs):
-        print("".join(args))
-        
+        hotkey = "".join(args)
+        if hotkey == "camera_scene_hotkey":
+            self.obs_scene("camera")
+        elif hotkey == "center_screen_hotkey":
+            self.obs_scene("center")
+        elif hotkey == "clicker_forward":
+            current = self.give_window_focus("PROPRESENTER")
+            time.sleep(1)
+            self.give_window_focus(current)
+        elif hotkey == "clicker_background":
+            current = self.give_window_focus("PROPRESENTER")
+            time.sleep(1)
+            self
+
+    def obs_scene(self, scene):
+        if scene[:5].lower() == "camera":
+            current = self.give_window_focus("OBS")
+            time.sleep(.2)
+            keyboard.write(self.sett.send_hotkeys.camera_scene_obs_key)
+            self.give_window_focus(current)
+        elif scene[:5].lower() == "center":
+            current = self.give_window_focus("OBS")
+            time.sleep(.2)
+            keyboard.write(self.sett.send_hotkeys.center_screen_obs_key)
+            self.give_window_focus(current)
+
 class Setup:
     def __init__(self, popup:WarningPopup, stream_title:str, *args, **kwargs):
         self.popup = popup
