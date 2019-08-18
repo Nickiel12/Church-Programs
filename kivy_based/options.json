@@ -14,10 +14,14 @@
     "dev_setup_facebook":{
 
     },
+    "windows":{
+        "obs_re": "OBS .*",
+        "propresenter_re": "ProPresenter 6 .*"
+    },
     "hotkeys":{
         "obs":{
-            "camera_scene_hotkey" : ["1", "F24"], 
-            "center_screen_hotkey" : ["2", "F23"],
+            "camera_scene_hotkey" : ["1", "shift+alt+ctrl+*"], 
+            "center_screen_hotkey" : ["2", "shift+alt+ctrl+/"],
             "start_stream" : "ctrl+shift+j",
             "stop_stream" : "ctrl+alt+j"
         },
