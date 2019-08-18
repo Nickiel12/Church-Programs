@@ -14,20 +14,13 @@ if __name__=="__main__":
     
 from exceptions import PopupNotExist 
 from dialogs import WarningPopup
-from utils import Settings
+from utils import Settings, threaded
 if True == False:
-    from kivy_based.utils import Settings
+    from kivy_based.utils import Settings, threaded
     from kivy_based.dialogs import WarningPopup
     from kivy_based.exceptions import PopupNotExist
 
-def threaded(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        thread = threading.Thread(target=func, args=args, kwargs=kwargs)
-        thread.start()
-        print(f"thread with target \"{func}\" has been started")
-        return thread
-    return wrapper
+
 
 def with_popup(func):
     @wraps(func)
@@ -37,11 +30,10 @@ def with_popup(func):
         func(self, *args, **kwargs)
     return wrapper
 
-class Controller:
+class AutomationController:
     def __init__(self, settings, default_browser="CHROME"):
         self.sett = settings
         self.app = App.get_running_app()
-        self.register_hotkeys()
 # TODO
     def give_window_focus(self, window_to_focus):
         pass 
@@ -61,35 +53,21 @@ class Controller:
     #else:
     # Set forground(window_to_focus)
 
-    def register_hotkeys(self):
-        for i in self.sett.hotkeys:
-            keyboard.add_hotkey(self.sett.hotkeys[i], self.on_hotkey, args=(i))
-
-    def on_hotkey(self, *args, **kwargs):
-        hotkey = "".join(args)
-        if hotkey == "camera_scene_hotkey":
-            self.obs_scene("camera")
-        elif hotkey == "center_screen_hotkey":
-            self.obs_scene("center")
-        elif hotkey == "clicker_forward":
-            current = self.give_window_focus("PROPRESENTER")
-            time.sleep(1)
-            self.give_window_focus(current)
-        elif hotkey == "clicker_background":
-            current = self.give_window_focus("PROPRESENTER")
-            time.sleep(1)
-            self
-
     def obs_scene(self, scene):
-        if scene[:5].lower() == "camera":
+        """Change the current obs scene
+        
+        Arguments:
+            scene {str} -- specify which scene to switch to \n either "camera" or "center
+        """
+        if scene == "camera":
             current = self.give_window_focus("OBS")
             time.sleep(.2)
-            keyboard.write(self.sett.send_hotkeys.camera_scene_obs_key)
+            keyboard.write(self.sett.hotkeys.obs.camera_scene_hotkey[1])
             self.give_window_focus(current)
-        elif scene[:5].lower() == "center":
+        elif scene == "center":
             current = self.give_window_focus("OBS")
             time.sleep(.2)
-            keyboard.write(self.sett.send_hotkeys.center_screen_obs_key)
+            keyboard.write(self.sett.hotkeys.obs.center_screen_hotkey[1])
             self.give_window_focus(current)
 
 class Setup:

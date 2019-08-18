@@ -2,7 +2,8 @@ import atexit
 import json
 import math
 import pathlib2
-from functools import partial
+import threading
+from functools import partial, wraps
 import os
 
 import logging
@@ -15,6 +16,15 @@ from exceptions import PopupNotExist
 if True == False:
     from kivy_based.exceptions import PopupNotExist
     from kivy_based.automation_controller import Setup
+
+def threaded(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        thread = threading.Thread(target=func, args=args, kwargs=kwargs)
+        thread.start()
+        print(f"thread with target \"{func}\" has been started")
+        return thread
+    return wrapper
 
 def make_functions(setup_inst):
     output = []

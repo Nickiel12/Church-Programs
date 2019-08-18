@@ -55,7 +55,7 @@
                 size_hint: .3, 1
                 on_release: StartupControl.parent.parent.current = "MainScreen"
             Button:
-                id: SubmitButton
+                id: "SubmitButton"
                 size_hint: .7, 1
                 pos_hint: {"right": 1}
                 text: "Setup Stream"
@@ -69,9 +69,10 @@
         Rectangle:
             pos: self.pos
             size: self.size
-    Button:
-        id: "go_live_button"
+    ToggleButton:
+        id: go_live_button
         text: "Stream Toggle"
+        on_press: root.on_startup()
         size_hint: .85, .75
         background_color: .1, 0, 0, .5
 
@@ -112,21 +113,28 @@
                             size_hint: .8, .8
                             padding: "1px", "1px"
                             MCQLabelCheckBox:
-                                id: "Live_Camera"
+                                id: live_camera
                                 text: "Live Camera"
                                 group: "radio_group"
                                 active: root.on
-                                text_size: "10px"
                             MCQLabelCheckBox:
-                                id: "Center_PP_Out"
+                                id: center_screen
                                 text: "Center Screen"
                                 group: "radio_group"
-            SCQLabelCheckBox:
-                text: "Automatic"
-                active: root.on
-                test_size: "20px"
-
-
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "center"
+                BoxLayout:
+                    orientation:"vertical"
+                    size_hint: 1, .8
+                    SCQLabelCheckBox:
+                        id: SCQAutomatic
+                        text: "Automatic"
+                        active: root.on
+                    Label:
+                        id: TimerLabel
+                        font_size: "50px"
+                        text: "0.0"
 
 <MCQCheckBox@CheckBox>:
     #color: 0, 0, 0, 1
@@ -152,7 +160,6 @@
 
 <SCQLabelCheckBox@BoxLayout>:
     text: ''
-    text_size: ''
     active: True
 
     MCQCheckBox:
@@ -162,4 +169,3 @@
     MCQLabel:
         on_press: cb._do_press()
         text: root.text
-        text_size: root.text_size
