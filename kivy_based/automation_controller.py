@@ -32,8 +32,9 @@ def with_popup(func):
 
 class AutomationController:
     def __init__(self, settings, default_browser="CHROME"):
-        self.sett = settings
         self.app = App.get_running_app()
+        self.sett = self.app.settings
+        self.platform_settings = self.sett[f"setup_{self.sett.streaming_service}"]
 # TODO
     def give_window_focus(self, window_to_focus):
         pass 
@@ -53,11 +54,11 @@ class AutomationController:
     #else:
     # Set forground(window_to_focus)
 
-    def obs_scene(self, scene):
+    def obs_send(self, scene):
         """Change the current obs scene
         
         Arguments:
-            scene {str} -- specify which scene to switch to \n either "camera" or "center
+            scene {str} -- specify which scene to switch to \n either "camera" or "center" \n or "start" or "stop"
         """
         if scene == "camera":
             current = self.give_window_focus("OBS")
@@ -69,6 +70,24 @@ class AutomationController:
             time.sleep(.2)
             keyboard.write(self.sett.hotkeys.obs.center_screen_hotkey[1])
             self.give_window_focus(current)
+        elif scene == "start":
+            current = self.give_window_focus("OBS")
+            time.sleep(.2)
+            keyboard.write(self.sett.hotkeys.obs.start_stream)
+            self.give_window_focus(current)
+        elif scene == "stop":
+            current = self.give_window_focus("OBS")
+            time.sleep(.2)
+            keyboard.write(self.sett.hotkeys.obs.stop_stream)
+            self.give_window_focus(current)
+    
+    @threaded
+    def go_live(self):
+        self.obs_send("start")
+        print(self.platform_settings)
+        mouse_pos = self.platform_settings["go_live"]
+        mouse.move(mouse_pos[0], mouse_pos[1])
+        mouse.click()
 
 class Setup:
     def __init__(self, popup:WarningPopup, stream_title:str, *args, **kwargs):
@@ -107,12 +126,6 @@ class Setup:
     def write(self, text:str, timer_time):
         self.popup.set_task("Entering Text", timer_time)
         keyboard.write(text)
-    
-    @threaded
-    def go_live(self):
-        mouse_pos = self.platform_settings.go_live
-        mouse.move(mouse_pos[0], mouse_pos[1])
-        mouse.click()
 
 if __name__ == "__main__":
     Controller(Settings())

@@ -53,6 +53,7 @@
             Button:
                 text: "Already live"
                 size_hint: .3, 1
+                on_press: root.on_already
                 on_release: StartupControl.parent.parent.current = "MainScreen"
             Button:
                 id: "SubmitButton"
@@ -69,12 +70,12 @@
         Rectangle:
             pos: self.pos
             size: self.size
-    ToggleButton:
+    Button:
         id: go_live_button
         text: "Stream Toggle"
-        on_press: root.on_startup()
+        on_press: root.on_toggle_button()
         size_hint: .85, .75
-        background_color: .1, 0, 0, .5
+        background_color: .2, 0, 0, .5
 
 <SceneController>:
     canvas:

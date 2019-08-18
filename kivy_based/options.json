@@ -22,7 +22,8 @@
             "stop_stream" : "ctrl+alt+j"
         },
         "kivy":{
-            "scene_lock": "shift+3"
+            "modifier": "shift",
+            "scene_lock": "shift + 3"
         },
         "general":{
             "clicker_forward" : "PgUp", 

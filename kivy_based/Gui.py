@@ -88,6 +88,10 @@ class StartupScreen(Screen):
 class StartupController(AnchorLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.app = App.get_running_app()
+
+    def on_already(self, *args):
+        self.app.stream_running = True
 
     def on_submit(self, stream_name, *args):
         on_startup_button_submit(stream_name, self)
@@ -99,9 +103,34 @@ class MainScreen(Screen):
 class StreamController(AnchorLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.app = App.get_running_app()
+        self.app.bind(on_stop=self._stop_timer)
+        self.timer_flag = threading.Event()
+        self.shift_change()
 
-    def on_startup(self, *args):
-        print(self.ids.go_live_button)
+    def _stop_timer(self, *args):
+        self.timer_flag.set()
+
+    def on_toggle_button(self, *args):
+        if self.app._modifier_down():
+            if self.app.stream_running == True:
+                self.app.auto_contro.end_stream()
+                self.app.stream_running = False
+            else:
+                self.app.auto_contro.go_live()
+                self.app.stream_running = True
+
+    @threaded
+    def shift_change(self):
+        while not self.timer_flag.is_set():
+            if self.app._modifier_down():
+                if self.app.stream_running == True:
+                    self.ids.go_live_button.background_color = [1, 0, 0, 1]
+                else:
+                    self.ids.go_live_button.background_color = [0, 1, 0, 1]
+            else:
+                self.ids.go_live_button.background_color = [.2, 0, 0, .5]
+            time.sleep(1)
 
 class SceneController(AnchorLayout):
     
@@ -110,13 +139,16 @@ class SceneController(AnchorLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.timer_run = threading.Event()
+        if True == False:
+            self.app = GuiApp()
+        self.app = App.get_running_app()
         self._startup()
         
     @threaded
     def _startup(self):
         time.sleep(2)
-        self.auto_contro = AutomationController(Settings())
-        App.get_running_app().bind(on_stop=self._stop_timer)
+        self.auto_contro = AutomationController(self.app.settings)
+        self.app.bind(on_stop=self._stop_timer)
         self.start_hotkeys()
         self.timer_start_time = time.time()
         self.timer_length = 30
@@ -167,33 +199,30 @@ class SceneController(AnchorLayout):
         self.ids.live_camera.ids.cb.active = True
 
     def start_hotkeys(self):
-        sett = Settings()
-        keyboard.add_hotkey(sett.hotkeys.obs.camera_scene_hotkey[0], 
+        keyboard.add_hotkey(self.app.settings.hotkeys.obs.camera_scene_hotkey[0], 
             self.on_hotkey, args=("camera"))
-        keyboard.add_hotkey(sett.hotkeys.obs.center_screen_hotkey[0],
+        keyboard.add_hotkey(self.app.settings.hotkeys.obs.center_screen_hotkey[0],
             self.on_hotkey, args=("center"))
+        keyboard.add_hotkey(self.app.settings.hotkeys.kivy.scene_lock,
+            self.on_hotkey, args=("scene_lock"))
 
-    def on_hotkey(self, *hotkey):
-        
+    def on_hotkey(self, *hotkey):        
         hotkey = "".join(hotkey)
         print(f"hotkey {hotkey} caught")
         if hotkey == "camera":
             self.ids.live_camera.ids.cb._do_press()
         elif hotkey == "center":
             self.ids.center_screen.ids.cb._do_press()
-
-        elif hotkey == "shift_down":
-            self.shift = True
-        elif hotkey == "shift_up":
-            self.shift = False
-
+        elif hotkey == "scene_lock":
+            self.ids.SCQAutomatic.ids.cb._do_press()
+            
     def on_camera(self, *args):
-        self.auto_contro.obs_scene("camera")
+        self.auto_contro.obs_send("camera")
         self.pause_timer()
         self.zero_timer()
 
     def on_center_screen(self, *args):
-        self.auto_contro.obs_scene("center")
+        self.auto_contro.obs_send("center")
         self.on_auto()
 
     def on_auto(self, *args):
@@ -205,6 +234,16 @@ class SceneController(AnchorLayout):
                 self.reset_timer()
 
 class GuiApp(App):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.settings = Settings()
+        self.auto_contro = AutomationController(self.settings)
+        self.stream_running = False
+    
+    def _modifier_down(self):
+        return keyboard.is_pressed(self.settings.hotkeys.kivy.modifier)
+
     def build(self):
         return Controller()
 
