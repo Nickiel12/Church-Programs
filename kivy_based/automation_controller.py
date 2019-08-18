@@ -1,4 +1,6 @@
-import pyautogui
+import pyautogui 
+from pywinauto.application import WindowSpecification
+from pywinauto import Desktop
 import keyboard
 from kivy.app import App
 import mouse
@@ -7,6 +9,7 @@ import threading
 import webbrowser
 from functools import wraps
 import logging
+from win32.win32gui import GetWindowText, GetForegroundWindow
 from logging import debug
 if __name__=="__main__":
     logging.basicConfig(level=logging.DEBUG,
@@ -19,8 +22,6 @@ if True == False:
     from kivy_based.utils import Settings, threaded
     from kivy_based.dialogs import WarningPopup
     from kivy_based.exceptions import PopupNotExist
-
-
 
 def with_popup(func):
     @wraps(func)
@@ -35,24 +36,22 @@ class AutomationController:
         self.app = App.get_running_app()
         self.sett = self.app.settings
         self.platform_settings = self.sett[f"setup_{self.sett.streaming_service}"]
+        self.obs_dlg = Desktop(backend="uia").window(title_re=self.sett.windows.obs_re)
+        self.propre_dlg = Desktop(backend="uia").window(title_re=self.sett.windows.propresenter_re)
 # TODO
     def give_window_focus(self, window_to_focus):
-        pass 
-    #pip install pywinauto
-    #from pywinauto.findwindows import find_window
-    #from pywinauto.win32functions import SetForegroundWindow
-    #old = ??Get Foreground Window??
-    #if window_to_focues == "OBS":
-    #   SetForgroundWindow(find_window(title = #?"taskeng.exe"))
-    #   return old
-    #elif window_to_focus == "CHROME":
-    #   Set for ground...
-    #   return old
-    #elif window_to_focus == "PROPRESENTER":
-    #   Set for ground...
-    #   return old
-    #else:
-    # Set forground(window_to_focus)
+        if isinstance(window_to_focus, WindowSpecification):
+            window_to_focus.set_focus()
+        elif window_to_focus == None:
+            pass
+        elif window_to_focus.lower() == "propresenter":
+            #old_win = Desktop(backend="uia").window(title=GetWindowText(GetForegroundWindow()))
+            time.sleep(.1)
+            self.propre_dlg.set_focus()
+        elif window_to_focus.lower() == "obs":
+            #old_win = Desktop(backend="uia").window(title=GetWindowText(GetForegroundWindow()))
+            time.sleep(.1)
+            self.obs_dlg.set_focus()
 
     def obs_send(self, scene):
         """Change the current obs scene
@@ -61,30 +60,33 @@ class AutomationController:
             scene {str} -- specify which scene to switch to \n either "camera" or "center" \n or "start" or "stop"
         """
         if scene == "camera":
-            current = self.give_window_focus("OBS")
+            #current = self.give_window_focus("OBS")
+            self.give_window_focus("OBS")
             time.sleep(.2)
-            keyboard.write(self.sett.hotkeys.obs.camera_scene_hotkey[1])
-            self.give_window_focus(current)
+            keyboard.send(self.sett.hotkeys.obs.camera_scene_hotkey[1])
+            #self.give_window_focus(current)
         elif scene == "center":
-            current = self.give_window_focus("OBS")
+            self.give_window_focus("OBS")
+            #current = self.give_window_focus("OBS")
             time.sleep(.2)
-            keyboard.write(self.sett.hotkeys.obs.center_screen_hotkey[1])
-            self.give_window_focus(current)
+            keyboard.send(self.sett.hotkeys.obs.center_screen_hotkey[1])
+            #self.give_window_focus(current)
         elif scene == "start":
-            current = self.give_window_focus("OBS")
+            self.give_window_focus("OBS")
+            #current = self.give_window_focus("OBS")
             time.sleep(.2)
-            keyboard.write(self.sett.hotkeys.obs.start_stream)
-            self.give_window_focus(current)
+            keyboard.send(self.sett.hotkeys.obs.start_stream)
+            #self.give_window_focus(current)
         elif scene == "stop":
-            current = self.give_window_focus("OBS")
+            self.give_window_focus("OBS")
+            #current = self.give_window_focus("OBS")
             time.sleep(.2)
-            keyboard.write(self.sett.hotkeys.obs.stop_stream)
-            self.give_window_focus(current)
+            keyboard.send(self.sett.hotkeys.obs.stop_stream)
+            #self.give_window_focus(current)
     
     @threaded
     def go_live(self):
         self.obs_send("start")
-        print(self.platform_settings)
         mouse_pos = self.platform_settings["go_live"]
         mouse.move(mouse_pos[0], mouse_pos[1])
         mouse.click()

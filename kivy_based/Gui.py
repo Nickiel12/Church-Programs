@@ -1,4 +1,5 @@
 import atexit
+from automation_controller import Setup, AutomationController
 import kivy
 import keyboard
 from kivy.app import App
@@ -15,7 +16,6 @@ from tkinter import messagebox
 import time
 import threading
 
-from automation_controller import Setup, AutomationController
 from exceptions import PopupError, PopupNotExist, PrematureExit
 from dialogs import Question, WarningPopup
 from utils import make_functions, Settings, threaded
@@ -195,8 +195,7 @@ class SceneController(AnchorLayout):
             time.sleep(.1)
 
     def timer_run_out(self):
-        self.on_camera(None)
-        self.ids.live_camera.ids.cb.active = True
+        self.on_hotkey("camera")
 
     def start_hotkeys(self):
         keyboard.add_hotkey(self.app.settings.hotkeys.obs.camera_scene_hotkey[0], 
