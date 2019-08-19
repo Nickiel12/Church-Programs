@@ -45,9 +45,13 @@ class AutomationController:
         elif window_to_focus == None:
             pass
         elif window_to_focus.lower() == "propresenter":
-            #old_win = Desktop(backend="uia").window(title=GetWindowText(GetForegroundWindow()))
-            time.sleep(.1)
-            self.propre_dlg.set_focus()
+            old_win = Desktop(backend="uia").window(title=GetWindowText(GetForegroundWindow()))
+            if not old_win.wrapper_object() == self.propre_dlg.wrapper_object():
+                print("top window wasn't propresenter")
+                time.sleep(.1)
+                self.propre_dlg.set_focus()
+                return True
+            else: return False
         elif window_to_focus.lower() == "obs":
             #old_win = Desktop(backend="uia").window(title=GetWindowText(GetForegroundWindow()))
             time.sleep(.1)
@@ -85,16 +89,17 @@ class AutomationController:
             time.sleep(.2)
             keyboard.send(self.sett.hotkeys.obs.stop_stream)
             #self.give_window_focus(current)
+        self.give_window_focus("propresenter")
 
     def propre_send(self, hotkey):
         if hotkey.lower() == "next":
-            self.give_window_focus("propresenter")
-            time.sleep(.2)
-            keyboard.send(self.sett.hotkeys.general.clicker_forward)
+            if self.give_window_focus("propresenter"):
+                time.sleep(.2)
+                keyboard.send(self.sett.hotkeys.general.clicker_forward)
         elif hotkey.lower() == "prev":
-            self.give_window_focus("propresenter")
-            time.sleep(.2)
-            keyboard.send(self.sett.hotkeys.general.clicker_backward)
+            if self.give_window_focus("propresenter"):
+                time.sleep(.2)
+                keyboard.send(self.sett.hotkeys.general.clicker_backward)
     
     @threaded
     def go_live(self):
@@ -116,7 +121,7 @@ class AutomationController:
 class Setup:
     def __init__(self, popup:WarningPopup, stream_title:str, auto_contro:AutomationController
         , *args, **kwargs):
-        auto_contro.obs_send("start")
+        self.auto_contro = auto_contro
         self.popup = popup
         self.stream_title = stream_title
         self.settings = Settings()
@@ -152,6 +157,7 @@ class Setup:
     def write(self, text:str, timer_time):
         self.popup.set_task("Entering Text", timer_time)
         keyboard.write(text)
+        self.auto_contro.obs_send("start")
 
 if __name__ == "__main__":
     Controller(Settings())

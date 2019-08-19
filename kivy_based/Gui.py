@@ -47,7 +47,7 @@ def _run_startup(stream_name, *args):
         popup = WarningPopup()
         popup.open()
         
-        setup = Setup(popup, stream_name)
+        setup = Setup(popup, stream_name, App.get_running_app().auto_contro)
         settings = make_functions(setup)
         for i in settings:
             try:
@@ -106,7 +106,8 @@ class StreamController(AnchorLayout):
         self.app = App.get_running_app()
         self.app.bind(on_stop=self._stop_timer)
         self.timer_flag = threading.Event()
-        self.shift_change()
+        Window.bind(on_key_down=self.on_key_down)
+        Window.bind(on_key_up=self.on_key_up)
 
     def _stop_timer(self, *args):
         self.timer_flag.set()
@@ -120,17 +121,18 @@ class StreamController(AnchorLayout):
                 self.app.auto_contro.go_live()
                 self.app.stream_running = True
 
-    @threaded
-    def shift_change(self):
-        while not self.timer_flag.is_set():
-            if self.app._modifier_down():
-                if self.app.stream_running == True:
-                    self.ids.go_live_button.background_color = [1, 0, 0, 1]
-                else:
-                    self.ids.go_live_button.background_color = [0, 1, 0, 1]
+    def on_key_up(self, *args):
+        if "shift" in args[-1]:
+            self.ids.go_live_button.background_color = [.2, 0, 0, .5]
+
+    def on_key_down(self, *args):
+        if "shift" in args[-1]:
+            if self.app.stream_running == True:
+                self.ids.go_live_button.background_color = [1, 0, 0, 1]
             else:
-                self.ids.go_live_button.background_color = [.2, 0, 0, .5]
-            time.sleep(1)
+                self.ids.go_live_button.background_color = [0, 1, 0, 1]
+        else:
+            self.ids.go_live_button.background_color = [.2, 0, 0, .5]
 
 class SceneController(AnchorLayout):
     
