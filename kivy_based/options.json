@@ -16,7 +16,11 @@
     },
     "windows":{
         "obs_re": "OBS .*",
-        "propresenter_re": "ProPresenter - .*"
+        "propresenter_re": "ProPresenter - .*",
+        "chrome_re": ".* - Google Chrome"
+    },
+    "kivy":{
+        "scene_timer_time": 15
     },
     "hotkeys":{
         "obs":{
@@ -30,8 +34,8 @@
             "scene_lock": "shift + 3"
         },
         "general":{
-            "clicker_forward" : "page up", 
-            "clicker_backward" : "page down"
+            "clicker_forward" : "page down", 
+            "clicker_backward" : "page up"
         }
     }
     

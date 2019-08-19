@@ -37,6 +37,7 @@ class AutomationController:
         self.platform_settings = self.sett[f"setup_{self.sett.streaming_service}"]
         self.obs_dlg = Desktop(backend="uia").window(title_re=self.sett.windows.obs_re)
         self.propre_dlg = Desktop(backend="uia").window(title_re=self.sett.windows.propresenter_re)
+        self.chrome_dlg = Desktop(backend="uia").window(title_re=self.sett.windows.chrome_re)
 # TODO
     def give_window_focus(self, window_to_focus):
         if isinstance(window_to_focus, WindowSpecification):
@@ -51,6 +52,8 @@ class AutomationController:
             #old_win = Desktop(backend="uia").window(title=GetWindowText(GetForegroundWindow()))
             time.sleep(.1)
             self.obs_dlg.set_focus()
+        elif window_to_focus.lower() == "chrome":
+            time.sleep(.1)
 
     def obs_send(self, scene):
         """Change the current obs scene
@@ -89,19 +92,31 @@ class AutomationController:
             time.sleep(.2)
             keyboard.send(self.sett.hotkeys.general.clicker_forward)
         elif hotkey.lower() == "prev":
-            self.give_window_focus("prepresenter")
+            self.give_window_focus("propresenter")
             time.sleep(.2)
             keyboard.send(self.sett.hotkeys.general.clicker_backward)
     
     @threaded
     def go_live(self):
-        self.obs_send("start")
+        self.give_window_focus("chrome")
+        time.sleep(.2)
         mouse_pos = self.platform_settings["go_live"]
         mouse.move(mouse_pos[0], mouse_pos[1])
         mouse.click()
 
+    @threaded
+    def end_stream(self):
+        self.give_window_focus("chrome")
+        time.sleep(.2)
+        mouse_pos = self.platform_settings["go_live"]
+        mouse.click()
+        time.sleep(.2)
+        self.obs_send("stop")
+
 class Setup:
-    def __init__(self, popup:WarningPopup, stream_title:str, *args, **kwargs):
+    def __init__(self, popup:WarningPopup, stream_title:str, auto_contro:AutomationController
+        , *args, **kwargs):
+        auto_contro.obs_send("start")
         self.popup = popup
         self.stream_title = stream_title
         self.settings = Settings()

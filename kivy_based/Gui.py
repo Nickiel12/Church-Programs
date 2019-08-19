@@ -151,7 +151,7 @@ class SceneController(AnchorLayout):
         self.app.bind(on_stop=self._stop_timer)
         self.start_hotkeys()
         self.timer_start_time = time.time()
-        self.timer_length = 30
+        self.timer_length = self.app.settings.kivy.scene_timer_time
         self._timer_paused = True
         self.automatic = True
         self._timer()
