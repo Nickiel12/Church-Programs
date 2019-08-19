@@ -122,11 +122,11 @@ class StreamController(AnchorLayout):
                 self.app.stream_running = True
 
     def on_key_up(self, *args):
-        if "shift" in args[-1]:
+        if not self.app._modifier_down():
             self.ids.go_live_button.background_color = [.2, 0, 0, .5]
 
     def on_key_down(self, *args):
-        if "shift" in args[-1]:
+        if self.app.settings.hotkeys.kivy.modifier in args[-1]:
             if self.app.stream_running == True:
                 self.ids.go_live_button.background_color = [1, 0, 0, 1]
             else:
