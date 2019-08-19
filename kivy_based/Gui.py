@@ -204,6 +204,10 @@ class SceneController(AnchorLayout):
             self.on_hotkey, args=("center"))
         keyboard.add_hotkey(self.app.settings.hotkeys.kivy.scene_lock,
             self.on_hotkey, args=("scene_lock"))
+        keyboard.add_hotkey(self.app.settings.hotkeys.general.clicker_forward,
+            self.on_hotkey, args=("clicker_next"))
+        keyboard.add_hotkey(self.app.settings.hotkeys.general.clicker_backward,
+            self.on_hotkey, args=("clicker_prev"))
 
     def on_hotkey(self, *hotkey):        
         hotkey = "".join(hotkey)
@@ -214,6 +218,12 @@ class SceneController(AnchorLayout):
             self.ids.center_screen.ids.cb._do_press()
         elif hotkey == "scene_lock":
             self.ids.SCQAutomatic.ids.cb._do_press()
+        elif hotkey == "clicker_next":
+            self.app.auto_contro.propre_send("next")
+            self.ids.center_screen.ids.cb._do_press()
+        elif hotkey == "clicker_prev":
+            self.app.auto_contro.propre_send("prev")
+            self.ids.center_screen.ids.cb._do_press()
             
     def on_camera(self, *args):
         self.auto_contro.obs_send("camera")

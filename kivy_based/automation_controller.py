@@ -82,6 +82,16 @@ class AutomationController:
             time.sleep(.2)
             keyboard.send(self.sett.hotkeys.obs.stop_stream)
             #self.give_window_focus(current)
+
+    def propre_send(self, hotkey):
+        if hotkey.lower() == "next":
+            self.give_window_focus("propresenter")
+            time.sleep(.2)
+            keyboard.send(self.sett.hotkeys.general.clicker_forward)
+        elif hotkey.lower() == "prev":
+            self.give_window_focus("prepresenter")
+            time.sleep(.2)
+            keyboard.send(self.sett.hotkeys.general.clicker_backward)
     
     @threaded
     def go_live(self):

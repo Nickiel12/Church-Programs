@@ -30,7 +30,7 @@
             "scene_lock": "shift + 3"
         },
         "general":{
-            "clicker_forward" : "PgUp", 
+            "clicker_forward" : "page up", 
             "clicker_backward" : "page down"
         }
     }
