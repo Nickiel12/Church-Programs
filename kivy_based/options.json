@@ -3,20 +3,20 @@
     "setup_facebook":{
         "url": "https://www.facebook.com/CenterEvents1/",
         "wait_0": 8,
-        "mos_one": [711, 741],
+        "mos_one": [430, 593],
         "wait_1": 5,
-        "mos_two": [1084, 190],
+        "mos_two": [719, 152],
         "wait_2": 1.5,
-        "mos_three": [1577, 649],
+        "mos_three": [1018, 518],
         "title": "",
-        "go_live": [1790, 966]
+        "go_live": [1174, 922]
     },
     "dev_setup_facebook":{
 
     },
     "windows":{
         "obs_re": "OBS .*",
-        "propresenter_re": "ProPresenter 6 .*"
+        "propresenter_re": "[p-P]ro[P-p]resenter /d .*"
     },
     "hotkeys":{
         "obs":{
