@@ -1,4 +1,3 @@
-import pyautogui 
 from pywinauto.application import WindowSpecification
 from pywinauto import Desktop
 import keyboard

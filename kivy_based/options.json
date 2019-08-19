@@ -16,7 +16,7 @@
     },
     "windows":{
         "obs_re": "OBS .*",
-        "propresenter_re": "[p-P]ro[P-p]resenter /d .*"
+        "propresenter_re": "ProPresenter - .*"
     },
     "hotkeys":{
         "obs":{
