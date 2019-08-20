@@ -145,21 +145,24 @@ class WarningPopup:
         debug("thread closed")
         return
 
-def Question(question:str, window_name:str, style="YesNo"):
-    question = QuestionDialog(question, window_name, style)
+def Question(question:str, window_name:str, style="YesNo", tall=False):
+    question = QuestionDialog(question, window_name, style, tall)
     while question.has_answer == False:
         time.sleep(.05)
     return question.value
 
 class QuestionDialog():
-    def __init__(self, question:str, window_name:str, style="YesNo"):
+    def __init__(self, question:str, window_name:str, style, tall):
         self.value = False
         self.has_answer = False
         self.root = tkinter.Tk()
         self.root.wm_attributes("-topmost", 1)
         self.root.winfo_toplevel().title(window_name)
         self.win_x_size = 400
-        self.win_y_size = 100
+        if tall == False:
+            self.win_y_size = 100
+        else:
+            self.win_y_size = 150
         pos_right = int(self.root.winfo_screenwidth()/2 -self.win_x_size/2)
         pos_up = int(self.root.winfo_screenheight()/3 - self.win_y_size/2) 
         self.root.geometry(f"{self.win_x_size}x{self.win_y_size}+{pos_right}+{pos_up}")
@@ -181,13 +184,13 @@ class QuestionDialog():
 
     def msg_yes(self):
         self.value = True
-        self.has_answer = True
         self.root.quit()
+        self.has_answer = True
     
     def msg_no(self):
         self.value = False
-        self.has_answer = True
         self.root.quit()
+        self.has_answer = True
 
 if __name__ == "__main__":
     debug(Question("A really simple question", "too cool"))

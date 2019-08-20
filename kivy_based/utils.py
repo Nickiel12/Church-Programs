@@ -26,6 +26,28 @@ def threaded(func):
         return thread
     return wrapper
 
+@threaded
+def open_program(program, program_path = None):
+    """opens the program argument, if present, program_path is opened instead
+    
+    Arguments:
+        program {str} -- either "obs", or "propresenter"
+    
+    Keyword Arguments:
+        program_path {str or pathlib2 path object} -- a path to a file to open (default: {None})
+    """
+
+#TODO add propresenter path
+    obs_path = pathlib2.Path(
+    "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs"+
+    "\\OBS Studio\\OBS Studio (64bit).lnk")
+
+    if not program_path:
+        if program.lower() == "obs":
+            os.startfile(str(obs_path))
+        elif program.lower() == "propresenter":
+            raise NotImplementedError("propresenter, open path not implemented")
+            #os.startfile(str(pro_path))
 def make_functions(setup_inst):
     output = []
     platform_settings = setup_inst.platform_settings

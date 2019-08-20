@@ -1,5 +1,6 @@
 from pywinauto.application import WindowSpecification
 from pywinauto import Desktop
+from pywinauto.findwindows import ElementNotFoundError
 import keyboard
 from kivy.app import App
 import mouse
@@ -15,11 +16,11 @@ if __name__=="__main__":
     format= '%(asctime)s - %(levelname)s - %(message)s')
     
 from exceptions import PopupNotExist 
-from dialogs import WarningPopup
-from utils import Settings, threaded
+from dialogs import WarningPopup, Question
+from utils import Settings, threaded, open_program
 if True == False:
-    from kivy_based.utils import Settings, threaded
-    from kivy_based.dialogs import WarningPopup
+    from kivy_based.utils import Settings, threaded, open_program
+    from kivy_based.dialogs import WarningPopup, Question
     from kivy_based.exceptions import PopupNotExist
 
 def with_popup(func):
@@ -59,47 +60,68 @@ class AutomationController:
         elif window_to_focus.lower() == "chrome":
             time.sleep(.1)
 
+    def window_not_found(self, obs=False, propresenter=False):
+        if propresenter == True:
+            if Question("The ProPresenter 6 window was not found,\n and it is assumed that it is not open\n"+
+                    "Would you like to open it?\n(\"No\" if it is already open)", "Program Not Found", tall=True):
+                    open_program("propresenter")
+        if obs == True:
+            if Question("The OBS window was not found,\n and it is assumed that it is not open\n\n"+
+                "Would you like to open it?\n(\"No\" if it is already open)", "Program Not Found", tall=True):
+                open_program('obs')
+
+    @threaded
     def obs_send(self, scene):
         """Change the current obs scene
         
         Arguments:
             scene {str} -- specify which scene to switch to \n either "camera" or "center" \n or "start" or "stop"
         """
-        if scene == "camera":
-            #current = self.give_window_focus("OBS")
-            self.give_window_focus("OBS")
-            time.sleep(.2)
-            keyboard.send(self.sett.hotkeys.obs.camera_scene_hotkey[1])
-            #self.give_window_focus(current)
-        elif scene == "center":
-            self.give_window_focus("OBS")
-            #current = self.give_window_focus("OBS")
-            time.sleep(.2)
-            keyboard.send(self.sett.hotkeys.obs.center_screen_hotkey[1])
-            #self.give_window_focus(current)
-        elif scene == "start":
-            self.give_window_focus("OBS")
-            #current = self.give_window_focus("OBS")
-            time.sleep(.2)
-            keyboard.send(self.sett.hotkeys.obs.start_stream)
-            #self.give_window_focus(current)
-        elif scene == "stop":
-            self.give_window_focus("OBS")
-            #current = self.give_window_focus("OBS")
-            time.sleep(.2)
-            keyboard.send(self.sett.hotkeys.obs.stop_stream)
-            #self.give_window_focus(current)
-        self.give_window_focus("propresenter")
+        try:
+            if scene == "camera":
+                #current = self.give_window_focus("OBS")
+                self.give_window_focus("OBS")
+                time.sleep(.2)
+                keyboard.send(self.sett.hotkeys.obs.camera_scene_hotkey[1])
+                #self.give_window_focus(current)
+            elif scene == "center":
+                self.give_window_focus("OBS")
+                #current = self.give_window_focus("OBS")
+                time.sleep(.2)
+                keyboard.send(self.sett.hotkeys.obs.center_screen_hotkey[1])
+                #self.give_window_focus(current)
+            elif scene == "start":
+                self.give_window_focus("OBS")
+                #current = self.give_window_focus("OBS")
+                time.sleep(.2)
+                keyboard.send(self.sett.hotkeys.obs.start_stream)
+                #self.give_window_focus(current)
+            elif scene == "stop":
+                self.give_window_focus("OBS")
+                #current = self.give_window_focus("OBS")
+                time.sleep(.2)
+                keyboard.send(self.sett.hotkeys.obs.stop_stream)
+                #self.give_window_focus(current)
+        except ElementNotFoundError:
+            self.window_not_found(obs=True)
+        try:
+            self.give_window_focus("propresenter")
+        except ElementNotFoundError:
+            self.window_not_found(propresenter=True)
 
+    @threaded
     def propre_send(self, hotkey):
-        if hotkey.lower() == "next":
-            if self.give_window_focus("propresenter"):
-                time.sleep(.2)
-                keyboard.send(self.sett.hotkeys.general.clicker_forward)
-        elif hotkey.lower() == "prev":
-            if self.give_window_focus("propresenter"):
-                time.sleep(.2)
-                keyboard.send(self.sett.hotkeys.general.clicker_backward)
+        try:
+            if hotkey.lower() == "next":
+                if self.give_window_focus("propresenter"):
+                    time.sleep(.2)
+                    keyboard.send(self.sett.hotkeys.general.clicker_forward)
+            elif hotkey.lower() == "prev":
+                if self.give_window_focus("propresenter"):
+                    time.sleep(.2)
+                    keyboard.send(self.sett.hotkeys.general.clicker_backward)
+        except ElementNotFoundError:
+            self.window_not_found(propresenter=True)
     
     @threaded
     def go_live(self):

@@ -141,6 +141,7 @@ class SceneController(AnchorLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.timer_run = threading.Event()
+        self.current_scene = "camera"
         if True == False:
             self.app = GuiApp()
         self.app = App.get_running_app()
@@ -185,9 +186,9 @@ class SceneController(AnchorLayout):
             try:
                 if self._timer_paused == False:
                     end_time = self.timer_start_time + self.timer_length
-                    timer_left = round(end_time - time.time(), 1)
-                    if timer_left >= 0:
-                        self.ids.TimerLabel.text = str(timer_left)
+                    self.timer_left = round(end_time - time.time(), 1)
+                    if self.timer_left >= 0:
+                        self.ids.TimerLabel.text = str(self.timer_left)
                     else:
                         self.timer_run_out()
                 else:
@@ -228,12 +229,15 @@ class SceneController(AnchorLayout):
             self.ids.center_screen.ids.cb._do_press()
             
     def on_camera(self, *args):
-        self.auto_contro.obs_send("camera")
-        self.pause_timer()
-        self.zero_timer()
+        if self.current_scene != "camera":
+            self.current_scene = "camera"
+            self.auto_contro.obs_send("camera")
+            self.zero_timer()
 
     def on_center_screen(self, *args):
-        self.auto_contro.obs_send("center")
+        if self.current_scene != "center":
+            self.current_scene = "center"
+            self.auto_contro.obs_send("center")
         self.on_auto()
 
     def on_auto(self, *args):
