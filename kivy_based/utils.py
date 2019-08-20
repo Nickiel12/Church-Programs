@@ -41,13 +41,15 @@ def open_program(program, program_path = None):
     obs_path = pathlib2.Path(
     "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs"+
     "\\OBS Studio\\OBS Studio (64bit).lnk")
+    pro_path = pathlib2.Path("C:\\Program Files (x86)\\Renewed Vision\\+"+
+    "ProPresenter 6\\ProPresenter.exe")
 
     if not program_path:
         if program.lower() == "obs":
             os.startfile(str(obs_path))
         elif program.lower() == "propresenter":
-            raise NotImplementedError("propresenter, open path not implemented")
-            #os.startfile(str(pro_path))
+            os.startfile(str(pro_path))
+            
 def make_functions(setup_inst):
     output = []
     platform_settings = setup_inst.platform_settings
