@@ -58,6 +58,7 @@ class AutomationController:
             time.sleep(.1)
             self.obs_dlg.set_focus()
         elif window_to_focus.lower() == "chrome":
+            self.chrome_dlg.set_focus()
             time.sleep(.1)
 
     def window_not_found(self, obs=False, propresenter=False):
