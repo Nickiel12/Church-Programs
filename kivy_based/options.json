@@ -15,7 +15,7 @@
 
     },
     "windows":{
-        "obs_re": "OBS .* - Profile: .*",
+        "obs_re": "OBS [0-9]* (64-bit, windows) - Profile: .*",
         "propresenter_re": "ProPresenter - .*",
         "chrome_re": ".* - Google Chrome"
     },

@@ -216,17 +216,29 @@ class SceneController(AnchorLayout):
         hotkey = "".join(hotkey)
         print(f"hotkey {hotkey} caught")
         if hotkey == "camera":
-            self.ids.live_camera.ids.cb._do_press()
+            self._do_fake_press_camera()
         elif hotkey == "center":
-            self.ids.center_screen.ids.cb._do_press()
+            self._do_fake_press_center
         elif hotkey == "scene_lock":
             self.ids.SCQAutomatic.ids.cb._do_press()
         elif hotkey == "clicker_next":
             self.app.auto_contro.propre_send("next")
-            self.ids.center_screen.ids.cb._do_press()
+            self._do_fake_press_center
         elif hotkey == "clicker_prev":
             self.app.auto_contro.propre_send("prev")
-            self.ids.center_screen.ids.cb._do_press()
+            self._do_fake_press_center
+
+    def _do_fake_press_camera(self):
+        if self.ids.live_camera.ids.cb.active == True:
+            self.on_camera()
+        else:
+            self.ids.live_camera.ids.cb._do_press()
+
+    def _do_fake_press_center(self):
+        if self.ids.center_screen.ids.cb.active == True:
+            self.on_center_screen()
+        else:
+            self._do_fake_press_center
             
     def on_camera(self, *args):
         if self.current_scene != "camera":

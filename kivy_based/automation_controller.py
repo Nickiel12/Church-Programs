@@ -82,25 +82,25 @@ class AutomationController:
             if scene == "camera":
                 #current = self.give_window_focus("OBS")
                 self.give_window_focus("OBS")
-                time.sleep(.2)
+                time.sleep(.3)
                 keyboard.send(self.sett.hotkeys.obs.camera_scene_hotkey[1])
                 #self.give_window_focus(current)
             elif scene == "center":
                 self.give_window_focus("OBS")
                 #current = self.give_window_focus("OBS")
-                time.sleep(.2)
+                time.sleep(.3)
                 keyboard.send(self.sett.hotkeys.obs.center_screen_hotkey[1])
                 #self.give_window_focus(current)
             elif scene == "start":
                 self.give_window_focus("OBS")
                 #current = self.give_window_focus("OBS")
-                time.sleep(.2)
+                time.sleep(.3)
                 keyboard.send(self.sett.hotkeys.obs.start_stream)
                 #self.give_window_focus(current)
             elif scene == "stop":
                 self.give_window_focus("OBS")
                 #current = self.give_window_focus("OBS")
-                time.sleep(.2)
+                time.sleep(.3)
                 keyboard.send(self.sett.hotkeys.obs.stop_stream)
                 #self.give_window_focus(current)
         except ElementNotFoundError:
