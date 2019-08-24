@@ -3,7 +3,10 @@ from pywinauto import Desktop
 from pywinauto.findwindows import ElementNotFoundError
 import keyboard
 from kivy.app import App
+import pathlib2
 import mouse
+import os
+import subprocess
 import time
 import threading
 import webbrowser
@@ -33,32 +36,26 @@ def with_popup(func):
 
 class AutomationController:
     def __init__(self, settings, default_browser="CHROME"):
+        self.exe_path = str(pathlib2.Path(os.path.abspath(__file__)).parent/"ahk_exe"/"window_opener.exe")
         self.app = App.get_running_app()
         self.sett = self.app.settings
         self.platform_settings = self.sett[f"setup_{self.sett.streaming_service}"]
-        self.obs_dlg = Desktop(backend="uia").window(title_re=self.sett.windows.obs_re)
         self.propre_dlg = Desktop(backend="uia").window(title_re=self.sett.windows.propresenter_re)
-        self.chrome_dlg = Desktop(backend="uia").window(title_re=self.sett.windows.chrome_re)
 # TODO
     def give_window_focus(self, window_to_focus):
-        if isinstance(window_to_focus, WindowSpecification):
-            window_to_focus.set_focus()
-        elif window_to_focus == None:
-            pass
-        elif window_to_focus.lower() == "propresenter":
+        if window_to_focus.lower() == "propresenter":
             old_win = Desktop(backend="uia").window(title=GetWindowText(GetForegroundWindow()))
             if not old_win.wrapper_object() == self.propre_dlg.wrapper_object():
-                print("top window wasn't propresenter")
+                subprocess.call([self.exe_path, self.sett.windows.propresenter_re])
                 time.sleep(.1)
-                self.propre_dlg.set_focus()
                 return True
-            else: return False
+            else:
+                return False
         elif window_to_focus.lower() == "obs":
-            #old_win = Desktop(backend="uia").window(title=GetWindowText(GetForegroundWindow()))
+            subprocess.call([self.exe_path, self.sett.windows.obs_re])
             time.sleep(.1)
-            self.obs_dlg.set_focus()
         elif window_to_focus.lower() == "chrome":
-            self.chrome_dlg.set_focus()
+            subprocess.call([self.exe_path, self.sett.windows.chrome_re])
             time.sleep(.1)
 
     def window_not_found(self, obs=False, propresenter=False):
@@ -78,52 +75,34 @@ class AutomationController:
         Arguments:
             scene {str} -- specify which scene to switch to \n either "camera" or "center" \n or "start" or "stop"
         """
-        try:
-            if scene == "camera":
-                #current = self.give_window_focus("OBS")
-                self.give_window_focus("OBS")
-                time.sleep(.3)
-                keyboard.send(self.sett.hotkeys.obs.camera_scene_hotkey[1])
-                #self.give_window_focus(current)
-            elif scene == "center":
-                self.give_window_focus("OBS")
-                #current = self.give_window_focus("OBS")
-                time.sleep(.3)
-                keyboard.send(self.sett.hotkeys.obs.center_screen_hotkey[1])
-                #self.give_window_focus(current)
-            elif scene == "start":
-                self.give_window_focus("OBS")
-                #current = self.give_window_focus("OBS")
-                time.sleep(.3)
-                keyboard.send(self.sett.hotkeys.obs.start_stream)
-                #self.give_window_focus(current)
-            elif scene == "stop":
-                self.give_window_focus("OBS")
-                #current = self.give_window_focus("OBS")
-                time.sleep(.3)
-                keyboard.send(self.sett.hotkeys.obs.stop_stream)
-                #self.give_window_focus(current)
-        except ElementNotFoundError:
-            self.window_not_found(obs=True)
-        try:
-            self.give_window_focus("propresenter")
-        except ElementNotFoundError:
-            self.window_not_found(propresenter=True)
-
+        if scene == "camera":
+            self.give_window_focus("obs")
+            time.sleep(.3)
+            keyboard.send(self.sett.hotkeys.obs.camera_scene_hotkey[1])
+        elif scene == "center":
+            self.give_window_focus("obs")
+            time.sleep(.3)
+            keyboard.send(self.sett.hotkeys.obs.center_screen_hotkey[1])
+        elif scene == "start":
+            self.give_window_focus("obs")
+            time.sleep(.3)
+            keyboard.send(self.sett.hotkeys.obs.start_stream)
+        elif scene == "stop":
+            self.give_window_focus("obs")
+            time.sleep(.3)
+            keyboard.send(self.sett.hotkeys.obs.stop_stream)
+        self.give_window_focus("propresenter")
+        
     @threaded
     def propre_send(self, hotkey):
-        try:
-            if hotkey.lower() == "next":
-                if self.give_window_focus("propresenter"):
-                    time.sleep(.2)
-                    keyboard.send(self.sett.hotkeys.general.clicker_forward)
-            elif hotkey.lower() == "prev":
-                if self.give_window_focus("propresenter"):
-                    time.sleep(.2)
-                    keyboard.send(self.sett.hotkeys.general.clicker_backward)
-        except ElementNotFoundError:
-            self.window_not_found(propresenter=True)
-    
+        if hotkey.lower() == "next":
+            if self.give_window_focus("propresenter"):
+                time.sleep(.2)
+                keyboard.send(self.sett.hotkeys.general.clicker_forward)
+        elif hotkey.lower() == "prev":
+            if self.give_window_focus("propresenter"):
+                time.sleep(.2)
+                keyboard.send(self.sett.hotkeys.general.clicker_backward)
     @threaded
     def go_live(self):
         self.give_window_focus("chrome")
@@ -183,5 +162,6 @@ class Setup:
         self.auto_contro.obs_send("start")
 
 if __name__ == "__main__":
-    Controller(Settings())
-    keyboard.wait("ESC")
+    auto_contro = AutomationController(Settings())
+    keyboard.wait("esc")
+    auto_contro.give_window_focus("obs")

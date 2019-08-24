@@ -1,4 +1,5 @@
 import atexit
+#this line must be above kivy, becuase of kivy/pywinauto unhappiness
 from automation_controller import Setup, AutomationController
 import kivy
 import keyboard
@@ -11,7 +12,9 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty
+import pathlib2
 import sys
+import os
 from tkinter import messagebox
 import time
 import threading
@@ -223,22 +226,26 @@ class SceneController(AnchorLayout):
             self.ids.SCQAutomatic.ids.cb._do_press()
         elif hotkey == "clicker_next":
             self.app.auto_contro.propre_send("next")
-            self._do_fake_press_center
+            self._do_fake_press_center()
         elif hotkey == "clicker_prev":
             self.app.auto_contro.propre_send("prev")
-            self._do_fake_press_center
+            self._do_fake_press_center()
 
     def _do_fake_press_camera(self):
         if self.ids.live_camera.ids.cb.active == True:
+            print(f"doing fake press camera, with button selected")
             self.on_camera()
         else:
+            print(f"doing fake press camera, without button selected")
             self.ids.live_camera.ids.cb._do_press()
 
     def _do_fake_press_center(self):
         if self.ids.center_screen.ids.cb.active == True:
+            print(f"doing fake press center, with button selected")
             self.on_center_screen()
         else:
-            self._do_fake_press_center
+            print(f"doing fake press center, without button selected")
+            self.ids.center_screen.ids.cb._do_press()
             
     def on_camera(self, *args):
         if self.current_scene != "camera":
@@ -272,6 +279,8 @@ class GuiApp(App):
         return keyboard.is_pressed(self.settings.hotkeys.kivy.modifier)
 
     def build(self):
+        self.icon = str(pathlib2.Path(os.path.abspath(__file__)).parent / "resources"/"gear_icon.ico")
+        print(self.icon)
         return Controller()
 
 if __name__ == "__main__":
