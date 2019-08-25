@@ -205,15 +205,15 @@ class SceneController(AnchorLayout):
 
     def start_hotkeys(self):
         keyboard.add_hotkey(self.app.settings.hotkeys.obs.camera_scene_hotkey[0], 
-            self.on_hotkey, args=("camera"))
+            self.on_hotkey, args=("camera"), suppress=True)
         keyboard.add_hotkey(self.app.settings.hotkeys.obs.center_screen_hotkey[0],
-            self.on_hotkey, args=("center"))
+            self.on_hotkey, args=("center"), suppress=True)
         keyboard.add_hotkey(self.app.settings.hotkeys.kivy.scene_lock,
-            self.on_hotkey, args=("scene_lock"))
+            self.on_hotkey, args=("scene_lock"), suppress=True)
         keyboard.add_hotkey(self.app.settings.hotkeys.general.clicker_forward,
-            self.on_hotkey, args=("clicker_next"))
+            self.on_hotkey, args=("clicker_next"), suppress=True)
         keyboard.add_hotkey(self.app.settings.hotkeys.general.clicker_backward,
-            self.on_hotkey, args=("clicker_prev"))
+            self.on_hotkey, args=("clicker_prev"), suppress=True)
 
     def on_hotkey(self, *hotkey):        
         hotkey = "".join(hotkey)
@@ -221,7 +221,7 @@ class SceneController(AnchorLayout):
         if hotkey == "camera":
             self._do_fake_press_camera()
         elif hotkey == "center":
-            self._do_fake_press_center
+            self._do_fake_press_center()
         elif hotkey == "scene_lock":
             self.ids.SCQAutomatic.ids.cb._do_press()
         elif hotkey == "clicker_next":
