@@ -206,15 +206,21 @@ class SceneController(AnchorLayout):
     def start_hotkeys(self):
         keyboard.add_hotkey(self.app.settings.hotkeys.obs.camera_scene_hotkey[0], 
             self.on_hotkey, args=("camera"), suppress=True)
+        print(f"binding hotkey {self.app.settings.hotkeys.obs.camera_scene_hotkey[0]}")
         keyboard.add_hotkey(self.app.settings.hotkeys.obs.center_screen_hotkey[0],
             self.on_hotkey, args=("center"), suppress=True)
+        print(f"binding hotkey {self.app.settings.hotkeys.obs.center_screen_hotkey[0]}")
         keyboard.add_hotkey(self.app.settings.hotkeys.kivy.scene_lock,
             self.on_hotkey, args=("scene_lock"), suppress=True)
+        print(f"binding hotkey {self.app.settings.hotkeys.kivy.scene_lock}")
         keyboard.add_hotkey(self.app.settings.hotkeys.general.clicker_forward,
             self.on_hotkey, args=("clicker_next"), suppress=True)
+        print(f"binding hotkey {self.app.settings.hotkeys.general.clicker_forward}")
         keyboard.add_hotkey(self.app.settings.hotkeys.general.clicker_backward,
             self.on_hotkey, args=("clicker_prev"), suppress=True)
+        print(f"binding hotkey {self.app.settings.hotkeys.general.clicker_backward}")
 
+    @threaded
     def on_hotkey(self, *hotkey):        
         hotkey = "".join(hotkey)
         print(f"hotkey {hotkey} caught")

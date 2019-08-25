@@ -38,6 +38,10 @@ class AutomationController:
     def __init__(self, settings, default_browser="CHROME"):
         self.exe_path = str(pathlib2.Path(os.path.abspath(__file__)).parent/"ahk_exe"/"window_opener.exe")
         self.app = App.get_running_app()
+        # TODO get application name to always bring the controller to the top of the windows so that the page up isn't
+        # sent to the propreseter window
+        self.app_name = self.app.get_application_name()
+        print(self.app_name)
         self.sett = self.app.settings
         self.platform_settings = self.sett[f"setup_{self.sett.streaming_service}"]
         self.propre_dlg = Desktop(backend="uia").window(title_re=self.sett.windows.propresenter_re)
@@ -88,7 +92,6 @@ class AutomationController:
             keyboard.send(self.sett.hotkeys.obs.stop_stream)
         self.give_window_focus("propresenter")
         
-    @threaded
     def propre_send(self, hotkey):
         if hotkey.lower() == "next":
             self.give_window_focus("propresenter")
