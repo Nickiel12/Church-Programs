@@ -44,13 +44,8 @@ class AutomationController:
 # TODO
     def give_window_focus(self, window_to_focus):
         if window_to_focus.lower() == "propresenter":
-            old_win = Desktop(backend="uia").window(title=GetWindowText(GetForegroundWindow()))
-            if not old_win.wrapper_object() == self.propre_dlg.wrapper_object():
-                subprocess.call([self.exe_path, self.sett.windows.propresenter_re])
-                time.sleep(.1)
-                return True
-            else:
-                return False
+            subprocess.call([self.exe_path, self.sett.windows.propresenter_re])
+            time.sleep(.1)
         elif window_to_focus.lower() == "obs":
             subprocess.call([self.exe_path, self.sett.windows.obs_re])
             time.sleep(.1)
@@ -96,13 +91,13 @@ class AutomationController:
     @threaded
     def propre_send(self, hotkey):
         if hotkey.lower() == "next":
-            if self.give_window_focus("propresenter"):
-                time.sleep(.2)
-                keyboard.send(self.sett.hotkeys.general.clicker_forward)
+            self.give_window_focus("propresenter")
+            time.sleep(.2)
+            keyboard.send(self.sett.hotkeys.general.clicker_forward)
         elif hotkey.lower() == "prev":
-            if self.give_window_focus("propresenter"):
-                time.sleep(.2)
-                keyboard.send(self.sett.hotkeys.general.clicker_backward)
+            self.give_window_focus("propresenter")
+            time.sleep(.2)
+            keyboard.send(self.sett.hotkeys.general.clicker_backward)
     @threaded
     def go_live(self):
         self.give_window_focus("chrome")
