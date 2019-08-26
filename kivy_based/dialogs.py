@@ -1,3 +1,4 @@
+from kivy.logger import Logger
 import tkinter
 from tkinter import Tk, Label, StringVar
 from tkinter.font import Font
@@ -6,14 +7,7 @@ import time
 
 from exceptions import PopupError, PopupNotExist, PrematureExit
 if True == False:
-    from kivy_based.exceptions import PopupError, PopupNotExist, PrematureExit
-
-import logging
-from logging import debug
-if __name__=="__main__":
-    logging.basicConfig(level=logging.DEBUG,
-        format= '%(asctime)s - %(levelname)s - %(message)s')
-    
+    from kivy_based.exceptions import PopupError, PopupNotExist, PrematureExit    
 
 class ChangeableText:
     def __init__(self, unchanging_text, default_additional):
@@ -62,8 +56,8 @@ class WarningPopup:
         while not self.timer_event.is_set():
             try:
                 time_left = end_time - time.time()
-                #debug(f"time_left is {time_left}")
-                #debug(f"end_time is {end_time}")
+                #Logger.debug(f"time_left is {time_left}")
+                #Logger.debug(f"end_time is {end_time}")
                 if time_left != last_time:
                     self.time_till_label_text.set_value(round(time_left, 1))
                     last_time = time_left
@@ -139,10 +133,10 @@ class WarningPopup:
         return
 
     def close(self):
-        debug("closing thread")
+        Logger.debug("closing thread")
         self.stop = True
         self.thread.join()
-        debug("thread closed")
+        Logger.debug("thread closed")
         return
 
 def Question(question:str, window_name:str, style="YesNo", tall=False):
@@ -193,4 +187,4 @@ class QuestionDialog():
         self.has_answer = True
 
 if __name__ == "__main__":
-    debug(Question("A really simple question", "too cool"))
+    Logger.debug(Question("A really simple question", "too cool"))

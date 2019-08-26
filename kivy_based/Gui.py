@@ -4,20 +4,23 @@ from automation_controller import Setup, AutomationController
 import kivy
 import keyboard
 from kivy.app import App
+from kivy.core.window import Window
+from kivy.config import Config
+from kivy.clock import Clock
+from kivy.properties import BooleanProperty, ObjectProperty
+from kivy.logger import Logger
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import BooleanProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.core.window import Window
-from kivy.clock import Clock
-from kivy.properties import ObjectProperty
 import pathlib2
 import sys
 import os
 from tkinter import messagebox
 import time
 import threading
+
+Config.set("log_level", "debug")
 
 from exceptions import PopupError, PopupNotExist, PrematureExit
 from dialogs import Question, WarningPopup
@@ -28,12 +31,6 @@ if True == False:
     from kivy_based.exceptions import PopupError, PopupNotExist, PrematureExit
     from kivy_based.utils import make_functions, Settings, threaded
     from kivy_based.dialogs import Question, WarningPopup
-
-import logging
-from logging import debug
-if __name__=="__main__":
-    logging.basicConfig(level=logging.DEBUG,
-        format= '%(asctime)s - %(levelname)s - %(message)s')
 
 Window.size = (400, 400)
 
@@ -68,14 +65,14 @@ def _run_startup(stream_name, *args):
         if popup.timer_thread and popup.timer_thread.isAlive():
             popup.timer_event.set()
     except (PopupNotExist, PrematureExit):
-        debug("Popup was closed unexpectedly")
+        Logger.debug("Popup was closed unexpectedly")
         if Question("Setup was canceled before it was finished\n"+
             "Would you like to restart the program?", "Python"):
             
             popup.close()
             redo_startup()
         else:
-            logging.getLogger().debug("the user said no to the question")
+            logging.getLogger().Logger.debug("the user said no to the question")
         print("done with the question")
     finally:
         popup.close()  
@@ -204,26 +201,30 @@ class SceneController(AnchorLayout):
         self.on_hotkey("camera")
 
     def start_hotkeys(self):
+        # Camera Hotkey
         keyboard.add_hotkey(self.app.settings.hotkeys.obs.camera_scene_hotkey[0], 
             self.on_hotkey, args=("camera"), suppress=True)
-        print(f"binding hotkey {self.app.settings.hotkeys.obs.camera_scene_hotkey[0]}")
+        Logger.info(f"binding hotkey {self.app.settings.hotkeys.obs.camera_scene_hotkey[0]}")
+        # Center Scene Hotkey
         keyboard.add_hotkey(self.app.settings.hotkeys.obs.center_screen_hotkey[0],
             self.on_hotkey, args=("center"), suppress=True)
-        print(f"binding hotkey {self.app.settings.hotkeys.obs.center_screen_hotkey[0]}")
+        Logger.info(f"binding hotkey {self.app.settings.hotkeys.obs.center_screen_hotkey[0]}")
+        # Automatic Checkbox Hotkey
         keyboard.add_hotkey(self.app.settings.hotkeys.kivy.scene_lock,
             self.on_hotkey, args=("scene_lock"), suppress=True)
-        print(f"binding hotkey {self.app.settings.hotkeys.kivy.scene_lock}")
+        Logger.info(f"binding hotkey {self.app.settings.hotkeys.kivy.scene_lock}")
+        # Next Button for the clicker
         keyboard.add_hotkey(self.app.settings.hotkeys.general.clicker_forward,
             self.on_hotkey, args=("clicker_next"), suppress=True)
-        print(f"binding hotkey {self.app.settings.hotkeys.general.clicker_forward}")
+        Logger.info(f"binding hotkey {self.app.settings.hotkeys.general.clicker_forward}")
+        # Previous Button for the clicker
         keyboard.add_hotkey(self.app.settings.hotkeys.general.clicker_backward,
             self.on_hotkey, args=("clicker_prev"), suppress=True)
-        print(f"binding hotkey {self.app.settings.hotkeys.general.clicker_backward}")
+        Logger.info(f"binding hotkey {self.app.settings.hotkeys.general.clicker_backward}")
 
-    @threaded
     def on_hotkey(self, *hotkey):        
         hotkey = "".join(hotkey)
-        print(f"hotkey {hotkey} caught")
+        Logger.debug(f"hotkey {hotkey} caught")
         if hotkey == "camera":
             self._do_fake_press_camera()
         elif hotkey == "center":
@@ -232,35 +233,39 @@ class SceneController(AnchorLayout):
             self.ids.SCQAutomatic.ids.cb._do_press()
         elif hotkey == "clicker_next":
             self.app.auto_contro.propre_send("next")
+            time.sleep(.2)
             self._do_fake_press_center()
         elif hotkey == "clicker_prev":
             self.app.auto_contro.propre_send("prev")
+            time.sleep(.2)
             self._do_fake_press_center()
 
     def _do_fake_press_camera(self):
         if self.ids.live_camera.ids.cb.active == True:
-            print(f"doing fake press camera, with button selected")
+            Logger.info(f"doing fake press camera, with button selected")
             self.on_camera()
         else:
-            print(f"doing fake press camera, without button selected")
+            Logger.info(f"doing fake press camera, without button selected")
             self.ids.live_camera.ids.cb._do_press()
 
     def _do_fake_press_center(self):
         if self.ids.center_screen.ids.cb.active == True:
-            print(f"doing fake press center, with button selected")
+            Logger.info(f"doing fake press center, with button selected")
             self.on_center_screen()
         else:
-            print(f"doing fake press center, without button selected")
+            Logger.info(f"doing fake press center, without button selected")
             self.ids.center_screen.ids.cb._do_press()
             
     def on_camera(self, *args):
         if self.current_scene != "camera":
+            Logger.info(f"on_camera called with camera not selected")
             self.current_scene = "camera"
             self.auto_contro.obs_send("camera")
             self.zero_timer()
 
     def on_center_screen(self, *args):
         if self.current_scene != "center":
+            Logger.info(f"on_center_screen called with center not selected")
             self.current_scene = "center"
             self.auto_contro.obs_send("center")
         self.on_auto()
@@ -268,9 +273,12 @@ class SceneController(AnchorLayout):
     def on_auto(self, *args):
         state = self.ids.SCQAutomatic.ids.cb.active
         if state == False:
+            Logger.info(f"on_auto called while inactive")
             self.zero_timer()
         else:
+            Logger.info(f"on_auto called while active")
             if self.ids.center_screen.ids.cb.active == True:
+                Logger.info(f"on_auto reseting timer")
                 self.reset_timer()
 
 class GuiApp(App):
