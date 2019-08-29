@@ -1,8 +1,6 @@
 import os
 os.environ["KCFG_KIVY_LOG_LEVEL"] = "debug"
 import atexit
-#this line must be above kivy, becuase of kivy/pywinauto unhappiness
-from automation_controller import Setup, AutomationController
 import kivy
 import keyboard
 from kivy.app import App
@@ -21,6 +19,7 @@ from tkinter import messagebox
 import time
 import threading
 
+from automation_controller import Setup, AutomationController
 from exceptions import PopupError, PopupNotExist, PrematureExit
 from dialogs import Question, WarningPopup
 from utils import make_functions, Settings, threaded

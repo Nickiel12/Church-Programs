@@ -1,6 +1,3 @@
-from pywinauto.application import WindowSpecification
-from pywinauto import Desktop
-from pywinauto.findwindows import ElementNotFoundError
 import keyboard
 from kivy.app import App
 from kivy.logger import Logger
@@ -34,37 +31,17 @@ class AutomationController:
     def __init__(self, settings, default_browser="CHROME"):
         self.exe_path = str(pathlib2.Path(os.path.abspath(__file__)).parent/"ahk_exe"/"window_opener.exe")
         self.app = App.get_running_app()
-        # TODO get application name to always bring the controller to the top of the windows so that the page up isn't
-        # sent to the propreseter window
-        self.app_name = self.app.get_application_name()
-        Logger.info(f"Current Kivy App: {self.app_name}")
         self.sett = self.app.settings
         self.platform_settings = self.sett[f"setup_{self.sett.streaming_service}"]
-        self.propre_dlg = Desktop(backend="uia").window(title_re=self.sett.windows.propresenter_re)
 # TODO
     def give_window_focus(self, window_to_focus):
-        if window_to_focus.lower() == "propresenter":
-            old_win = Desktop(backend="uia").window(title=GetWindowText(GetForegroundWindow()))
-            if not old_win.wrapper_object() == self.propre_dlg.wrapper_object():
-                subprocess.call([self.exe_path, self.sett.windows.propresenter_re])
-                time.sleep(.1)
-                return True
-            else:
-                return False
-            Logger.debug("WindowController: Changing active window to propresenter")
-            subprocess.call([self.exe_path, self.sett.windows.propresenter_re])
-            time.sleep(.1)
-        elif window_to_focus.lower() == "obs":
+        if window_to_focus.lower() == "obs":
             Logger.debug("WindowController: Changing active window to OBS")
             subprocess.call([self.exe_path, self.sett.windows.obs_re])
             time.sleep(.1)
         elif window_to_focus.lower() == "chrome":
             Logger.debug("WindowController: Changing active window to Chrome")
             subprocess.call([self.exe_path, self.sett.windows.chrome_re])
-            time.sleep(.1)
-        elif window_to_focus.lower() == "app":
-            Logger.debug("Changing active window to the kivy app")
-            subprocess.call([self.exe_path, self.app_name])
             time.sleep(.1)
 
     #@threaded
@@ -99,15 +76,14 @@ class AutomationController:
     
     @threaded
     def propre_send(self, hotkey):
-        if not self.give_window_focus("propresenter"):
-            if hotkey.lower() == "next":
-                time.sleep(.2)
-                keyboard.send(self.sett.hotkeys.general.clicker_forward)
-                Logger.debug(f"Sending to propresenter: {self.sett.hotkeys.general.clicker_forward}")
-            elif hotkey.lower() == "prev":
-                time.sleep(.2)
-                keyboard.send(self.sett.hotkeys.general.clicker_backward)
-                Logger.debug(f"Sending to propresenter: {self.sett.hotkeys.general.clicker_backward}")
+        if hotkey.lower() == "next":
+            subprocess.call([self.exe_path, self.sett.general.clicker_forward])
+            Logger.debug(f"Sending to propresenter: {self.sett.hotkeys.general.clicker_forward}")
+            time.sleep(.2)
+        elif hotkey.lower() == "prev":
+            subprocess.call([self.exe_path, self.sett.general.clicker_backward])
+            Logger.debug(f"Sending to propresenter: {self.sett.hotkeys.general.clicker_backward}")
+            time.sleep(.2)
 
     @threaded
     def go_live(self):

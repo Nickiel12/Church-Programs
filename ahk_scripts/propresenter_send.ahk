@@ -7,7 +7,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 if WinActive("ProPresenter - Registered To: VALLEY CHRISTAIN CENTER")
     {
-        Send {A_Args[1]}
+        ExitApp
     }else if WinExist("ProPresenter - Registered To: VALLEY CHRISTAIN CENTER")
     {
         WinActivate
