@@ -44,15 +44,22 @@ class AutomationController:
 # TODO
     def give_window_focus(self, window_to_focus):
         if window_to_focus.lower() == "propresenter":
-            Logger.debug("Changing active window to propresenter")
+            old_win = Desktop(backend="uia").window(title=GetWindowText(GetForegroundWindow()))
+            if not old_win.wrapper_object() == self.propre_dlg.wrapper_object():
+                subprocess.call([self.exe_path, self.sett.windows.propresenter_re])
+                time.sleep(.1)
+                return True
+            else:
+                return False
+            Logger.debug("WindowController: Changing active window to propresenter")
             subprocess.call([self.exe_path, self.sett.windows.propresenter_re])
             time.sleep(.1)
         elif window_to_focus.lower() == "obs":
-            Logger.debug("Changing active window to OBS")
+            Logger.debug("WindowController: Changing active window to OBS")
             subprocess.call([self.exe_path, self.sett.windows.obs_re])
             time.sleep(.1)
         elif window_to_focus.lower() == "chrome":
-            Logger.debug("Changing active window to Chrome")
+            Logger.debug("WindowController: Changing active window to Chrome")
             subprocess.call([self.exe_path, self.sett.windows.chrome_re])
             time.sleep(.1)
         elif window_to_focus.lower() == "app":
@@ -60,7 +67,7 @@ class AutomationController:
             subprocess.call([self.exe_path, self.app_name])
             time.sleep(.1)
 
-    @threaded
+    #@threaded
     def obs_send(self, scene):
         """Change the current obs scene
         
@@ -92,16 +99,15 @@ class AutomationController:
     
     @threaded
     def propre_send(self, hotkey):
-        if hotkey.lower() == "next":
-            self.give_window_focus("propresenter")
-            time.sleep(.2)
-            keyboard.send(self.sett.hotkeys.general.clicker_forward)
-            Logger.debug(f"Sending to propresenter: {self.sett.hotkeys.general.clicker_forward}")
-        elif hotkey.lower() == "prev":
-            self.give_window_focus("propresenter")
-            time.sleep(.2)
-            keyboard.send(self.sett.hotkeys.general.clicker_backward)
-            Logger.debug(f"Sending to propresenter: {self.sett.hotkeys.general.clicker_backward}")
+        if not self.give_window_focus("propresenter"):
+            if hotkey.lower() == "next":
+                time.sleep(.2)
+                keyboard.send(self.sett.hotkeys.general.clicker_forward)
+                Logger.debug(f"Sending to propresenter: {self.sett.hotkeys.general.clicker_forward}")
+            elif hotkey.lower() == "prev":
+                time.sleep(.2)
+                keyboard.send(self.sett.hotkeys.general.clicker_backward)
+                Logger.debug(f"Sending to propresenter: {self.sett.hotkeys.general.clicker_backward}")
 
     @threaded
     def go_live(self):
