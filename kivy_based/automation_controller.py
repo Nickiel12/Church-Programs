@@ -29,13 +29,17 @@ def with_popup(func):
 
 class AutomationController:
     def __init__(self, settings, default_browser="CHROME"):
-        self.ahk_files_path = pathlib2.Path(os.path.abspath(__file__)).parent/"extras"/"ahk_exe"
+        self.ahk_files_path = pathlib2.Path(os.path.abspath(__file__)).parent/"ahk_scripts"
         self.app = App.get_running_app()
         self.sett = self.app.settings
         self.platform_settings = self.sett[f"setup_{self.sett.streaming_service}"]
 # TODO
     def give_window_focus(self, window_to_focus):
-        if window_to_focus.lower() == "obs":
+        if window_to_focus.lower() == "propresenter":
+            Logger.debug("WindowController: Changing active window to ProPresenter")
+            subprocess.call([str(self.ahk_files_path/"window_opener.exe"), self.sett.windows.propresenter_re])
+            time.sleep(.1)
+        elif window_to_focus.lower() == "obs":
             Logger.debug("WindowController: Changing active window to OBS")
             subprocess.call([str(self.ahk_files_path/"window_opener.exe"), self.sett.windows.obs_re])
             time.sleep(.1)
@@ -74,15 +78,16 @@ class AutomationController:
             Logger.debug(f"Sending to obs: {self.sett.hotkeys.obs.stop_stream}")
         self.give_window_focus("propresenter")
     
-    @threaded
     def propre_send(self, hotkey):
         print(str(self.sett.hotkeys.general.clicker_forward))
         if hotkey.lower() == "next":
-            subprocess.call([str(self.ahk_files_path/"propresenter_send.exe"), self.sett.hotkeys.general.clicker_forward])
+            self.give_window_focus("propresenter")
+            keyboard.send(self.sett.hotkeys.general.clicker_forward)
             Logger.debug(f"Sending to propresenter: {self.sett.hotkeys.general.clicker_forward}")
             time.sleep(.2)
         elif hotkey.lower() == "prev":
-            subprocess.call([str(self.ahk_files_path/"propresenter_send.exe"), self.sett.hotkeys.general.clicker_backward])
+            self.give_window_focus("propresenter")
+            keyboard.send(self.sett.hotkeys.general.clicker_backward_ahk)
             Logger.debug(f"Sending to propresenter: {self.sett.hotkeys.general.clicker_backward}")
             time.sleep(.2)
 

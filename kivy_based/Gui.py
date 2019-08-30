@@ -208,15 +208,15 @@ class SceneController(AnchorLayout):
             lambda x:self.on_hotkey("center", x), suppress=True)
         Logger.info(f"binding hotkey {self.app.settings.hotkeys.obs.center_screen_hotkey[0]}")
         # Automatic Checkbox Hotkey
-        #keyboard.hook_key(self.app.settings.hotkeys.kivy.scene_lock,
-        #    lambda x:self.on_hotkey("scene_lock", x), suppress=True)
+        keyboard.add_hotkey(self.app.settings.hotkeys.kivy.scene_lock,
+            lambda x:self.on_hotkey("scene_lock", x), suppress=True)
         Logger.info(f"binding hotkey {self.app.settings.hotkeys.kivy.scene_lock}")
         # Next Button for the clicker
-        keyboard.hook_key(self.app.settings.hotkeys.general.clicker_forward,
+        keyboard.on_release_key(self.app.settings.hotkeys.general.clicker_forward,
             lambda x:self.on_hotkey("clicker_next", x), suppress=True)
         Logger.info(f"binding hotkey {self.app.settings.hotkeys.general.clicker_forward}")
         # Previous Button for the clicker
-        keyboard.hook_key(self.app.settings.hotkeys.general.clicker_backward,
+        keyboard.on_release_key(self.app.settings.hotkeys.general.clicker_backward,
             lambda x:self.on_hotkey("clicker_prev", x), suppress=True)
         Logger.info(f"binding hotkey {self.app.settings.hotkeys.general.clicker_backward}")
 
