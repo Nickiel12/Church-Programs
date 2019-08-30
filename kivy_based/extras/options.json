@@ -1,0 +1,42 @@
+{
+    "streaming_service": "facebook",
+    "setup_facebook":{
+        "url": "https://www.facebook.com/CenterEvents1/",
+        "wait_0": 8,
+        "mos_one": [430, 593],
+        "wait_1": 5,
+        "mos_two": [719, 152],
+        "wait_2": 1.5,
+        "mos_three": [1018, 518],
+        "title": "",
+        "go_live": [1174, 922]
+    },
+    "dev_setup_facebook":{
+
+    },
+    "windows":{
+        "obs_re": "OBS ",
+        "propresenter_re": "ProPresenter - .*",
+        "chrome_re": ".* - Google Chrome"
+    },
+    "kivy":{
+        "scene_timer_time": 15
+    },
+    "hotkeys":{
+        "obs":{
+            "camera_scene_hotkey" : ["1", "shift+alt+ctrl+*"], 
+            "center_screen_hotkey" : ["2", "shift+alt+ctrl+/"],
+            "start_stream" : "ctrl+shift+j",
+            "stop_stream" : "ctrl+alt+j"
+        },
+        "kivy":{
+            "modifier": "shift",
+            "scene_lock": "shift + 3"
+        },
+        "general":{
+            "clicker_forward" : "page down", 
+            "clicker_backward" : "page up"
+        }
+    }
+    
+}

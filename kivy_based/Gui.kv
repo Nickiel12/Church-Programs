@@ -1,0 +1,172 @@
+#:kivy 1.10.1
+
+<Controller>:
+    id: Controller
+    StartupScreen:
+    MainScreen:
+
+<StartupScreen>:
+    name: "StartupScreen"
+    StartupController:
+
+<MainScreen>:
+    name: "MainScreen"
+    id: MainScreen
+    FloatLayout:
+        AnchorLayout:
+            anchor_x: "left"
+            anchor_y: "top"
+            Button:
+                size_hint: .25, .1
+                text: "Return"
+                on_release: MainScreen.parent.current = "StartupScreen"
+    AnchorLayout:
+        anchor_x: "center"
+        anchor_y: "center"
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: .85, .75
+            AnchorLayout:
+                size_hint: 1, .5
+                anchor_x: "center"
+                anchor_y: "center"
+                StreamController:
+                    size_hint: .9, .9
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    id: "StreamPanel"
+            SceneController:
+                id: "ScenePanel"
+
+<StartupController>:
+    id: StartupControl
+    BoxLayout:
+        size_hint: .8, .2
+        orientation: 'vertical'
+        TextInput:
+            id: StreamTitleInput
+            hint_text: "Stream Title"
+            font_size: 30
+        BoxLayout:
+            size_hint: 1, .5
+            orientation: "horizontal"    
+            Button:
+                text: "Already live"
+                size_hint: .3, 1
+                on_press: root.on_already
+                on_release: StartupControl.parent.parent.current = "MainScreen"
+            Button:
+                id: "SubmitButton"
+                size_hint: .7, 1
+                pos_hint: {"right": 1}
+                text: "Setup Stream"
+                on_release: StartupControl.parent.parent.current = "MainScreen"
+                on_press: root.on_submit(StreamTitleInput.text)
+
+<StreamController>:
+    canvas:
+        Color:
+            rgba: .1, .2, .3, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Button:
+        id: go_live_button
+        text: "Stream Toggle"
+        on_press: root.on_toggle_button()
+        size_hint: .85, .75
+        background_color: .2, 0, 0, .5
+
+<SceneController>:
+    canvas:
+        Color:
+            rgba: .1, .3, .3, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: "Scene Controller"
+            font_size: "35px"
+            padding: 0, 10
+            size_hint: 1, .3
+        BoxLayout:
+            orientation: "horizontal"
+            BoxLayout:
+                orientation: "vertical"
+                AnchorLayout:
+                    padding: [10, 10, 0, 10]
+                    BoxLayout:
+                        orientation: "vertical"
+                        canvas:
+                            Color:
+                                rgba: .5, .3, .3, 1
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+                        Label:
+                            text: "Scenes"
+                            size_hint: 1, .5
+                            font_size: "20px"
+                        GridLayout:
+                            rows: 2
+                            size_hint: .8, .8
+                            padding: "1px", "1px"
+                            MCQLabelCheckBox:
+                                id: live_camera
+                                text: "Live Camera"
+                                group: "radio_group"
+                                active: root.on
+                            MCQLabelCheckBox:
+                                id: center_screen
+                                text: "Center Screen"
+                                group: "radio_group"
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "center"
+                BoxLayout:
+                    orientation:"vertical"
+                    size_hint: 1, .8
+                    SCQLabelCheckBox:
+                        id: SCQAutomatic
+                        text: "Automatic"
+                        active: root.on
+                    Label:
+                        id: TimerLabel
+                        font_size: "50px"
+                        text: "0.0"
+
+<MCQCheckBox@CheckBox>:
+    #color: 0, 0, 0, 1
+    size_hint: .3, 1
+
+<MCQLabel@ButtonBehavior+Label>:
+    text_size: self.size
+    valign: 'center'
+
+<MCQLabelCheckBox@BoxLayout>:
+    text: ''
+    group: ''
+    active: True
+
+    MCQCheckBox:
+        id: cb
+        group: root.group
+        active: root.active
+
+    MCQLabel:
+        on_press: cb._do_press()
+        text: root.text
+
+<SCQLabelCheckBox@BoxLayout>:
+    text: ''
+    active: True
+
+    MCQCheckBox:
+        id: cb
+        active: root.active
+
+    MCQLabel:
+        on_press: cb._do_press()
+        text: root.text
