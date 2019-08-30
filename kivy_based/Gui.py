@@ -293,7 +293,7 @@ class GuiApp(App):
         return keyboard.is_pressed(self.settings.hotkeys.kivy.modifier)
 
     def build(self):
-        self.icon = str(pathlib2.Path(os.path.abspath(__file__)).parent / "resources"/"gear_icon.ico")
+        self.icon = str(pathlib2.Path(os.path.abspath(__file__)).parent / "extras"/"gear_icon.ico")
         print(self.icon)
         return Controller()
 

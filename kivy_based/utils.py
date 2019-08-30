@@ -65,7 +65,7 @@ def make_functions(setup_inst):
     return output
 
 def Settings():
-    path = pathlib2.Path(os.path.abspath(__file__)).parent/"options.json"
+    path = pathlib2.Path(os.path.abspath(__file__)).parent/"extras"/"options.json"
     with open(path) as file:
         json_file = json.load(file)
     return DotDict(json_file)

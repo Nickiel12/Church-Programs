@@ -29,7 +29,7 @@ def with_popup(func):
 
 class AutomationController:
     def __init__(self, settings, default_browser="CHROME"):
-        self.ahk_files_path = pathlib2.Path(os.path.abspath(__file__)).parent/"ahk_exe"
+        self.ahk_files_path = pathlib2.Path(os.path.abspath(__file__)).parent/"extras"/"ahk_exe"
         self.app = App.get_running_app()
         self.sett = self.app.settings
         self.platform_settings = self.sett[f"setup_{self.sett.streaming_service}"]
@@ -76,12 +76,13 @@ class AutomationController:
     
     @threaded
     def propre_send(self, hotkey):
+        print(str(self.sett.hotkeys.general.clicker_forward))
         if hotkey.lower() == "next":
-            subprocess.call([str(self.ahk_files_path/"propresenter_send.ahk"), self.sett.general.clicker_forward])
+            subprocess.call([str(self.ahk_files_path/"propresenter_send.exe"), self.sett.hotkeys.general.clicker_forward])
             Logger.debug(f"Sending to propresenter: {self.sett.hotkeys.general.clicker_forward}")
             time.sleep(.2)
         elif hotkey.lower() == "prev":
-            subprocess.call([str(self.ahk_files_path/"propresenter_send.ahk"), self.sett.general.clicker_backward])
+            subprocess.call([str(self.ahk_files_path/"propresenter_send.exe"), self.sett.hotkeys.general.clicker_backward])
             Logger.debug(f"Sending to propresenter: {self.sett.hotkeys.general.clicker_backward}")
             time.sleep(.2)
 
