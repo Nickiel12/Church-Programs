@@ -87,7 +87,7 @@ class AutomationController:
             time.sleep(.2)
         elif hotkey.lower() == "prev":
             self.give_window_focus("propresenter")
-            keyboard.send(self.sett.hotkeys.general.clicker_backward_ahk)
+            keyboard.send(self.sett.hotkeys.general.clicker_backward)
             Logger.debug(f"Sending to propresenter: {self.sett.hotkeys.general.clicker_backward}")
             time.sleep(.2)
 

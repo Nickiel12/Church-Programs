@@ -196,6 +196,7 @@ class SceneController(AnchorLayout):
             time.sleep(.1)
 
     def timer_run_out(self):
+        self._timer_paused = True
         self.on_hotkey("camera")
 
     def start_hotkeys(self):
@@ -220,12 +221,12 @@ class SceneController(AnchorLayout):
             lambda x:self.on_hotkey("clicker_prev", x), suppress=True)
         Logger.info(f"binding hotkey {self.app.settings.hotkeys.general.clicker_backward}")
 
-    def on_hotkey(self, *hotkey):    
+    def on_hotkey(self, *hotkey):  
         event = hotkey[-1]  
         print(f"The hotkey event was: {event}")  
         hotkey = "".join(hotkey[:-1])
         Logger.debug(f"hotkey {hotkey} caught")
-        if hotkey == "camera":
+        if hotkey == "camera" or event == "camera":
             self._do_fake_press_camera()
         elif hotkey == "center":
             self._do_fake_press_center()
@@ -242,18 +243,18 @@ class SceneController(AnchorLayout):
 
     def _do_fake_press_camera(self):
         if self.ids.live_camera.ids.cb.active == True:
-            Logger.info(f"doing fake press camera, with button selected")
+            Logger.info(f"Hotkeys: Doing fake press camera, with button selected")
             self.on_camera()
         else:
-            Logger.info(f"doing fake press camera, without button selected")
+            Logger.info(f"Hotkeys: Doing fake press camera, without button selected")
             self.ids.live_camera.ids.cb._do_press()
 
     def _do_fake_press_center(self):
         if self.ids.center_screen.ids.cb.active == True:
-            Logger.info(f"doing fake press center, with button selected")
+            Logger.info(f"Hotkeys: Doing fake press center, with button selected")
             self.on_center_screen()
         else:
-            Logger.info(f"doing fake press center, without button selected")
+            Logger.info(f"Hotkeys: Doing fake press center, without button selected")
             self.ids.center_screen.ids.cb._do_press()
             
     def on_camera(self, *args):
