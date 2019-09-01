@@ -13,8 +13,7 @@ from flask_socketio import SocketIO
 from flask_mobility import Mobility
 from flask_mobility.decorators import mobile_template
 import time
-#import eventlet
-#eventlet.monkey_patch(socket=True,select=True,thread=True,time=True)
+from engineio.async_drivers import gevent
 
 from utils import threaded
 
