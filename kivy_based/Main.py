@@ -1,15 +1,21 @@
+import os
+import pathlib2
+from kivy.app import App
+from Gui import GuiApp 
+path = pathlib2.Path(
+"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs"+
+"\\OBS Studio\\OBS Studio (64bit).lnk")
+os.startfile(str(path))
+gui_app = GuiApp()
+
 import flask
 from flask_socketio import SocketIO
 from flask_mobility import Mobility
 from flask_mobility.decorators import mobile_template
-from kivy.app import App
-import os
 import time
-import pathlib2
-import eventlet
-eventlet.monkey_patch()
+#import eventlet
+#eventlet.monkey_patch(socket=True,select=True,thread=True,time=True)
 
-from Gui import GuiApp 
 from utils import threaded
 
 app = flask.Flask(__name__)
@@ -17,19 +23,12 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 Mobility(app)
 
-path = pathlib2.Path(
-"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs"+
-"\\OBS Studio\\OBS Studio (64bit).lnk")
-os.startfile(str(path))
-gui_app = GuiApp()
-
 SceneController = None
 
 @threaded
 def loop():
     time.sleep(3)
     print("starting webserver")
-    start_web_server()
     global SceneController
     SceneController = App.get_running_app().root.ids.MainScreen.ids.ScenePanel
     while True:
@@ -38,7 +37,7 @@ def loop():
                 SceneController.current_scene=="camera",
                 SceneController.current_scene=="center",
                 SceneController.ids.SCQAutomatic.ids.cb.active,
-                SceneController.timer_left
+                SceneController.ids.TimerLabel.text
             ]})
         time.sleep(.2)
 
@@ -73,9 +72,10 @@ def on_slide_prev(event):
 
 @threaded
 def start_web_server():
+    loop()
     socketio.run(app, host="0.0.0.0")
     
 if __name__ == '__main__':
     print("starting")
-    #loop()
+    start_web_server()
     gui_app.run()
