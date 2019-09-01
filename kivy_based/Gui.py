@@ -228,15 +228,15 @@ class SceneController(AnchorLayout):
         Logger.debug(f"hotkey {hotkey} caught")
         if hotkey == "camera" or event == "camera":
             self._do_fake_press_camera()
-        elif hotkey == "center":
+        elif hotkey == "center" or event == "center":
             self._do_fake_press_center()
-        elif hotkey == "scene_lock":
+        elif hotkey == "scene_lock" or event == "scene_lock":
             self.ids.SCQAutomatic.ids.cb._do_press()
-        elif hotkey == "clicker_next":
+        elif hotkey == "clicker_next" or event == "clicker_next":
             self.app.auto_contro.propre_send("next")
             time.sleep(.2)
             self._do_fake_press_center()
-        elif hotkey == "clicker_prev":
+        elif hotkey == "clicker_prev" or event == "clicker_prev":
             self.app.auto_contro.propre_send("prev")
             time.sleep(.2)
             self._do_fake_press_center()

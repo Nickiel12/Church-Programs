@@ -1,0 +1,73 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width", initial-scale=1>
+		<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/mobile_index.css') }}">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+		<script type="text/javascript", charset="utf-8">
+			var socket = io();
+			socket.on("connect", function(){
+					socket.emit("my event", {data:"I\'m connected!"});
+			});
+			socket.on('update', function(msg) {
+			console.log(msg.states);
+			var camera_state = msg.states[0];
+			var center_state = msg.states[1];
+			var auto_state = msg.states[2];
+			var timer_text = msg.states[3];
+
+			if (camera_state == true) {
+				document.getElementById("camera_button").style.backgroundColor = "#00FF00";
+			}else{
+				document.getElementById("camera_button").style.backgroundColor = "#FF0000";
+			}
+			if (center_state == true){
+				document.getElementById("center_button").style.backgroundColor = "#00FF00";
+			}else{
+				document.getElementById("center_button").style.backgroundColor = "#FF0000";
+			}
+			if (auto_state == true){
+				document.getElementById("auto_check").checked = true;
+			}else{
+				document.getElementById("auto_check").checked = false;
+			}
+			document.getElementById('timer').innerHTML = timer_text;
+			});
+
+			function on_camera(){
+				socket.emit("scene_camera", {data:"Button"})
+			}     
+			function on_center(){
+				socket.emit("scene_center", {data:"Button"})
+			}
+			function on_auto(){
+				socket.emit("automatic_change", {data:"Checkbox"})
+			}
+			function on_next(){
+				socket.emit("slide_next", {data:"Button"})
+			}
+			function on_prev(){
+				socket.emit("slide_prev", {data:"Button"})
+			}
+			</script>
+</head>
+<body ontouchstart="">
+	<p class=body>
+		<div id=top_buttons>
+			<button id=camera_button onclick=on_camera()>Live Camera Scene</button>
+			<button id=center_button onclick=on_center()> Center Screen Scene</button> <br>
+		</div>
+		<div id=mid_panel>
+			<div id=auto_box>
+				<input type="checkbox" id="auto_check" onclick="on_auto()"> Automatic <br>
+			</div>
+			<span id="timer">0.0</span>
+		</div>
+		<div id=bottom_buttons>
+			<button id=clicker_prev onclick=on_prev() class=push_button><span class=color_change
+				 data-text="Prev Slide"></span></button>
+			<button id=clicker_next onclick=on_next() class=push_button><span class=color_change
+				 data-text="Next Slide"></span></button>
+		</div>
+	</p>
+	</body>
+</html>
