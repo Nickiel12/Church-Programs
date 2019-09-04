@@ -32,7 +32,7 @@ if True == False:
 
 Window.size = (400, 400)
 
-def on_startup_button_submit(stream_name, startup_controller):
+def on_startup_button_submit(stream_name):
     print(f"stream_name is: {stream_name}")
     thread = threading.Thread(target=_run_startup, args=(stream_name,))
     thread.start()
@@ -94,7 +94,8 @@ class StartupController(AnchorLayout):
     def on_already(self, *args):
         self.app.stream_running = True
 
-    def on_submit(self, stream_name, *args):
+    @staticmethod
+    def on_submit(stream_name=None, *args):
         on_startup_button_submit(stream_name)
 
 class MainScreen(Screen):
@@ -141,6 +142,7 @@ class SceneController(AnchorLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.timer_text = None
         self.timer_run = threading.Event()
         self.current_scene = "camera"
         if True == False:

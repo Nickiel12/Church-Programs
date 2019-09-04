@@ -3,12 +3,14 @@
 <Controller>:
     id: Controller
     StartupScreen:
+        id: StartupScreen
     MainScreen:
         id: MainScreen
 
 <StartupScreen>:
     name: "StartupScreen"
     StartupController:
+        id: StartupControl
 
 <MainScreen>:
     name: "MainScreen"
@@ -57,12 +59,12 @@
                 on_press: root.on_already
                 on_release: StartupControl.parent.parent.current = "MainScreen"
             Button:
-                id: "SubmitButton"
+                id: SubmitButton
                 size_hint: .7, 1
                 pos_hint: {"right": 1}
                 text: "Setup Stream"
                 on_release: StartupControl.parent.parent.current = "MainScreen"
-                on_press: root.on_submit(StreamTitleInput.text)
+                on_press: root.on_submit(stream_name=StreamTitleInput.text)
 
 <StreamController>:
     canvas:

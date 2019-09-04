@@ -1,3 +1,4 @@
+from kivy.app import App
 import flask
 from flask_socketio import SocketIO
 from flask_mobility import Mobility
@@ -47,6 +48,14 @@ def loop():
 
 #TODO Check if stream is live, if it isn't, redirect to go live
 @app.route("/")
+def send_to_index():
+    global SceneController
+    if App.get_running_app().stream_running:
+        return flask.redirect("/index")
+    else:
+        return flask.redirect(flask.url_for('go_live'))
+
+@app.route("/index")
 @mobile_template("{mobile_}index.html")
 def index(template):
     return flask.render_template(template)
@@ -55,7 +64,11 @@ def index(template):
 def go_live():
     form = GoLiveForm()
     if form.validate_on_submit():
-        return flask.redirect(flask.url_for('/'))
+        startup = App.get_running_app().root.ids.StartupScreen.ids.StartupControl
+        print(startup.ids)
+        startup.ids.StreamTitleInput.text = form.stream_title.data
+        startup.on_submit(stream_name=form.stream_title.data)
+        return flask.redirect(flask.url_for('index'))
     return flask.render_template("go_live.html", form=form)
 
 @socketio.on("event")
@@ -82,6 +95,7 @@ def on_slide_next(event):
 def on_slide_prev(event):
     SceneController.on_hotkey("clicker_prev")
 
-if __name__ == "__main__":
+@threaded
+def start_web_server():
     loop()
-    socketio.run(app, "0.0.0.0", debug=True)
+    socketio.run(app, "0.0.0.0")
