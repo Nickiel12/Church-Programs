@@ -3,7 +3,7 @@
 <Controller>:
     id: Controller
     StartupScreen:
-        id: StartupScreen
+        id: StartupScreenId
     MainScreen:
         id: MainScreen
 
@@ -63,7 +63,6 @@
                 size_hint: .7, 1
                 pos_hint: {"right": 1}
                 text: "Setup Stream"
-                on_release: StartupControl.parent.parent.current = "MainScreen"
                 on_press: root.on_submit(stream_name=StreamTitleInput.text)
 
 <StreamController>:

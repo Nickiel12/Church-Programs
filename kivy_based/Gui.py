@@ -44,6 +44,7 @@ def _run_startup(stream_name, *args):
     try:
         ScenePanel = App.get_running_app().root.ids.MainScreen.ids.ScenePanel
         ScenePanel.timer_unavailable()
+        App.get_running_app().root.current = "MainScreen"
         popup = WarningPopup()
         popup.open()
         
@@ -76,7 +77,7 @@ def _run_startup(stream_name, *args):
         print("done with the question")
     finally:
         popup.close()  
-        ScenePanel.timer_available
+        ScenePanel.timer_available()
 
 class Controller(ScreenManager):
     def __init__(self, *args, **kwargs):
@@ -187,7 +188,9 @@ class SceneController(AnchorLayout):
         self.timer_text = "Unvailable"
 
     def timer_available(self):
+        print("unblocking timer")
         self.timer_text = None
+        self.zero_timer()
         
     @threaded
     def _timer(self):

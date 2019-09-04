@@ -7,7 +7,7 @@ import time
 from engineio.async_drivers import gevent
 
 from utils import threaded
-from forms import GoLiveForm
+from forms import SetupStreamForm
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = '$hor!K#y'
@@ -46,30 +46,29 @@ def loop():
     except KeyboardInterrupt:
         return
 
-#TODO Check if stream is live, if it isn't, redirect to go live
 @app.route("/")
 def send_to_index():
     global SceneController
     if App.get_running_app().stream_running:
-        return flask.redirect("/index")
+        return flask.redirect(flask.url_for("index"))
     else:
-        return flask.redirect(flask.url_for('go_live'))
+        return flask.redirect(flask.url_for('setup_stream'))
 
 @app.route("/index")
 @mobile_template("{mobile_}index.html")
 def index(template):
     return flask.render_template(template)
 
-@app.route("/go_live", methods=['GET', 'POST'])
-def go_live():
-    form = GoLiveForm()
+@app.route("/setup_stream", methods=['GET', 'POST'])
+def setup_stream():
+    form = SetupStreamForm()
     if form.validate_on_submit():
-        startup = App.get_running_app().root.ids.StartupScreen.ids.StartupControl
+        startup = App.get_running_app().root.ids.StartupScreenId.ids.StartupControl
         print(startup.ids)
         startup.ids.StreamTitleInput.text = form.stream_title.data
         startup.on_submit(stream_name=form.stream_title.data)
         return flask.redirect(flask.url_for('index'))
-    return flask.render_template("go_live.html", form=form)
+    return flask.render_template("setup_stream.html", form=form)
 
 @socketio.on("event")
 def my_event(data):

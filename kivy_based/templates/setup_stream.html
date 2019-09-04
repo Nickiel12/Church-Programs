@@ -2,7 +2,7 @@
     <head>
 		<meta name="viewport" content="width=device-width", initial-scale=1>
         <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/go_live.css') }}">
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/setup_stream.css') }}">
     </head>
     <body>
         <div id=FormBox>
@@ -15,7 +15,7 @@
                     {% for error in form.stream_title.errors %}
                     <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
-                    <input type="submit" value="Go Live">
+                    <input type="submit" value="Setup Stream">
                 </form>
             </div>
         </div>
