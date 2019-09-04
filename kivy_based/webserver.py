@@ -46,19 +46,15 @@ def loop():
         return
 
 @app.route("/")
-@app.route("/index")
 @mobile_template("{mobile_}index.html")
 def index(template):
     return flask.render_template(template)
 
 @app.route("/go_live", methods=['GET', 'POST'])
-def go_live(*args):
-    print(args)
+def go_live():
     form = GoLiveForm()
     if form.validate_on_submit():
-        print("data submitted")
-        print(form.stream_title.data)
-        return flask.redirect(flask.url_for('index'))
+        return flask.redirect(flask.url_for('/'))
     return flask.render_template("go_live.html", form=form)
 
 @socketio.on("event")
