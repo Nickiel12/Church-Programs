@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width", initial-scale=1>
+		<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
 		<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 		<script type="text/javascript", charset="utf-8">
@@ -8,6 +9,10 @@
 			socket.on("connect", function(){
 					socket.emit("my event", {data:"I\'m connected!"});
 			});
+			window.onbeforeunload = function() {
+				socket.onclose = function () {}; // disable onclose handler first
+				socket.close();
+			};
 			socket.on('update', function(msg) {
 			console.log(msg.states);
 			var camera_state = msg.states[0];
@@ -47,6 +52,9 @@
 			}
 			function on_prev(){
 				socket.emit("slide_prev", {data:"Button"})
+			}
+			function on_liver(){
+				socket.emit("live_toggle", {data:"Button"})
 			}
 			</script>
 </head>

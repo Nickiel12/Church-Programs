@@ -42,6 +42,8 @@ def redo_startup():
 
 def _run_startup(stream_name, *args):
     try:
+        ScenePanel = App.get_running_app().root.ids.MainScreen.ids.ScenePanel
+        ScenePanel.timer_unavailable()
         popup = WarningPopup()
         popup.open()
         
@@ -74,6 +76,7 @@ def _run_startup(stream_name, *args):
         print("done with the question")
     finally:
         popup.close()  
+        ScenePanel.timer_available
 
 class Controller(ScreenManager):
     def __init__(self, *args, **kwargs):
@@ -92,7 +95,7 @@ class StartupController(AnchorLayout):
         self.app.stream_running = True
 
     def on_submit(self, stream_name, *args):
-        on_startup_button_submit(stream_name, self)
+        on_startup_button_submit(stream_name)
 
 class MainScreen(Screen):
     def __init__(self, *args, **kwargs):
@@ -177,22 +180,32 @@ class SceneController(AnchorLayout):
     def reset_timer(self):
         self.timer_start_time = time.time()
         self.start_timer()
+
+    def timer_unavailable(self):
+        self.timer_text = "Unvailable"
+
+    def timer_available(self):
+        self.timer_text = None
         
     @threaded
     def _timer(self):
         while not self.timer_run.is_set():
-            try:
-                if self._timer_paused == False:
-                    end_time = self.timer_start_time + self.timer_length
-                    self.timer_left = round(end_time - time.time(), 1)
-                    if self.timer_left >= 0:
-                        self.ids.TimerLabel.text = str(self.timer_left)
+            if self.timer_text == None:
+                try:
+                    if self._timer_paused == False:
+                        end_time = self.timer_start_time + self.timer_length
+                        self.timer_left = round(end_time - time.time(), 1)
+                        if self.timer_left >= 0:
+                            self.ids.TimerLabel.text = str(self.timer_left)
+                        else:
+                            self.timer_run_out()
                     else:
-                        self.timer_run_out()
-                else:
-                    time.sleep(.3)
-            except KeyboardInterrupt:
-                return
+                        time.sleep(.3)
+                except KeyboardInterrupt:
+                    return
+            else:
+                self.ids.TimerLabel.text = self.timer_text
+                time.sleep(.3)
             time.sleep(.1)
 
     def timer_run_out(self):

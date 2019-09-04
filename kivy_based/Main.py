@@ -5,7 +5,7 @@ from Gui import GuiApp
 path = pathlib2.Path(
 "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs"+
 "\\OBS Studio\\OBS Studio (64bit).lnk")
-os.startfile(str(path))
+#os.startfile(str(path))
 gui_app = GuiApp()
 
 import flask
@@ -16,9 +16,10 @@ import time
 from engineio.async_drivers import gevent
 
 from utils import threaded
+from forms import GoLiveForm
 
 app = flask.Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
+app.config['SECRET_KEY'] = 'this-key-$hou!d-n0t-b5-d6fu@!t'
 socketio = SocketIO(app)
 Mobility(app)
 
@@ -41,9 +42,22 @@ def loop():
         time.sleep(.2)
 
 @app.route("/")
+@app.route("/index")
 @mobile_template("{mobile_}index.html")
 def index(template):
     return flask.render_template(template)
+
+@app.route("/go_live", methods=['GET', 'POST'])
+def go_live(template):
+    form = GoLiveForm()
+    if form.validate_on_submit():
+        title = form.stream_title.data
+        _go_live(title)
+        return flask.redirect(flask.url_for('index'))
+    return flask.render_template("go_live.html", form=form)
+
+def _go_live(data):
+    print(data)
 
 @socketio.on("event")
 def my_event(data):
