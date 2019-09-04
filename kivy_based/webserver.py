@@ -45,6 +45,7 @@ def loop():
     except KeyboardInterrupt:
         return
 
+#TODO Check if stream is live, if it isn't, redirect to go live
 @app.route("/")
 @mobile_template("{mobile_}index.html")
 def index(template):
