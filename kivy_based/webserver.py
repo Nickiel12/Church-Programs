@@ -1,4 +1,5 @@
-from kivy.app import App
+if __name__ != "__main__":
+    from kivy.app import App
 import flask
 from flask_socketio import SocketIO
 from flask_mobility import Mobility
@@ -7,7 +8,7 @@ import time
 from engineio.async_drivers import gevent
 
 from utils import threaded
-from forms import SetupStreamForm
+from forms import SetupStreamForm, GoLiveForm
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = '$hor!K#y'
@@ -43,16 +44,20 @@ def loop():
                         True,
                         "Test"
                     ]})
+                time.sleep(1)
     except KeyboardInterrupt:
         return
 
 @app.route("/")
 def send_to_index():
     global SceneController
-    if App.get_running_app().stream_running:
-        return flask.redirect(flask.url_for("index"))
+    if __name__ != "__main__":
+        if App.get_running_app().stream_running:
+            return flask.redirect(flask.url_for("index"))
+        else:
+            return flask.redirect(flask.url_for('setup_stream'))
     else:
-        return flask.redirect(flask.url_for('setup_stream'))
+        return flask.redirect(flask.url_for("index"))
 
 @app.route("/index")
 @mobile_template("{mobile_}index.html")
@@ -63,12 +68,20 @@ def index(template):
 def setup_stream():
     form = SetupStreamForm()
     if form.validate_on_submit():
-        startup = App.get_running_app().root.ids.StartupScreenId.ids.StartupControl
-        print(startup.ids)
-        startup.ids.StreamTitleInput.text = form.stream_title.data
-        startup.on_submit(stream_name=form.stream_title.data)
+        if __name__ != "__main__":    
+            startup = App.get_running_app().root.ids.StartupScreenId.ids.StartupControl
+            print(startup.ids)
+            startup.ids.StreamTitleInput.text = form.stream_title.data
+            startup.on_submit(stream_name=form.stream_title.data)
         return flask.redirect(flask.url_for('index'))
     return flask.render_template("setup_stream.html", form=form)
+
+@app.route("/go_live", methods=["GET", "POST"])
+def go_live():
+    form = GoLiveForm()
+    if form.validate_on_submit():
+        return flask.redirect(flask.url_for('index'))
+    return flask.render_template("go_live.html", form=form)
 
 @socketio.on("event")
 def my_event(data):
@@ -98,3 +111,7 @@ def on_slide_prev(event):
 def start_web_server():
     loop()
     socketio.run(app, "0.0.0.0")
+
+if __name__ == "__main__":
+    loop()
+    socketio.run(app, "0.0.0.0", debug = True)

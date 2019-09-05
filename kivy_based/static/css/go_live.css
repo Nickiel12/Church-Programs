@@ -1,0 +1,11 @@
+#content {
+    display: inline-block;
+    width: 50%;
+}
+
+#body {
+    background-color: aliceblue;
+    display: block;
+    margin-left: 24%;
+    margin-right: 24%;
+}
