@@ -123,6 +123,14 @@ class StreamController(AnchorLayout):
             else:
                 self.app.auto_contro.go_live()
                 self.app.stream_running = True
+                
+    def fake_press(self):
+        if self.app.stream_running == True:
+            self.app.auto_contro.end_stream()
+            self.app.stream_running = False
+        else:
+            self.app.auto_contro.go_live()
+            self.app.stream_running = True
 
     def on_key_up(self, *args):
         if not self.app._modifier_down():

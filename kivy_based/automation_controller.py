@@ -48,6 +48,17 @@ class AutomationController:
             subprocess.call([str(self.ahk_files_path/"window_opener.exe"), self.sett.windows.chrome_re])
             time.sleep(.1)
 
+    @threaded
+    def toggle_sound(self):
+        if self.sound_on:
+            # False is for the endpoint of the toggle.
+            subprocess.call([str(self.ahk_files_path/"music_toggle.exe"), True, self.sett.general.music_fade_time])
+        else:
+            subprocess.call([str(self.ahk_files_path/"music_toggle.exe"), False, self.sett.general.music_fade_time])
+    
+    def get_sound_state(self) -> bool:
+        return self.sound_on
+
     #@threaded
     def obs_send(self, scene):
         """Change the current obs scene

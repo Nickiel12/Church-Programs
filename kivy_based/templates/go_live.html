@@ -4,7 +4,7 @@
 {% endblock head %}
 {% block body %}
     <div id=body>
-        <h1 id=header>Would You Like To Go Live?</h1>
+        <h1 id=header>{% if state==False %}Would You Like To Go Live?{% else %}Would You Like To Stop The Stream?{% endif %}</h1>
         <form action="" method="POST" novalidate>
             {{ form.csrf_token }}
             {{ form.are_you_sure(class='form')}}<br>

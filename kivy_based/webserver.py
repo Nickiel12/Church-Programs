@@ -84,8 +84,16 @@ def setup_stream():
 def go_live():
     form = GoLiveForm()
     if form.validate_on_submit():
+        answer = form.are_you_sure.data
+        if answer=="yes":
+            if __name__ != "__main__":
+                App.get_running_app().root.ids.MainScreen.ids.StreamController.fake_press()
         return flask.redirect(flask.url_for('index'))
-    return flask.render_template("go_live.html", form=form)
+    if __name__ == "__main__":
+        return flask.render_template("go_live.html", form=form, state=True)
+    else:
+        state = App.get_running_app().root.stream_running
+        return flask.render_template("go_live.html",form=form, state=state)
 
 @socketio.on("event")
 def my_event(data):

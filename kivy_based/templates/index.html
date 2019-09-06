@@ -53,7 +53,7 @@
 			function on_prev(){
 				socket.emit("slide_prev", {data:"Button"})
 			}
-			</script>
+				</script>
 </head>
 <body ontouchstart="">
 	<p class=body>
@@ -70,15 +70,17 @@
 		</div>
 		<div id=mid_spacer></div>
 		<div id=extra_buttons>
-			<button class=go_live href="{{ url_for('go_live') }}" {% if stream_state==True %} id=red_button>
-				Stop Livestream
-				{% else %} id=green_button>
-				Start Livestream
-				{% endif %}
-			</button>
+			<a href="{{ url_for('go_live')}}">
+				<button class=go_live {% if stream_state==True %} id=red_button>
+					Stop Livestream
+					{% else %} id=green_button>
+					Start Livestream
+					{% endif %}
+				</button>
+			</a>
 		</div>
 	</p>
-	<div id=bottom_spacer></div>	
+	<div id=bottom_spacer>	
 	<div id=bottom_buttons>
 		<button id=clicker_prev onclick=on_prev() class=push_button>Prev<br>Slide</button>
 		<button id=clicker_next onclick=on_next() class=push_button>Next<br>Slide</button>
