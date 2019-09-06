@@ -196,7 +196,6 @@ class SceneController(AnchorLayout):
         self.timer_text = "Unvailable"
 
     def timer_available(self):
-        print("unblocking timer")
         self.timer_text = None
         self.zero_timer()
         
