@@ -70,19 +70,15 @@
 		</div>
 		<div id=mid_spacer></div>
 		<div id=extra_buttons>
-			<a href="{{ url_for('go_live')}}">
-				<button class=go_live {% if stream_state==True %} id=red_button>
-					Stop Livestream
-					{% else %} id=green_button>
-					Start Livestream
-					{% endif %}
-				</button>
-			</a>
-			<div class="container">
-				<img src="{{ url_for('static', filename='images/volume_off.png')}}" alt="the state of the volume">
-				<button class="btn">Button</button>
-			  </div>
-			  
+			<div id=anchor_padding>
+				<a href="{{ url_for('go_live')}}" class=button {% if stream_state==True %} id=red_button>
+						Stop Livestream
+						{% else %} id=green_button>
+						Start Livestream
+						{% endif %}
+				</a>
+			</div>
+			<input id=volume_button type="image" src="{{ url_for('static', filename='images/volume_off.png') }}" alt="Mute">	  
 		</div>
 	</p>
 	<div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
