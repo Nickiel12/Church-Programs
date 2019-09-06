@@ -1,11 +1,24 @@
 #content {
     display: inline-block;
-    width: 50%;
+    text-align: center;
+    width: 100%;
 }
-
 #body {
-    background-color: aliceblue;
     display: block;
-    margin-left: 24%;
-    margin-right: 24%;
+    background-color: aliceblue;
+    width: 50%;
+    padding: 1%;
+    margin-left: auto;
+    margin-right: auto;
 }
+.form {
+    display: inline-block;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;   
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 1%;
+  }

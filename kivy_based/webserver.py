@@ -5,7 +5,8 @@ from flask_socketio import SocketIO
 from flask_mobility import Mobility
 from flask_mobility.decorators import mobile_template
 import time
-from engineio.async_drivers import gevent
+#TODO Remove this before deploying
+#from engineio.async_drivers import gevent
 
 from utils import threaded
 from forms import SetupStreamForm, GoLiveForm
@@ -60,9 +61,12 @@ def send_to_index():
         return flask.redirect(flask.url_for("index"))
 
 @app.route("/index")
-@mobile_template("{mobile_}index.html")
-def index(template):
-    return flask.render_template(template)
+def index():
+    if __name__ == "__main__":
+        return flask.render_template("index.html", state=False)
+    else:
+        state = App.get_running_app().root.stream_running
+        return flask.render_template("index.html", state=state)
 
 @app.route("/setup_stream", methods=['GET', 'POST'])
 def setup_stream():

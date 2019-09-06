@@ -1,15 +1,13 @@
 {% extends 'base.html' %}
 {% block head %}
-    {{ super() }}
-    <link type="text/css" ref="stylesheet" href="{{ url_for('static', filename='css/go_live.css') }}">
+<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/go_live.css') }}">
 {% endblock head %}
 {% block body %}
     <div id=body>
         <h1 id=header>Would You Like To Go Live?</h1>
         <form action="" method="POST" novalidate>
             {{ form.csrf_token }}
-            {{ form.are_you_sure.label}}
-            {{ form.are_you_sure(id=check_box) }}
+            {{ form.are_you_sure(class='form')}}<br>
             {{ form.submit }}
         </form>
     </div>
