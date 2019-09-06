@@ -33,6 +33,8 @@ class AutomationController:
         self.app = App.get_running_app()
         self.sett = self.app.settings
         self.platform_settings = self.sett[f"setup_{self.sett.streaming_service}"]
+        self.sound_on = False
+        self.toggle_sound()
 # TODO
     def give_window_focus(self, window_to_focus):
         if window_to_focus.lower() == "propresenter":

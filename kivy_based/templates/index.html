@@ -19,6 +19,7 @@
 			var center_state = msg.states[1];
 			var auto_state = msg.states[2];
 			var timer_text = msg.states[3];
+			var sound_state = msg.states[4]
 
 			if (camera_state == true) {
 				document.getElementById("camera_button").style.backgroundColor = "#00FF00";
@@ -34,6 +35,11 @@
 				document.getElementById("auto_check").checked = true;
 			}else{
 				document.getElementById("auto_check").checked = false;
+			}
+			if (sound_state == True) {
+				document.getElementById("volume_button").src = "{{ url_for('static', filename='images/volume_on.png') }}";
+			}else{
+				document.getElementById("volume_button").src = "{{ url_for('static', filename='images/volume_off.png') }}";
 			}
 			document.getElementById('timer').innerHTML = timer_text;
 			});
@@ -70,21 +76,23 @@
 		</div>
 		<div id=mid_spacer></div>
 		<div id=extra_buttons>
-			<div id=anchor_padding>
-				<a href="{{ url_for('go_live')}}" class=button {% if stream_state==True %} id=red_button>
-						Stop Livestream
-						{% else %} id=green_button>
-						Start Livestream
-						{% endif %}
-				</a>
-			</div>
+			<form method="POST" novalidate action="" id=form>
+				<input type="submit" class = form_button
+					{%if stream_state==True %} id=red_button
+					value="Stop Livestream"
+					{% else %} id=green_button
+					value="Start Livestream"
+					{% endif %}>
+			</form> 
 			<input id=volume_button type="image" src="{{ url_for('static', filename='images/volume_off.png') }}" alt="Mute">	  
 		</div>
 	</p>
-	<div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
-		 from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
-		</div><div>Icons made by <a href="https://www.flaticon.com/authors/google" title="Google">Google</a>
-			 from <a href="https://www.flaticon.com/"     title="Flaticon">www.flaticon.com</a></div>
+	<div id=credits>
+		<div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
+			 from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+			</div><div>Icons made by <a href="https://www.flaticon.com/authors/google" title="Google">Google</a>
+				 from <a href="https://www.flaticon.com/"     title="Flaticon">www.flaticon.com</a></div>
+	</div>
 	<div id=bottom_spacer>	
 	<div id=bottom_buttons>
 		<button id=clicker_prev onclick=on_prev() class=push_button>Prev<br>Slide</button>

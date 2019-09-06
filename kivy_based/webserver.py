@@ -17,7 +17,7 @@ socketio = SocketIO(app)
 Mobility(app)
 
 SceneController = None
-
+master_app = None
 @threaded
 def loop():
     time.sleep(3)
@@ -25,14 +25,17 @@ def loop():
         if __name__ != "__main__":        
             print("starting webserver")
             global SceneController
+            global master_app
             SceneController = App.get_running_app().root.ids.MainScreen.ids.ScenePanel
+            master_app = App.get_running_app()
             while True:
                 socketio.emit("update", {"data":"None", 
                     "states":[
                         SceneController.current_scene=="camera",
                         SceneController.current_scene=="center",
                         SceneController.ids.SCQAutomatic.ids.cb.active,
-                        SceneController.ids.TimerLabel.text
+                        SceneController.ids.TimerLabel.text,
+                        master_app.auto_contro.get_sound_state()
                     ]})
                 time.sleep(.2)
         else:
@@ -43,7 +46,8 @@ def loop():
                         True,
                         False,
                         True,
-                        "Test"
+                        "Test",
+                        True
                     ]})
                 time.sleep(1)
     except KeyboardInterrupt:
@@ -60,7 +64,7 @@ def send_to_index():
     else:
         return flask.redirect(flask.url_for("index"))
 
-@app.route("/index")
+@app.route("/index", methods=["GET", "POST"])
 def index():
     if __name__ == "__main__":
         return flask.render_template("index.html", state=False)
@@ -118,6 +122,11 @@ def on_slide_next(event):
 @socketio.on("slide_prev")
 def on_slide_prev(event):
     SceneController.on_hotkey("clicker_prev")
+
+@socketio.on("volume")
+def toggle_volume(event):
+    global master_app
+    master_app.auto_contro.toggle_sound()
 
 @threaded
 def start_web_server():
