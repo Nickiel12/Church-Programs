@@ -21,7 +21,6 @@ numPerSec := 50 / A_Args[2]
 waitBetween := 1000 / numPerSec
 total := 50
 i := 0
-MsgBox, %total% : %numPerSec% : %waitBetween%
 if (A_Args[1] == True){
     while (i < total){
         i++

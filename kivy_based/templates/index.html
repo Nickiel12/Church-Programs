@@ -36,10 +36,12 @@
 			}else{
 				document.getElementById("auto_check").checked = false;
 			}
-			if (sound_state == True) {
-				document.getElementById("volume_button").src = "{{ url_for('static', filename='images/volume_on.png') }}";
+			if (sound_state == true) {
+				document.getElementById("volume_button").style.backgroundImage
+					 = "url({{ url_for('static', filename='images/volume_on.png') }})";
 			}else{
-				document.getElementById("volume_button").src = "{{ url_for('static', filename='images/volume_off.png') }}";
+				document.getElementById("volume_button").style.backgroundImage
+					 = "url({{ url_for('static', filename='images/volume_off.png') }})";
 			}
 			document.getElementById('timer').innerHTML = timer_text;
 			});
@@ -59,6 +61,9 @@
 			function on_prev(){
 				socket.emit("slide_prev", {data:"Button"})
 			}
+			function on_volume(){
+				socket.emit("volume", {data:"Button"})
+			}
 				</script>
 </head>
 <body ontouchstart="">
@@ -76,15 +81,16 @@
 		</div>
 		<div id=mid_spacer></div>
 		<div id=extra_buttons>
-			<form method="POST" novalidate action="" id=form>
+			<form novalidate action="{{ url_for('go_live') }}" id=form>
 				<input type="submit" class = form_button
-					{%if stream_state==True %} id=red_button
+					{% if stream_state==True %} id=red_button
 					value="Stop Livestream"
 					{% else %} id=green_button
 					value="Start Livestream"
 					{% endif %}>
-			</form> 
-			<input id=volume_button type="image" src="{{ url_for('static', filename='images/volume_off.png') }}" alt="Mute">	  
+				</form> 
+				<button onclick=on_volume() id=volume_button style="background-image: url({{ url_for('static', filename='images/volume_off.png') }});"> 
+					<div class=white id=volume_backgound></div></button>
 		</div>
 	</p>
 	<div id=credits>

@@ -79,11 +79,18 @@ p {
 #green_button {
     background-color: #00FF00
 }
-#volume_button {
+.white {
     background-color: rgba(240, 248, 255, 0.705);
-    padding: 1%;
+}
+#volume_background {
+    padding: 3%;
+}
+#volume_button {
+    background-size: contain;
+    background-repeat: no-repeat;
     position: inherit;
     height: 100%;
+    width: 30%;
     right: 5%;
     top: 0%;
 }

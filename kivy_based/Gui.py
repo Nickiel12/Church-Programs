@@ -102,6 +102,29 @@ class StartupController(AnchorLayout):
 class MainScreen(Screen):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.app = App.get_running_app()
+        self.mute_png = str(self.app.file_path/"extras"/"volume_off.png")
+        print(self.mute_png)
+        self.unmute_png = str(self.app.file_path/"extras"/"volume_on.png")
+        self.startup()
+
+    @threaded
+    def startup(self):
+        time.sleep(5)
+        print(self.ids)
+        self.check_image()
+
+    def on_volume_toggle(self, *args):
+        self.app.auto_contro.toggle_sound()
+        self.check_image()
+
+    def check_image(self):
+        if self.app.auto_contro.get_sound_state():
+            print("setting to mute png")
+            self.ids.Image.source = self.mute_png
+        else:
+            print("setting to unmute png")
+            self.ids.Image.source = self.unmute_png
 
 class StreamController(AnchorLayout):
     def __init__(self, **kwargs):
@@ -314,13 +337,13 @@ class GuiApp(App):
         self.settings = Settings()
         self.auto_contro = AutomationController(self.settings)
         self.stream_running = False
+        self.file_path = pathlib2.Path(os.path.abspath(__file__)).parent
     
     def _modifier_down(self):
         return keyboard.is_pressed(self.settings.hotkeys.kivy.modifier)
 
     def build(self):
         self.icon = str(pathlib2.Path(os.path.abspath(__file__)).parent / "extras"/"gear_camera_icon.ico")
-        print(self.icon)
         return Controller()
 
 if __name__ == "__main__":

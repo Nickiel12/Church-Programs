@@ -33,7 +33,7 @@ class AutomationController:
         self.app = App.get_running_app()
         self.sett = self.app.settings
         self.platform_settings = self.sett[f"setup_{self.sett.streaming_service}"]
-        self.sound_on = False
+        self.sound_on = True
         self.toggle_sound()
 # TODO
     def give_window_focus(self, window_to_focus):
@@ -52,11 +52,12 @@ class AutomationController:
 
     @threaded
     def toggle_sound(self):
+        self.sound_on = not self.sound_on
         if self.sound_on:
             # False is for the endpoint of the toggle.
-            subprocess.call([str(self.ahk_files_path/"music_toggle.exe"), True, self.sett.general.music_fade_time])
+            subprocess.call([str(self.ahk_files_path/"music_toggle.exe"), '1', f"{self.sett.general.music_fade_time}"])
         else:
-            subprocess.call([str(self.ahk_files_path/"music_toggle.exe"), False, self.sett.general.music_fade_time])
+            subprocess.call([str(self.ahk_files_path/"music_toggle.exe"), '0', f"{self.sett.general.music_fade_time}"])
     
     def get_sound_state(self) -> bool:
         return self.sound_on

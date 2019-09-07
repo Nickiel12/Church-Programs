@@ -40,6 +40,21 @@
                     id: "StreamPanel"
             SceneController:
                 id: ScenePanel
+    FloatLayout:
+        AnchorLayout:
+            anchor_x: "right"
+            anchor_y: "top"
+            Button:
+                id: SoundToggleButton
+                size_hint: .15, .15
+                on_press: root.on_volume_toggle()
+                Image:
+                    id: Image
+                    source: root.unmute_png
+                    y: self.parent.y + self.parent.height - 48
+                    x: self.parent.x + 2
+                    size: 50, 50
+                    allow_stretch: True
 
 <StartupController>:
     id: StartupControl

@@ -69,7 +69,7 @@ def index():
     if __name__ == "__main__":
         return flask.render_template("index.html", state=False)
     else:
-        state = App.get_running_app().root.stream_running
+        state = App.get_running_app().stream_running
         return flask.render_template("index.html", state=state)
 
 @app.route("/setup_stream", methods=['GET', 'POST'])
@@ -96,8 +96,15 @@ def go_live():
     if __name__ == "__main__":
         return flask.render_template("go_live.html", form=form, state=True)
     else:
-        state = App.get_running_app().root.stream_running
+        state = App.get_running_app().stream_running
         return flask.render_template("go_live.html",form=form, state=state)
+
+@app.route("/index_handeler", methods=["GET", "POST"])
+def handeler():
+    button = flask.request
+    print(button.keys)
+
+    return "<h1> Nothing Here! </h1>"
 
 @socketio.on("event")
 def my_event(data):
@@ -125,6 +132,7 @@ def on_slide_prev(event):
 
 @socketio.on("volume")
 def toggle_volume(event):
+    print("toggleing volume!")
     global master_app
     master_app.auto_contro.toggle_sound()
 
