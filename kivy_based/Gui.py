@@ -147,7 +147,7 @@ class StreamController(AnchorLayout):
                 self.app.auto_contro.go_live()
                 self.app.stream_running = True
                 
-    def fake_press(self):
+    def fake_press_go_live(self):
         if self.app.stream_running == True:
             self.app.auto_contro.end_stream()
             self.app.stream_running = False

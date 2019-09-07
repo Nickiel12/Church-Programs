@@ -6,7 +6,7 @@ from flask_mobility import Mobility
 from flask_mobility.decorators import mobile_template
 import time
 #TODO Remove this before deploying
-#from engineio.async_drivers import gevent
+from engineio.async_drivers import gevent
 
 from utils import threaded
 from forms import SetupStreamForm, GoLiveForm
@@ -91,7 +91,7 @@ def go_live():
         answer = form.are_you_sure.data
         if answer=="yes":
             if __name__ != "__main__":
-                App.get_running_app().root.ids.MainScreen.ids.StreamController.fake_press()
+                App.get_running_app().root.ids.MainScreen.ids.StreamPanel.fake_press_go_live()
         return flask.redirect(flask.url_for('index'))
     if __name__ == "__main__":
         return flask.render_template("go_live.html", form=form, state=True)
@@ -143,4 +143,4 @@ def start_web_server():
 
 if __name__ == "__main__":
     loop()
-    socketio.run(app, "0.0.0.0", debug = True)
+    socketio.run(app, "0.0.0.0")

@@ -5,7 +5,7 @@ from Gui import GuiApp
 path = pathlib2.Path(
 "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs"+
 "\\OBS Studio\\OBS Studio (64bit).lnk")
-#os.startfile(str(path))
+os.startfile(str(path))
 gui_app = GuiApp()
 
 from webserver import start_web_server
