@@ -13,3 +13,4 @@ keyboard.add_hotkey("a", lambda: print("hello"))
 
 if __name__ == "__main__":
     socket.run(app, host="0.0.0.0")
+    

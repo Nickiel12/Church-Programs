@@ -83,7 +83,7 @@
 		<div id=extra_buttons>
 			<form novalidate action="{{ url_for('go_live') }}" id=form>
 				<input type="submit" class = form_button
-					{% if stream_state==True %} id=red_button
+					{% if state==True %} id=red_button
 					value="Stop Livestream"
 					{% else %} id=green_button
 					value="Start Livestream"

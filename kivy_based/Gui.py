@@ -1,5 +1,4 @@
 import os
-os.environ["KCFG_KIVY_LOG_LEVEL"] = "debug"
 import atexit
 import kivy
 import keyboard
@@ -24,21 +23,18 @@ from exceptions import PopupError, PopupNotExist, PrematureExit
 from dialogs import Question, WarningPopup
 from utils import make_functions, Settings, threaded
 
-if True == False:
-    from kivy_based.automation_controller import Setup, AutomationController
-    from kivy_based.exceptions import PopupError, PopupNotExist, PrematureExit
-    from kivy_based.utils import make_functions, Settings, threaded
-    from kivy_based.dialogs import Question, WarningPopup
-
 Window.size = (400, 400)
+
 
 def on_startup_button_submit(stream_name):
     print(f"stream_name is: {stream_name}")
     thread = threading.Thread(target=_run_startup, args=(stream_name,))
     thread.start()
 
+
 def redo_startup():
     App.get_running_app().root.current = "StartupScreen"
+
 
 def _run_startup(stream_name, *args):
     try:
@@ -67,9 +63,8 @@ def _run_startup(stream_name, *args):
             popup.timer_event.set()
     except (PopupNotExist, PrematureExit):
         Logger.debug("Popup was closed unexpectedly")
-        if Question("Setup was canceled before it was finished\n"+
-            "Would you like to restart the program?", "Python"):
-            
+        if Question("Setup was canceled before it was finished\n" +
+                    "Would you like to restart the program?", "Python"):
             popup.close()
             redo_startup()
         else:
@@ -79,13 +74,16 @@ def _run_startup(stream_name, *args):
         popup.close()  
         ScenePanel.timer_available()
 
+
 class Controller(ScreenManager):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+
 class StartupScreen(Screen):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
 
 class StartupController(AnchorLayout):
     def __init__(self, **kwargs):
@@ -98,6 +96,7 @@ class StartupController(AnchorLayout):
     @staticmethod
     def on_submit(stream_name=None, *args):
         on_startup_button_submit(stream_name)
+
 
 class MainScreen(Screen):
     def __init__(self, *args, **kwargs):
@@ -126,6 +125,7 @@ class MainScreen(Screen):
             print("setting to unmute png")
             self.ids.Image.source = self.unmute_png
 
+
 class StreamController(AnchorLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -140,7 +140,7 @@ class StreamController(AnchorLayout):
 
     def on_toggle_button(self, *args):
         if self.app._modifier_down():
-            if self.app.stream_running == True:
+            if self.app.stream_running is True:
                 self.app.auto_contro.end_stream()
                 self.app.stream_running = False
             else:
@@ -148,7 +148,7 @@ class StreamController(AnchorLayout):
                 self.app.stream_running = True
                 
     def fake_press_go_live(self):
-        if self.app.stream_running == True:
+        if self.app.stream_running is True:
             self.app.auto_contro.end_stream()
             self.app.stream_running = False
         else:
@@ -161,15 +161,16 @@ class StreamController(AnchorLayout):
 
     def on_key_down(self, *args):
         if self.app.settings.hotkeys.kivy.modifier in args[-1]:
-            if self.app.stream_running == True:
+            if self.app.stream_running is True:
                 self.ids.go_live_button.background_color = [1, 0, 0, 1]
             else:
                 self.ids.go_live_button.background_color = [0, 1, 0, 1]
         else:
             self.ids.go_live_button.background_color = [.2, 0, 0, .5]
 
+
 class SceneController(AnchorLayout):
-    
+
     on = BooleanProperty(True)
 
     def __init__(self, **kwargs):
@@ -177,11 +178,9 @@ class SceneController(AnchorLayout):
         self.timer_text = None
         self.timer_run = threading.Event()
         self.current_scene = "camera"
-        if True == False:
-            self.app = GuiApp()
         self.app = App.get_running_app()
         self._startup()
-        
+
     @threaded
     def _startup(self):
         time.sleep(2)
@@ -225,9 +224,9 @@ class SceneController(AnchorLayout):
     @threaded
     def _timer(self):
         while not self.timer_run.is_set():
-            if self.timer_text == None:
+            if self.timer_text is None:
                 try:
-                    if self._timer_paused == False:
+                    if self._timer_paused is False:
                         end_time = self.timer_start_time + self.timer_length
                         self.timer_left = round(end_time - time.time(), 1)
                         if self.timer_left >= 0:
@@ -248,26 +247,40 @@ class SceneController(AnchorLayout):
         self.on_hotkey("camera")
 
     def start_hotkeys(self):
+        obs_settings = self.app.settings.hotkeys.obs
+        kivy_settings = self.app.settings.hotkeys.kivy
+        general_settings = self.app.settings.hotkeys.general
+
         # Camera Hotkey
-        keyboard.hook_key(self.app.settings.hotkeys.obs.camera_scene_hotkey[0], 
-            lambda x:self.on_hotkey("camera", x), suppress=True)
-        Logger.info(f"binding hotkey {self.app.settings.hotkeys.obs.camera_scene_hotkey[0]}")
+        keyboard.hook_key(obs_settings.camera_scene_hotkey[0],
+                          lambda x: self.on_hotkey("camera", x), suppress=True)
+        Logger.info("binding hotkey " +
+                    f"{obs_settings.camera_scene_hotkey[0]}")
+
         # Center Scene Hotkey
-        keyboard.hook_key(self.app.settings.hotkeys.obs.center_screen_hotkey[0],
-            lambda x:self.on_hotkey("center", x), suppress=True)
-        Logger.info(f"binding hotkey {self.app.settings.hotkeys.obs.center_screen_hotkey[0]}")
+        keyboard.hook_key(obs_settings.center_screen_hotkey[0],
+                          lambda x: self.on_hotkey("center", x), suppress=True)
+        Logger.info("binding hotkey" +
+                    f" {obs_settings.center_screen_hotkey[0]}")
+
         # Automatic Checkbox Hotkey
-        keyboard.add_hotkey(self.app.settings.hotkeys.kivy.scene_lock,
-            lambda x:self.on_hotkey("scene_lock", x), suppress=True)
-        Logger.info(f"binding hotkey {self.app.settings.hotkeys.kivy.scene_lock}")
+        keyboard.add_hotkey(kivy_settings.scene_lock,
+                            lambda x: self.on_hotkey("scene_lock", x),
+                            suppress=True)
+        Logger.info(f"binding hotkey {kivy_settings.scene_lock}")
+
         # Next Button for the clicker
-        keyboard.on_release_key(self.app.settings.hotkeys.general.clicker_forward,
-            lambda x:self.on_hotkey("clicker_next", x), suppress=True)
-        Logger.info(f"binding hotkey {self.app.settings.hotkeys.general.clicker_forward}")
+        keyboard.on_release_key(general_settings.clicker_forward,
+                                lambda x: self.on_hotkey("clicker_next", x),
+                                suppress=True)
+        Logger.info(f"binding hotkey {general_settings.clicker_forward}")
         # Previous Button for the clicker
-        keyboard.on_release_key(self.app.settings.hotkeys.general.clicker_backward,
-            lambda x:self.on_hotkey("clicker_prev", x), suppress=True)
-        Logger.info(f"binding hotkey {self.app.settings.hotkeys.general.clicker_backward}")
+
+        keyboard.on_release_key(general_settings.clicker_backward,
+                                lambda x: self.on_hotkey("clicker_prev", x),
+                                suppress=True)
+        Logger.info("binding hotkey " +
+                    f"{general_settings.clicker_backward}")
 
     def on_hotkey(self, *hotkey):  
         event = hotkey[-1]  
@@ -290,21 +303,25 @@ class SceneController(AnchorLayout):
             self._do_fake_press_center()
 
     def _do_fake_press_camera(self):
-        if self.ids.live_camera.ids.cb.active == True:
-            Logger.info(f"Hotkeys: Doing fake press camera, with button selected")
+        if self.ids.live_camera.ids.cb.active is True:
+            Logger.info(f"Hotkeys: Doing fake press camera, with" +
+                        " button selected")
             self.on_camera()
         else:
-            Logger.info(f"Hotkeys: Doing fake press camera, without button selected")
+            Logger.info(f"Hotkeys: Doing fake press camera, without" +
+                        " button selected")
             self.ids.live_camera.ids.cb._do_press()
 
     def _do_fake_press_center(self):
-        if self.ids.center_screen.ids.cb.active == True:
-            Logger.info(f"Hotkeys: Doing fake press center, with button selected")
+        if self.ids.center_screen.ids.cb.active is True:
+            Logger.info(f"Hotkeys: Doing fake press center, with" +
+                        " button selected")
             self.on_center_screen()
         else:
-            Logger.info(f"Hotkeys: Doing fake press center, without button selected")
+            Logger.info(f"Hotkeys: Doing fake press center, without" +
+                        " button selected")
             self.ids.center_screen.ids.cb._do_press()
-            
+
     def on_camera(self, *args):
         if self.current_scene != "camera":
             Logger.info(f"on_camera called with camera not selected")
@@ -321,14 +338,15 @@ class SceneController(AnchorLayout):
 
     def on_auto(self, *args):
         state = self.ids.SCQAutomatic.ids.cb.active
-        if state == False:
+        if state is False:
             Logger.info(f"on_auto called while inactive")
             self.zero_timer()
         else:
             Logger.info(f"on_auto called while active")
-            if self.ids.center_screen.ids.cb.active == True:
+            if self.ids.center_screen.ids.cb.active is True:
                 Logger.info(f"on_auto reseting timer")
                 self.reset_timer()
+
 
 class GuiApp(App):
     def __init__(self, **kwargs):
@@ -338,14 +356,16 @@ class GuiApp(App):
         self.auto_contro = AutomationController(self.settings)
         self.stream_running = False
         self.file_path = pathlib2.Path(os.path.abspath(__file__)).parent
-    
+
     def _modifier_down(self):
         return keyboard.is_pressed(self.settings.hotkeys.kivy.modifier)
 
     def build(self):
-        self.icon = str(pathlib2.Path(os.path.abspath(__file__)).parent / "extras"/"gear_camera_icon.ico")
+        self.icon = str(pathlib2.Path(os.path.abspath(__file__)).parent /
+                        "extras"/"gear_camera_icon.ico")
         return Controller()
 
 if __name__ == "__main__":
     app = GuiApp()
     app.run()
+    
