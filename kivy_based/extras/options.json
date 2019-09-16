@@ -12,6 +12,7 @@
         "go_live": [1174, 922]
     },
     "general":{
+        "music_default_state-on" : true,
         "music_fade_time": 5
     },
     "windows":{
@@ -24,8 +25,8 @@
     },
     "hotkeys":{
         "obs":{
-            "camera_scene_hotkey" : ["1", "shift+alt+ctrl+*"], 
-            "center_screen_hotkey" : ["2", "shift+alt+ctrl+/"],
+            "camera_scene_hotkey" : ["F1", "shift+alt+ctrl+*"], 
+            "center_screen_hotkey" : ["F2", "shift+alt+ctrl+/"],
             "start_stream" : "ctrl+shift+j",
             "stop_stream" : "ctrl+alt+j"
         },
