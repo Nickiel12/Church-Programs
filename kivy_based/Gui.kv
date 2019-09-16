@@ -69,13 +69,18 @@
             size_hint: 1, .5
             orientation: "horizontal"    
             Button:
-                text: "Already live"
+                text: "Already Setup"
+                size_hint: .3, 1
+                on_press: root.already_setup
+                on_release: StartupControl.parent.parent.current = "MainScreen"
+            Button:
+                text: "Already Live"
                 size_hint: .3, 1
                 on_press: root.on_already
                 on_release: StartupControl.parent.parent.current = "MainScreen"
             Button:
                 id: SubmitButton
-                size_hint: .7, 1
+                size_hint: .4, 1
                 pos_hint: {"right": 1}
                 text: "Setup Stream"
                 on_press: root.on_submit(stream_name=StreamTitleInput.text)

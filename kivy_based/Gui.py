@@ -90,12 +90,17 @@ class StartupController(AnchorLayout):
         super().__init__(**kwargs)
         self.app = App.get_running_app()
 
+    def already_setup(self, *args):
+        self.app.stream_setup = True
+
     def on_already(self, *args):
+        self.app.stream_setup = True
         self.app.stream_running = True
 
     @staticmethod
     def on_submit(stream_name=None, *args):
         on_startup_button_submit(stream_name)
+        App.get_running_app().stream_setup = True
 
 
 class MainScreen(Screen):
@@ -365,6 +370,7 @@ class GuiApp(App):
         self.settings = Settings()
         self.auto_contro = AutomationController(self.settings)
         self.stream_running = False
+        self.stream_setup = False
         self.file_path = pathlib2.Path(os.path.abspath(__file__)).parent
 
     def _modifier_down(self):
