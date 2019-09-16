@@ -40,17 +40,17 @@ class AutomationController:
         if window_to_focus.lower() == "propresenter":
             Logger.debug("WindowController: Changing active" +
                          " window to ProPresenter")
-            subprocess.call([str(self.ahk_files_path/"window_opener.exe"),
+            subprocess.call([str(self.ahk_files_path/"window_activator.exe"),
                             self.sett.windows.propresenter_re])
             time.sleep(.1)
         elif window_to_focus.lower() == "obs":
             Logger.debug("WindowController: Changing active window to OBS")
-            subprocess.call([str(self.ahk_files_path/"window_opener.exe"),
+            subprocess.call([str(self.ahk_files_path/"window_activator.exe"),
                             self.sett.windows.obs_re])
             time.sleep(.1)
         elif window_to_focus.lower() == "chrome":
             Logger.debug("WindowController: Changing active window to Chrome")
-            subprocess.call([str(self.ahk_files_path/"window_opener.exe"),
+            subprocess.call([str(self.ahk_files_path/"window_activator.exe"),
                             self.sett.windows.chrome_re])
             time.sleep(.1)
 

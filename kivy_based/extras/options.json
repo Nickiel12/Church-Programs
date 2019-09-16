@@ -1,9 +1,9 @@
 {
     "startup" : {
-        "open_obs" : true,
-        "obs_path" : "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\OBS Studio\\OBS Studio (64bit).lnk",
-        "open_propresenter" : false,
-        "propresenter_path" : "C:\\Program Files (x86)\\Renewed Vision\\ProPresenter 6\\ProPresenter.exe",
+        "open_OBS" : true,
+        "OBS_path" : "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\OBS Studio\\OBS Studio (64bit).lnk",
+        "open_ProPresenter" : false,
+        "ProPresenter_path" : "C:\\Program Files (x86)\\Renewed Vision\\ProPresenter 6\\ProPresenter.exe",
         "open_itunes" : false,
         "itunes_path" : " Not Implemented "
     },

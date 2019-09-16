@@ -1,4 +1,5 @@
 import os
+import subprocess
 import pathlib2
 from kivy.app import App
 
@@ -8,14 +9,14 @@ from webserver import start_web_server
 
 settings = Settings()
 
-programs_to_open = {}
+ahk_files_path = pathlib2.Path(os.path.abspath(__file__)).parent/"ahk_scripts"
+
 for name, value in settings.startup:
     if name[:3] == "open" and value == True:
         program = name[4:]
-        programs_to_open[program] = settings.startup[str(program)+"_path"]
-
-for i in programs_to_open.keys():
-    os.startfile(programs_to_open[i])
+        program_path = settings.startup[str(program)+"_path"]
+        subprocess.call([str(ahk_files_path/"program_opener.exe"),
+                            f".*{program}.*", program_path])
 
 gui_app = GuiApp()
 
