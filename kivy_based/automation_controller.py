@@ -33,7 +33,7 @@ class AutomationController:
         self.sett = self.app.settings
         self.platform_settings = self.sett[f"setup_" +
                                            f"{self.sett.streaming_service}"]
-        self.sound_on = True
+        self.sound_on = not self.sett.general["music_default_state-on"]
         self.toggle_sound()
 
     def give_window_focus(self, window_to_focus):
