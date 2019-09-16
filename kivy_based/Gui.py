@@ -360,6 +360,10 @@ class GuiApp(App):
     def _modifier_down(self):
         return keyboard.is_pressed(self.settings.hotkeys.kivy.modifier)
 
+    def toggle_sound(self):
+        self.auto_contro.toggle_sound()
+        self.root.ids.MainScreen.ids.check_image()
+
     def build(self):
         self.icon = str(pathlib2.Path(os.path.abspath(__file__)).parent /
                         "extras"/"gear_camera_icon.ico")
