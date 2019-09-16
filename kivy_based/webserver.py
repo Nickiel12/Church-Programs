@@ -71,7 +71,7 @@ def send_to_index():
 @app.route("/index", methods=["GET", "POST"])
 def index():
     if __name__ == "__main__":
-        return flask.render_template("index.html", state=False)
+        return flask.render_template("index.html", state=True)
     else:
         state = master_app.stream_running
         return flask.render_template("index.html", state=state)
