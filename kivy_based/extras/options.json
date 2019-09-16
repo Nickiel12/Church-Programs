@@ -12,6 +12,7 @@
         "go_live": [1174, 922]
     },
     "general":{
+        "clicker_change_scene_without_automatic" : true,
         "music_default_state-on" : true,
         "music_fade_time": 5
     },

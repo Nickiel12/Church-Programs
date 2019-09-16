@@ -283,6 +283,7 @@ class SceneController(AnchorLayout):
                     f"{general_settings.clicker_backward}")
 
     def on_hotkey(self, *hotkey):  
+        sett = self.app.settings
         event = hotkey[-1]  
         print(f"The hotkey event was: {event}")  
         hotkey = "".join(hotkey[:-1])
@@ -296,11 +297,19 @@ class SceneController(AnchorLayout):
         elif hotkey == "clicker_next" or event == "clicker_next":
             self.app.auto_contro.propre_send("next")
             time.sleep(.2)
-            self._do_fake_press_center()
+            if sett.general.clicker_change_scene_without_automatic:
+                self._do_fake_press_center()
+            else:
+                if self.auto_state:
+                    self._do_fake_press_center()
         elif hotkey == "clicker_prev" or event == "clicker_prev":
             self.app.auto_contro.propre_send("prev")
             time.sleep(.2)
-            self._do_fake_press_center()
+            if sett.general.clicker_change_scene_without_automatic:
+                self._do_fake_press_center()
+            else:
+                if self.auto_state:
+                    self._do_fake_press_center()
 
     def _do_fake_press_camera(self):
         if self.ids.live_camera.ids.cb.active is True:
@@ -338,6 +347,7 @@ class SceneController(AnchorLayout):
 
     def on_auto(self, *args):
         state = self.ids.SCQAutomatic.ids.cb.active
+        self.auto_state = state
         if state is False:
             Logger.info(f"on_auto called while inactive")
             self.zero_timer()
