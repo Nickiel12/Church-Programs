@@ -132,7 +132,6 @@ def on_slide_prev(event):
 
 @socketio.on("volume")
 def toggle_volume(event):
-    print("toggleing volume!")
     global master_app
     master_app.auto_contro.toggle_sound()
 
