@@ -94,7 +94,9 @@
             size: self.size
     Button:
         id: go_live_button
-        text: "(Hold Shift)"
+        text_size: self.size
+        halign: 'center'
+        valign: 'center'
         on_press: root.on_toggle_button()
         size_hint: .85, .75
         background_color: .2, 0, 0, .5

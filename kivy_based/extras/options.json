@@ -30,7 +30,12 @@
         "chrome_re": ".* - Google Chrome"
     },
     "kivy":{
-        "scene_timer_time": 15
+        "scene_timer_time": 15,
+        "stream_state_running": "Stream Running",
+        "stream_state_stopped": "Stream Offline",
+        "stream_toggle_default_state": "(Hold Shift for Stream Start/Stop)",
+        "stream_toggle_shown_text_state_running": "Stop Stream",
+        "stream_toggle_shown_text_state_stopped": "Start Stream"
     },
     "hotkeys":{
         "obs":{

@@ -154,23 +154,39 @@ class StreamController(AnchorLayout):
         if self.app.stream_running is True:
             self.app.auto_contro.end_stream()
             self.app.stream_running = False
+            self.on_key_up()
         else:
             self.app.auto_contro.go_live()
             self.app.stream_running = True
+            self.on_key_up()
+
+    def check_button_color(self):
+        if self.app.stream_running:
+            self.ids.go_live_button.background_color = [1, 0, 0, 1]
+        else:
+            self.ids.go_live_button.background_color = [0, 1, 0, 1]
 
     def on_key_up(self, *args):
+        print("got keycode ", args[-1], " expected keycode 128")
+        if 128 == args[-1]:
+            print("skipping key_up")
+            return
+        self.check_button_color()
+        kivy_setts = self.app.settings.kivy
         if not self.app._modifier_down():
-            self.ids.go_live_button.background_color = [.2, 0, 0, .5]
-            self.ids.go_live_button.text = "(Hold Shift)"
+            print("modifier not down")
+            if self.app.stream_running:
+                self.ids.go_live_button.text =f"{kivy_setts.stream_state_running}\n{kivy_setts.stream_toggle_default_state}"
+            else:
+                self.ids.go_live_button.text = f"{kivy_setts.stream_state_stopped}\n{kivy_setts.stream_toggle_default_state}"
 
     def on_key_down(self, *args):
+        self.check_button_color()
         if self.app.settings.hotkeys.kivy.modifier in args[-1]:
             if self.app.stream_running is True:
-                self.ids.go_live_button.background_color = [1, 0, 0, 1]
-                self.ids.go_live_button.text = "Stop Livestream"
+                self.ids.go_live_button.text = self.app.settings.kivy.stream_toggle_shown_text_state_running
             else:
-                self.ids.go_live_button.background_color = [0, 1, 0, 1]
-                self.ids.go_live_button.text = "Start Livestream"
+                self.ids.go_live_button.text = self.app.settings.kivy.stream_toggle_shown_text_state_stopped
         else:
             self.ids.go_live_button.background_color = [.2, 0, 0, .5]
 
