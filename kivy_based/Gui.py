@@ -108,14 +108,12 @@ class MainScreen(Screen):
         super().__init__(*args, **kwargs)
         self.app = App.get_running_app()
         self.mute_png = str(self.app.file_path/"extras"/"volume_off.png")
-        print(self.mute_png)
         self.unmute_png = str(self.app.file_path/"extras"/"volume_on.png")
         self.startup()
 
     @threaded
     def startup(self):
-        time.sleep(5)
-        print(self.ids)
+        time.sleep(3)
         self.check_image()
 
     def on_volume_toggle(self, *args):
@@ -124,10 +122,10 @@ class MainScreen(Screen):
 
     def check_image(self):
         if self.app.auto_contro.get_sound_state():
-            print("setting to mute png")
+            print(f"setting to mute png at {self.mute_png}")
             self.ids.Image.source = self.mute_png
         else:
-            print("setting to unmute png")
+            print(f"setting to unmute png at {self.unmute_png}")
             self.ids.Image.source = self.unmute_png
 
 
@@ -163,13 +161,16 @@ class StreamController(AnchorLayout):
     def on_key_up(self, *args):
         if not self.app._modifier_down():
             self.ids.go_live_button.background_color = [.2, 0, 0, .5]
+            self.ids.go_live_button.text = "(Hold Shift)"
 
     def on_key_down(self, *args):
         if self.app.settings.hotkeys.kivy.modifier in args[-1]:
             if self.app.stream_running is True:
                 self.ids.go_live_button.background_color = [1, 0, 0, 1]
+                self.ids.go_live_button.text = "Stop Livestream"
             else:
                 self.ids.go_live_button.background_color = [0, 1, 0, 1]
+                self.ids.go_live_button.text = "Start Livestream"
         else:
             self.ids.go_live_button.background_color = [.2, 0, 0, .5]
 

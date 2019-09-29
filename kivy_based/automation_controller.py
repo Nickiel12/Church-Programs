@@ -122,6 +122,8 @@ class AutomationController:
         mouse.move(mouse_pos[0], mouse_pos[1])
         mouse.click()
         Logger.debug("clicking the facebook go_live button in chrome")
+        time.sleep(.5)
+        self.give_window_focus("propresenter")
 
     @threaded
     def end_stream(self):
