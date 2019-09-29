@@ -12,8 +12,8 @@ settings = Settings()
 ahk_files_path = pathlib2.Path(os.path.abspath(__file__)).parent/"ahk_scripts"
 
 for name, value in settings.startup.items():
-    if name[:3] == "open" and value == True:
-        program = name[4:]
+    if name[:4] == "open" and value == True:
+        program = name[5:]
         print(f"Setup program trying to open is {program}")
         program_path = settings.startup[str(program)+"_path"]
         subprocess.call([str(ahk_files_path/"program_opener.exe"),
