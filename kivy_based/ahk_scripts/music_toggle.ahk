@@ -18,7 +18,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; frequency*total_reps = run time
 
 numPerSec := 50 / A_Args[2]
-waitBetween := 1000 / numPerSec
+waitBetween := 1000 / numPerSec / 2 ;don't know why the /2 works, but it does
 total := 50
 i := 0
 if (A_Args[1] == True){

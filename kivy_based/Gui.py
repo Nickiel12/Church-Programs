@@ -90,12 +90,17 @@ class StartupController(AnchorLayout):
         super().__init__(**kwargs)
         self.app = App.get_running_app()
 
+    def already_setup(self, *args):
+        self.app.stream_setup = True
+
     def on_already(self, *args):
+        self.app.stream_setup = True
         self.app.stream_running = True
 
     @staticmethod
     def on_submit(stream_name=None, *args):
         on_startup_button_submit(stream_name)
+        App.get_running_app().stream_setup = True
 
 
 class MainScreen(Screen):
@@ -103,14 +108,12 @@ class MainScreen(Screen):
         super().__init__(*args, **kwargs)
         self.app = App.get_running_app()
         self.mute_png = str(self.app.file_path/"extras"/"volume_off.png")
-        print(self.mute_png)
         self.unmute_png = str(self.app.file_path/"extras"/"volume_on.png")
         self.startup()
 
     @threaded
     def startup(self):
-        time.sleep(5)
-        print(self.ids)
+        time.sleep(3)
         self.check_image()
 
     def on_volume_toggle(self, *args):
@@ -119,10 +122,10 @@ class MainScreen(Screen):
 
     def check_image(self):
         if self.app.auto_contro.get_sound_state():
-            print("setting to mute png")
+            print(f"setting to mute png at {self.mute_png}")
             self.ids.Image.source = self.mute_png
         else:
-            print("setting to unmute png")
+            print(f"setting to unmute png at {self.unmute_png}")
             self.ids.Image.source = self.unmute_png
 
 
@@ -151,20 +154,39 @@ class StreamController(AnchorLayout):
         if self.app.stream_running is True:
             self.app.auto_contro.end_stream()
             self.app.stream_running = False
+            self.on_key_up()
         else:
             self.app.auto_contro.go_live()
             self.app.stream_running = True
+            self.on_key_up()
+
+    def check_button_color(self):
+        if self.app.stream_running:
+            self.ids.go_live_button.background_color = [1, 0, 0, 1]
+        else:
+            self.ids.go_live_button.background_color = [0, 1, 0, 1]
 
     def on_key_up(self, *args):
+        print("got keycode ", args[-1], " expected keycode 128")
+        if 128 == args[-1]:
+            print("skipping key_up")
+            return
+        self.check_button_color()
+        kivy_setts = self.app.settings.kivy
         if not self.app._modifier_down():
-            self.ids.go_live_button.background_color = [.2, 0, 0, .5]
+            print("modifier not down")
+            if self.app.stream_running:
+                self.ids.go_live_button.text =f"{kivy_setts.stream_state_running}\n{kivy_setts.stream_toggle_default_state}"
+            else:
+                self.ids.go_live_button.text = f"{kivy_setts.stream_state_stopped}\n{kivy_setts.stream_toggle_default_state}"
 
     def on_key_down(self, *args):
+        self.check_button_color()
         if self.app.settings.hotkeys.kivy.modifier in args[-1]:
             if self.app.stream_running is True:
-                self.ids.go_live_button.background_color = [1, 0, 0, 1]
+                self.ids.go_live_button.text = self.app.settings.kivy.stream_toggle_shown_text_state_running
             else:
-                self.ids.go_live_button.background_color = [0, 1, 0, 1]
+                self.ids.go_live_button.text = self.app.settings.kivy.stream_toggle_shown_text_state_stopped
         else:
             self.ids.go_live_button.background_color = [.2, 0, 0, .5]
 
@@ -283,6 +305,7 @@ class SceneController(AnchorLayout):
                     f"{general_settings.clicker_backward}")
 
     def on_hotkey(self, *hotkey):  
+        sett = self.app.settings
         event = hotkey[-1]  
         print(f"The hotkey event was: {event}")  
         hotkey = "".join(hotkey[:-1])
@@ -296,11 +319,19 @@ class SceneController(AnchorLayout):
         elif hotkey == "clicker_next" or event == "clicker_next":
             self.app.auto_contro.propre_send("next")
             time.sleep(.2)
-            self._do_fake_press_center()
+            if sett.general.clicker_change_scene_without_automatic:
+                self._do_fake_press_center()
+            else:
+                if self.auto_state:
+                    self._do_fake_press_center()
         elif hotkey == "clicker_prev" or event == "clicker_prev":
             self.app.auto_contro.propre_send("prev")
             time.sleep(.2)
-            self._do_fake_press_center()
+            if sett.general.clicker_change_scene_without_automatic:
+                self._do_fake_press_center()
+            else:
+                if self.auto_state:
+                    self._do_fake_press_center()
 
     def _do_fake_press_camera(self):
         if self.ids.live_camera.ids.cb.active is True:
@@ -338,6 +369,7 @@ class SceneController(AnchorLayout):
 
     def on_auto(self, *args):
         state = self.ids.SCQAutomatic.ids.cb.active
+        self.auto_state = state
         if state is False:
             Logger.info(f"on_auto called while inactive")
             self.zero_timer()
@@ -355,10 +387,15 @@ class GuiApp(App):
         self.settings = Settings()
         self.auto_contro = AutomationController(self.settings)
         self.stream_running = False
+        self.stream_setup = False
         self.file_path = pathlib2.Path(os.path.abspath(__file__)).parent
 
     def _modifier_down(self):
         return keyboard.is_pressed(self.settings.hotkeys.kivy.modifier)
+
+    def toggle_sound(self):
+        self.auto_contro.toggle_sound()
+        self.root.ids.MainScreen.ids.check_image()
 
     def build(self):
         self.icon = str(pathlib2.Path(os.path.abspath(__file__)).parent /

@@ -60,7 +60,7 @@ def loop():
 def send_to_index():
     global SceneController
     if __name__ != "__main__":
-        if master_app.stream_running:
+        if master_app.stream_setup:
             return flask.redirect(flask.url_for("index"))
         else:
             return flask.redirect(flask.url_for('setup_stream'))
@@ -71,7 +71,7 @@ def send_to_index():
 @app.route("/index", methods=["GET", "POST"])
 def index():
     if __name__ == "__main__":
-        return flask.render_template("index.html", state=False)
+        return flask.render_template("index.html", state=True)
     else:
         state = master_app.stream_running
         return flask.render_template("index.html", state=state)
@@ -132,7 +132,6 @@ def on_slide_prev(event):
 
 @socketio.on("volume")
 def toggle_volume(event):
-    print("toggleing volume!")
     global master_app
     master_app.auto_contro.toggle_sound()
 

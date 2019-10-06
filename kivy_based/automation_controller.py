@@ -33,24 +33,24 @@ class AutomationController:
         self.sett = self.app.settings
         self.platform_settings = self.sett[f"setup_" +
                                            f"{self.sett.streaming_service}"]
-        self.sound_on = True
+        self.sound_on = not self.sett.general["music_default_state-on"]
         self.toggle_sound()
 
     def give_window_focus(self, window_to_focus):
         if window_to_focus.lower() == "propresenter":
             Logger.debug("WindowController: Changing active" +
                          " window to ProPresenter")
-            subprocess.call([str(self.ahk_files_path/"window_opener.exe"),
+            subprocess.call([str(self.ahk_files_path/"window_activator.exe"),
                             self.sett.windows.propresenter_re])
             time.sleep(.1)
         elif window_to_focus.lower() == "obs":
             Logger.debug("WindowController: Changing active window to OBS")
-            subprocess.call([str(self.ahk_files_path/"window_opener.exe"),
+            subprocess.call([str(self.ahk_files_path/"window_activator.exe"),
                             self.sett.windows.obs_re])
             time.sleep(.1)
         elif window_to_focus.lower() == "chrome":
             Logger.debug("WindowController: Changing active window to Chrome")
-            subprocess.call([str(self.ahk_files_path/"window_opener.exe"),
+            subprocess.call([str(self.ahk_files_path/"window_activator.exe"),
                             self.sett.windows.chrome_re])
             time.sleep(.1)
 
@@ -122,6 +122,8 @@ class AutomationController:
         mouse.move(mouse_pos[0], mouse_pos[1])
         mouse.click()
         Logger.debug("clicking the facebook go_live button in chrome")
+        time.sleep(.5)
+        self.give_window_focus("propresenter")
 
     @threaded
     def end_stream(self):

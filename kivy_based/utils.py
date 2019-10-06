@@ -20,7 +20,8 @@ def threaded(func):
     def wrapper(*args, **kwargs):
         thread = threading.Thread(target=func, args=args, kwargs=kwargs)
         thread.start()
-        print(f"thread with target \"{func}\" has been started")
+        if debug == None:
+            print(f"thread with target \"{func}\" has been started")
         return thread
     return wrapper
 
