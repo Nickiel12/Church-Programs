@@ -1,5 +1,13 @@
 {
-    "streaming_service": "facebook",
+    "startup" : {
+        "open_OBS" : true,
+        "OBS_path" : "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\OBS Studio\\OBS Studio (64bit).lnk",
+        "open_ProPresenter" : true,
+        "ProPresenter_path" : "C:\\Program Files (x86)\\Renewed Vision\\ProPresenter 6\\ProPresenter.exe",
+        "open_itunes" : false,
+        "itunes_path" : " Not Implemented "
+    },
+    "streaming_service": "youtube",
     "setup_facebook":{
         "url": "https://www.facebook.com/CenterEvents1/",
         "wait_0": 8,
@@ -11,7 +19,19 @@
         "title": "",
         "go_live": [1174, 922]
     },
+    "setup_youtube": {
+        "url": "https://studio.youtube.com/channel/UCIZt-G-gLcNfjT-4SzrI4Cg/livestreaming/stream",
+        "wait_0": 8,
+        "mos_one": [500, 450],
+        "title": "",
+        "wait_1": 1,
+        "mos_two": [823, 759],
+        "wait_2": 5,
+        "mos_three": [863, 796]
+    },
     "general":{
+        "clicker_change_scene_without_automatic" : true,
+        "music_default_state-on" : true,
         "music_fade_time": 5
     },
     "windows":{
@@ -20,12 +40,17 @@
         "chrome_re": ".* - Google Chrome"
     },
     "kivy":{
-        "scene_timer_time": 15
+        "scene_timer_time": 15,
+        "stream_state_running": "Stream Running",
+        "stream_state_stopped": "Stream Offline",
+        "stream_toggle_default_state": "(Hold Shift for Stream Start/Stop)",
+        "stream_toggle_shown_text_state_running": "Stop Stream",
+        "stream_toggle_shown_text_state_stopped": "Start Stream"
     },
     "hotkeys":{
         "obs":{
-            "camera_scene_hotkey" : ["1", "shift+alt+ctrl+*"], 
-            "center_screen_hotkey" : ["2", "shift+alt+ctrl+/"],
+            "camera_scene_hotkey" : ["F1", "shift+alt+ctrl+*"], 
+            "center_screen_hotkey" : ["F2", "shift+alt+ctrl+/"],
             "start_stream" : "ctrl+shift+j",
             "stop_stream" : "ctrl+alt+j"
         },
