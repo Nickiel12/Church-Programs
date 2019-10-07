@@ -177,7 +177,6 @@ class Setup:
     def write(self, text: str, timer_time):
         self.popup.set_task("Entering Text", timer_time)
         keyboard.write(text)
-        self.auto_contro.obs_send("start")
 
 if __name__ == "__main__":
     auto_contro = AutomationController(Settings())

@@ -22,12 +22,17 @@
     "setup_youtube": {
         "url": "https://studio.youtube.com/channel/UCIZt-G-gLcNfjT-4SzrI4Cg/livestreaming/stream",
         "wait_0": 8,
-        "mos_one": [500, 450],
+        "mos_one": [402, 450],
         "title": "",
         "wait_1": 1,
         "mos_two": [823, 759],
         "wait_2": 5,
-        "mos_three": [863, 796]
+        "mos_three": [863, 796],
+        "wait_3": 2,
+        "mos_four": [401, 621],
+        "wait_4": 1,
+        "mos_five": [398, 789],
+        "go_live": [1167, 131]
     },
     "general":{
         "clicker_change_scene_without_automatic" : true,

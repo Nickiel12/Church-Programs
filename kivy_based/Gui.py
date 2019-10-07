@@ -56,6 +56,7 @@ def _run_startup(stream_name, *args):
                 time.sleep(i[1])
             except KeyboardInterrupt:
                 raise PrematureExit("Keyboard Inturrupt caught in sleep_check")
+        App.get_running_app().auto_contro.give_window_focus("propresenter")
         setup.del_popup()
 
     except KeyboardInterrupt:
