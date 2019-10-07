@@ -67,9 +67,8 @@ def make_functions(setup_inst):
         elif i == "title":
             output.append([partial(setup_inst.write,
                            setup_inst.stream_title, 1), 1])
-        elif i == platform_settings[-1]:
-            output.append([partial(setup_inst.auto_contro.obs_send,
-                "start")])
+    output.append([partial(setup_inst.auto_contro.obs_send,
+        "start")])
     return output
 
 
