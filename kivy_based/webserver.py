@@ -136,7 +136,6 @@ def toggle_volume(event):
     master_app.auto_contro.toggle_sound()
 
 
-@threaded
 def start_web_server():
     loop()
     socketio.run(app, "0.0.0.0")

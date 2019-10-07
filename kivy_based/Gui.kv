@@ -46,12 +46,12 @@
             anchor_y: "top"
             Button:
                 id: SoundToggleButton
-                size_hint: .15, .15
+                size_hint: .15, .13
                 on_press: root.on_volume_toggle()
                 Image:
                     id: Image
                     source: str(root.app.file_path)+"//extras//volume_off.png"
-                    y: self.parent.y + self.parent.height - 48
+                    y: self.parent.y + self.parent.height - 50
                     x: self.parent.x + 2
                     size: 50, 50
                     allow_stretch: True

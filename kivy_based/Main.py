@@ -1,5 +1,6 @@
 import os
 import subprocess
+from threading import Thread
 import pathlib2
 from kivy.app import App
 
@@ -22,6 +23,7 @@ for name, value in settings.startup.items():
 gui_app = GuiApp()
 
 if __name__ == '__main__':
-    start_web_server()
+    webserver = Thread(target=start_web_server)
+    webserver.start()
     gui_app.run()
     

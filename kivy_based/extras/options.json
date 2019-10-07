@@ -26,11 +26,11 @@
         "title": "",
         "wait_1": 1,
         "mos_two": [823, 759],
-        "wait_2": 5,
+        "wait_2": 7,
         "mos_three": [863, 796],
         "wait_3": 2,
         "mos_four": [401, 621],
-        "wait_4": 1,
+        "wait_4": 2,
         "mos_five": [398, 789],
         "go_live": [1167, 131]
     },
