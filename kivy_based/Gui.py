@@ -1,5 +1,4 @@
 import os
-import atexit
 import kivy
 import keyboard
 from kivy.app import App

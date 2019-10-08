@@ -135,10 +135,17 @@ def toggle_volume(event):
     global master_app
     master_app.auto_contro.toggle_sound()
 
+class WebServer:
+    global socketio
 
-def start_web_server():
-    loop()
-    socketio.run(app, "0.0.0.0")
+    @threaded
+    def stop(self):
+        socketio.server.stop()
+
+    @threaded
+    def start(self):
+        loop()
+        socketio.run(app, "0.0.0.0")
 
 if __name__ == "__main__":
     loop()

@@ -1,4 +1,3 @@
-from kivy.logger import Logger
 import tkinter
 from tkinter import Tk, Label, StringVar
 from tkinter.font import Font
@@ -20,7 +19,7 @@ class ChangeableText:
 
     def __str__(self):
         return f"{self.text} {self.value}"
-
+        
 
 class WarningPopup:
     """
@@ -135,10 +134,8 @@ class WarningPopup:
         return
 
     def close(self):
-        Logger.debug("closing thread")
         self.stop = True
         self.thread.join()
-        Logger.debug("thread closed")
         return
 
 
@@ -193,6 +190,3 @@ class QuestionDialog():
         self.value = False
         self.root.quit()
         self.has_answer = True
-
-if __name__ == "__main__":
-    Logger.debug(Question("A really simple question", "too cool"))
