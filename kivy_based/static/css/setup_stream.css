@@ -1,0 +1,17 @@
+.MainBody {
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+}
+#FormBox {
+    background-color: aliceblue;
+    display: block;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.StreamInput {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
