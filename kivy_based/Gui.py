@@ -154,11 +154,13 @@ class StreamController(AnchorLayout):
         if self.app.stream_running is True:
             self.app.auto_contro.end_stream()
             self.app.stream_running = False
-            self.on_key_up()
+            self.check_button_color()
+            self.check_button_text()
         else:
             self.app.auto_contro.go_live()
             self.app.stream_running = True
-            self.on_key_up()
+            self.check_button_color()
+            self.check_button_text()
 
     def check_button_color(self):
         if self.app.stream_running:
@@ -166,12 +168,7 @@ class StreamController(AnchorLayout):
         else:
             self.ids.go_live_button.background_color = [0, 1, 0, 1]
 
-    def on_key_up(self, *args):
-        print("got keycode ", args[-1], " expected keycode 128")
-        if 128 == args[-1]:
-            print("skipping key_up")
-            return
-        self.check_button_color()
+    def check_button_text(self):
         kivy_setts = self.app.settings.kivy
         if not self.app._modifier_down():
             print("modifier not down")
@@ -179,6 +176,17 @@ class StreamController(AnchorLayout):
                 self.ids.go_live_button.text =f"{kivy_setts.stream_state_running}\n{kivy_setts.stream_toggle_default_state}"
             else:
                 self.ids.go_live_button.text = f"{kivy_setts.stream_state_stopped}\n{kivy_setts.stream_toggle_default_state}"
+
+    def on_key_up(self, *args):
+        try:
+            print("got keycode ", args[-1], " expected keycode 128")
+            if 128 == args[-1]:
+                print("skipping key_up")
+                return
+        except IndexError:
+            print("on_key_up key error")
+        self.check_button_color()
+        self.check_button_text()
 
     def on_key_down(self, *args):
         self.check_button_color()
