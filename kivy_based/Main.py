@@ -6,7 +6,7 @@ from kivy.app import App
 
 from Gui import GuiApp
 from utils import Settings
-import webserver
+from webserver import start_web_server
 
 settings = Settings()
 
@@ -23,8 +23,7 @@ for name, value in settings.startup.items():
 gui_app = GuiApp()
 
 if __name__ == '__main__':
-    webserver = webserver.WebServer()
+    webserver = Thread(target=start_web_server)
     webserver.start()
     gui_app.run()
-    webserver.stop()
     
