@@ -3,11 +3,14 @@
 <Controller>:
     id: Controller
     StartupScreen:
+        id: StartupScreenId
     MainScreen:
+        id: MainScreen
 
 <StartupScreen>:
     name: "StartupScreen"
     StartupController:
+        id: StartupControl
 
 <MainScreen>:
     name: "MainScreen"
@@ -34,9 +37,24 @@
                     size_hint: .9, .9
                     anchor_x: "center"
                     anchor_y: "center"
-                    id: "StreamPanel"
+                    id: StreamPanel
             SceneController:
-                id: "ScenePanel"
+                id: ScenePanel
+    FloatLayout:
+        AnchorLayout:
+            anchor_x: "right"
+            anchor_y: "top"
+            Button:
+                id: SoundToggleButton
+                size_hint: .15, .13
+                on_press: root.on_volume_toggle()
+                Image:
+                    id: Image
+                    source: str(root.app.file_path)+"//extras//volume_off.png"
+                    y: self.parent.y + self.parent.height - 50
+                    x: self.parent.x + 2
+                    size: 50, 50
+                    allow_stretch: True
 
 <StartupController>:
     id: StartupControl
@@ -51,17 +69,21 @@
             size_hint: 1, .5
             orientation: "horizontal"    
             Button:
-                text: "Already live"
+                text: "Already Setup"
+                size_hint: .3, 1
+                on_press: root.already_setup
+                on_release: StartupControl.parent.parent.current = "MainScreen"
+            Button:
+                text: "Already Live"
                 size_hint: .3, 1
                 on_press: root.on_already
                 on_release: StartupControl.parent.parent.current = "MainScreen"
             Button:
-                id: "SubmitButton"
-                size_hint: .7, 1
+                id: SubmitButton
+                size_hint: .4, 1
                 pos_hint: {"right": 1}
                 text: "Setup Stream"
-                on_release: StartupControl.parent.parent.current = "MainScreen"
-                on_press: root.on_submit(StreamTitleInput.text)
+                on_press: root.on_submit(stream_name=StreamTitleInput.text)
 
 <StreamController>:
     canvas:
@@ -72,7 +94,9 @@
             size: self.size
     Button:
         id: go_live_button
-        text: "Stream Toggle"
+        text_size: self.size
+        halign: 'center'
+        valign: 'center'
         on_press: root.on_toggle_button()
         size_hint: .85, .75
         background_color: .2, 0, 0, .5
