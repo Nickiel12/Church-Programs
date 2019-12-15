@@ -1,4 +1,5 @@
 import atexit
+from kivy.app import App
 import json
 import math
 import pathlib2
@@ -54,21 +55,26 @@ def open_program(program, program_path=None):
 def make_functions(setup_inst):
     output = []
     platform_settings = setup_inst.platform_settings
-    for i in platform_settings:
-        if i[:3] == "url":
+    length = len(platform_settings)
+    for i in range(0, length):
+        current_type = platform_settings[str(i)]["type"]
+        if current_type == "Open URL":
             output.append([partial(setup_inst.open_url,
-                          platform_settings[i], .2), .2])
-        elif i[:4] == "wait":
+                          platform_settings[str(i)]["value"], .2), .2])
+        elif current_type == "Wait":
             output.append([partial(setup_inst.sleep, 
-                           platform_settings[i]), platform_settings[i]])
-        elif i[:3] == "mos":
+                           platform_settings[str(i)]["value"]), platform_settings[str(i)]["value"]])
+        elif current_type == "Mouse Movement":
             output.append([partial(setup_inst.mouse_click,
-                           platform_settings[i], .5), .5])
-        elif i == "title":
+                           platform_settings[str(i)]["value"], .5), .5])
+        elif current_type == "Text Field":
             output.append([partial(setup_inst.write,
                            setup_inst.stream_title, 1), 1])
+        elif current_type == "Go Live":
+            sett = App.get_running_app().settings
+            sett[f"setup_{sett.streaming_service}"]["go_live"] = platform_settings[str(i)]["value"]
     output.append([partial(setup_inst.auto_contro.obs_send,
-        "start")])
+        "start"), 1])
     return output
 
 
@@ -77,7 +83,12 @@ def Settings():
                          ).parent/"extras"/"options.json"
     with open(path) as file:
         json_file = json.load(file)
-    return DotDict(json_file)
+    dot_dict = DotDict(json_file)
+    path = path.parent / "options" / str(dot_dict.streaming_service + ".json")
+    with open(path) as file:
+        json_file_2 = json.load(file)
+    dot_dict["setup_" + dot_dict.streaming_service] = DotDict(json_file_2)
+    return dot_dict
 
 
 class DotDict(dict):
