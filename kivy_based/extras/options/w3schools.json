@@ -1,0 +1,37 @@
+{
+  "0": {
+    "type": "Open URL",
+    "name": "W3Schools",
+    "value": "https://www.w3schools.com/"
+  },
+  "1": {
+    "type": "Wait",
+    "name": "Loading wait",
+    "value": 10
+  },
+  "2": {
+    "type": "Mouse Movement",
+    "name": "Examples",
+    "value": [558, 245]
+  },
+  "3": {
+    "type": "Wait",
+    "name": "quick wait",
+    "value": 1
+  },
+  "4": {
+    "type": "Mouse Movement",
+    "name": "Search",
+    "value": [1861, 245]
+  },
+  "5": {
+    "type": "Text Field",
+    "name": "Search",
+    "value": [1861, 245]
+  },
+  "6": {
+    "type": "Go Live",
+    "name": "",
+    "value": [1752, 240]
+  }
+}

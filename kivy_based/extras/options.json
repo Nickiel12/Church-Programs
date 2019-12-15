@@ -7,7 +7,7 @@
         "open_itunes" : false,
         "itunes_path" : " Not Implemented "
     },
-    "streaming_service": "youtube",
+    "streaming_service": "w3schools",
     "setup_facebook":{
         "url": "https://www.facebook.com/CenterEvents1/",
         "wait_0": 8,
