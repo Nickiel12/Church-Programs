@@ -35,7 +35,7 @@
         "go_live": [1167, 131]
     },
     "general":{
-        "clicker_change_scene_without_automatic" : true,
+        "clicker_change_scene_without_automatic" : false,
         "music_default_state-on" : true,
         "music_fade_time": 5
     },
