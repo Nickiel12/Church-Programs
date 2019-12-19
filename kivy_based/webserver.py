@@ -60,7 +60,7 @@ def loop():
 def send_to_index():
     global SceneController
     if __name__ != "__main__":
-        if master_app.stream_setup:
+        if master_app.stream_setup or master_app.stream_running:
             return flask.redirect(flask.url_for("index"))
         else:
             return flask.redirect(flask.url_for('setup_stream'))
