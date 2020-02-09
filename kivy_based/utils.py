@@ -56,7 +56,7 @@ def make_functions(setup_inst):
     output = []
     platform_settings = setup_inst.platform_settings
     length = len(platform_settings)
-    for i in range(0, length):
+    for i in range(1, length):
         current_type = platform_settings[str(i)]["type"]
         if current_type == "Open URL":
             output.append([partial(setup_inst.open_url,
