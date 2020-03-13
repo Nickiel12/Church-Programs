@@ -203,6 +203,7 @@ class StreamController(AnchorLayout):
 class SceneController(AnchorLayout):
 
     on = BooleanProperty(True)
+    auto_state = True
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
