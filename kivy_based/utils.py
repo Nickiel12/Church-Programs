@@ -99,7 +99,7 @@ class DotDict(dict):
             for k, v in iterable.items():
                 self[k] = v
 
-    def __getattr__(*args):
+    def __getattr__(self, *args):
         val = dict.get(*args)
         return DotDict(val) if type(val) is dict else val
     __setattr__ = dict.__setitem__
