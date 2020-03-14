@@ -132,6 +132,8 @@ class AutomationController:
         time.sleep(.2)
         mouse_pos = self.platform_settings["go_live"]
         time.sleep(.1)
+        mouse.move(mouse_pos[0], mouse_pos[1])
+        time.sleep(.5)
         mouse.click()
         time.sleep(.2)
         self.obs_send("stop")
