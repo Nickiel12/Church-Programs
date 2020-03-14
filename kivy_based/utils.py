@@ -71,7 +71,7 @@ def make_functions(setup_inst):
             output.append([partial(setup_inst.write,
                            setup_inst.stream_title, 1), 1])
         elif current_type == "Go Live":
-            setup_inst.auto_contro.settings["Go Live"]= platform_settings[str(i)]["value"]
+            setup_inst.auto_contro.settings["go_live"]= platform_settings[str(i)]["value"]
             print(setup_inst.auto_contro.settings)
     output.append([partial(setup_inst.auto_contro.obs_send,
         "start"), 1])
