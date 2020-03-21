@@ -75,25 +75,25 @@ class AutomationController:
         Logger.debug(f"Sending {scene}'s hotkey to obs")
         if scene == "camera":
             self.give_window_focus("obs")
-            time.sleep(.3)
+            time.sleep(.5)
             keyboard.send(self.sett.hotkeys.obs.camera_scene_hotkey[1])
             Logger.debug(f"Sending to obs: " + 
                          f"{self.sett.hotkeys.obs.camera_scene_hotkey[1]}")
         elif scene == "center":
             self.give_window_focus("obs")
-            time.sleep(.3)
+            time.sleep(.5)
             keyboard.send(self.sett.hotkeys.obs.center_screen_hotkey[1])
             Logger.debug(f"Sending to obs: " +
                          f"{self.sett.hotkeys.obs.center_screen_hotkey[1]}")
         elif scene == "start":
             self.give_window_focus("obs")
-            time.sleep(.3)
+            time.sleep(.5)
             keyboard.send(self.sett.hotkeys.obs.start_stream)
             Logger.debug(f"Sending to obs: " +
                          f"{self.sett.hotkeys.obs.start_stream}")
         elif scene == "stop":
             self.give_window_focus("obs")
-            time.sleep(.3)
+            time.sleep(.5)
             keyboard.send(self.sett.hotkeys.obs.stop_stream)
             Logger.debug(f"Sending to obs: " +
                          f"{self.sett.hotkeys.obs.stop_stream}")
