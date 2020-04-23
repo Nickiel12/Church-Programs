@@ -204,6 +204,7 @@ class SceneController(AnchorLayout):
 
     on = BooleanProperty(True)
     auto_state = True
+    is_center_augmented = False
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -342,9 +343,28 @@ class SceneController(AnchorLayout):
             else:
                 if self.auto_state:
                     self._do_fake_press_center()
+        elif hotkey == "toggle_center_augmented" or event == "toggle_center_augmented":
+            print("toggleing center augmented")
+            if (self.is_center_augmented == False):
+                self.ids.center_screen.ids.cb.active = False
+                self.ids.live_camera.ids.cb.active = False
+                self.ids.SCQAutomatic.ids.cb.active = False
+                self.on_auto()
+                self.app.auto_contro.obs_send("center_augmented")
+                self.current_scene = "augmented"
+                self.is_center_augmented = True
+            else:
+                self.ids.SCQAutomatic.ids.cb.active = True
+                self.ids.live_camera.ids.cb.active = True
+                self._do_fake_press_camera()
+                self.is_center_augmented = False
 
     def _do_fake_press_camera(self):
-        if self.ids.live_camera.ids.cb.active is True:
+        if self.current_scene == "augmented":
+            self.ids.live_camera.ids.cb.active = True
+            self.is_center_augmented = False
+            self.ids.SCQAutomatic.ids.cb.active = True
+        elif self.ids.live_camera.ids.cb.active is True:
             Logger.info(f"Hotkeys: Doing fake press camera, with" +
                         " button selected")
             self.on_camera()
@@ -354,7 +374,11 @@ class SceneController(AnchorLayout):
             self.ids.live_camera.ids.cb._do_press()
 
     def _do_fake_press_center(self):
-        if self.ids.center_screen.ids.cb.active is True:
+        if self.current_scene == "augmented":
+            self.ids.center_screen.ids.cb.active = True
+            self.is_center_augmented = False
+            self.ids.SCQAutomatic.ids.cb.active = True
+        elif self.ids.center_screen.ids.cb.active is True:
             Logger.info(f"Hotkeys: Doing fake press center, with" +
                         " button selected")
             self.on_center_screen()

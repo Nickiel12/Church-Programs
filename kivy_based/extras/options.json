@@ -56,6 +56,7 @@
         "obs":{
             "camera_scene_hotkey" : ["F1", "shift+alt+ctrl+*"], 
             "center_screen_hotkey" : ["F2", "shift+alt+ctrl+/"],
+            "center_augmented" : ["F3", "shift+alt+ctrl+-"],
             "start_stream" : "ctrl+shift+j",
             "stop_stream" : "ctrl+alt+j"
         },

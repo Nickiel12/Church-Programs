@@ -97,6 +97,13 @@ class AutomationController:
             keyboard.send(self.sett.hotkeys.obs.stop_stream)
             Logger.debug(f"Sending to obs: " +
                          f"{self.sett.hotkeys.obs.stop_stream}")
+        elif scene == "center_augmented":
+            self.give_window_focus("obs")
+            time.sleep(.5)
+            keyboard.send(self.sett.hotkeys.obs.center_augmented[1])
+            Logger.debug
+            print(f"Sending to obs: " +
+                        f"{self.sett.hotkeys.obs.center_augmented[1]}")
         self.give_window_focus("propresenter")
 
     def propre_send(self, hotkey):

@@ -1,8 +1,8 @@
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width", initial-scale=1>
-		<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
 		<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+		<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 		<script type="text/javascript", charset="utf-8">
 			var socket = io();
@@ -14,12 +14,13 @@
 				socket.close();
 			};
 			socket.on('update', function(msg) {
-			console.log(msg.states);
+			console.log("update recieved");
 			var camera_state = msg.states[0];
 			var center_state = msg.states[1];
 			var auto_state = msg.states[2];
 			var timer_text = msg.states[3];
-			var sound_state = msg.states[4]
+			var sound_state = msg.states[4];
+			var augmented_state = msg.states[5];
 
 			if (camera_state == true) {
 				document.getElementById("camera_button").style.backgroundColor = "#00FF00";
@@ -43,6 +44,20 @@
 				document.getElementById("volume_button").style.backgroundImage
 					 = "url({{ url_for('static', filename='images/volume_off.png') }})";
 			}
+			if (augmented_state == true) {
+				var t_b = document.getElementById("toggle_center_button")
+				t_b.style.backgroundColor =	"turquoise"
+				t_b.style.color = "black"
+				t_b.innerText = "Augmented"
+					
+				document.getElementById("center_button").style.backgroundColor = "#FF0000";
+				document.getElementById("camera_button").style.backgroundColor = "#FF0000";
+			} else {
+				var t_b = document.getElementById("toggle_center_button")
+				t_b.style.backgroundColor = "cadetblue"
+				t_b.style.color = "white"
+				t_b.innerText = "Not Augmented"
+			}
 			document.getElementById('timer').innerHTML = timer_text;
 			});
 
@@ -64,6 +79,9 @@
 			function on_volume(){
 				socket.emit("volume", {data:"Button"})
 			}
+			function on_toggle(){
+				socket.emit("center_toggle", {data:"Button"})
+			}
 				</script>
 </head>
 <body ontouchstart="">
@@ -79,7 +97,12 @@
 			</div>
 			<span id="timer">0.0</span>
 		</div>
-		<div id=mid_spacer></div>
+		<div id=mid_spacer1>
+		</div>
+		<div id=options_row_1>
+			<button id=toggle_center_button onclick=on_toggle()>Not Augmented</button>
+		</div>
+		<div id=mid_spacer2></div>
 		<div id=extra_buttons>
 			<form novalidate action="{{ url_for('go_live') }}" id=form>
 				<input type="submit" class = form_button
@@ -99,10 +122,11 @@
 			</div><div>Icons made by <a href="https://www.flaticon.com/authors/google" title="Google">Google</a>
 				 from <a href="https://www.flaticon.com/"     title="Flaticon">www.flaticon.com</a></div>
 	</div>
-	<div id=bottom_spacer>	
-	<div id=bottom_buttons>
-		<button id=clicker_prev onclick=on_prev() class=push_button>Prev<br>Slide</button>
-		<button id=clicker_next onclick=on_next() class=push_button>Next<br>Slide</button>
-	</div>
+	<div id=bottom_spacer>
+		<div id=bottom_buttons>
+			<button id=clicker_prev onclick=on_prev() class=push_button>Prev<br>Slide</button>
+			<button id=clicker_next onclick=on_next() class=push_button>Next<br>Slide</button>
+		</div>
+	</div>	
 	</body>
 </html>
