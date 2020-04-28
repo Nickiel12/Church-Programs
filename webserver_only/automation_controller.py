@@ -11,7 +11,7 @@ import webbrowser
 from functools import wraps
 from win32.win32gui import GetWindowText, GetForegroundWindow
 
-from exceptions import PopupNotExist 
+from exceptions import PopupNotExist
 from dialogs import WarningPopup, Question
 from utils import Settings, threaded, open_program
 
@@ -28,7 +28,7 @@ def with_popup(func):
 class AutomationController:
     def __init__(self, settings, default_browser="CHROME"):
         self.ahk_files_path = pathlib.Path(os.path.abspath(__file__)
-                                            ).parent/"ahk_scripts"
+                                           ).parent/"ahk_scripts"
         self.app = App.get_running_app()
         self.sett = self.app.settings
         self.platform_settings = self.sett[f"setup_" +
@@ -41,17 +41,17 @@ class AutomationController:
             Logger.debug("WindowController: Changing active" +
                          " window to ProPresenter")
             subprocess.call([str(self.ahk_files_path/"window_activator.exe"),
-                            self.sett.windows.propresenter_re])
+                             self.sett.windows.propresenter_re])
             time.sleep(.1)
         elif window_to_focus.lower() == "obs":
             Logger.debug("WindowController: Changing active window to OBS")
             subprocess.call([str(self.ahk_files_path/"window_activator.exe"),
-                            self.sett.windows.obs_re])
+                             self.sett.windows.obs_re])
             time.sleep(.1)
         elif window_to_focus.lower() == "chrome":
             Logger.debug("WindowController: Changing active window to Chrome")
             subprocess.call([str(self.ahk_files_path/"window_activator.exe"),
-                            self.sett.windows.chrome_re])
+                             self.sett.windows.chrome_re])
             time.sleep(.1)
 
     @threaded
@@ -59,9 +59,11 @@ class AutomationController:
         self.sound_on = not self.sound_on
         if self.sound_on:
             # False is for the endpoint of the toggle.
-            subprocess.call([str(self.ahk_files_path/"music_toggle.exe"), '1', f"{self.sett.general.music_fade_time}"])
+            subprocess.call([str(self.ahk_files_path/"music_toggle.exe"),
+                             '1', f"{self.sett.general.music_fade_time}"])
         else:
-            subprocess.call([str(self.ahk_files_path/"music_toggle.exe"), '0', f"{self.sett.general.music_fade_time}"])
+            subprocess.call([str(self.ahk_files_path/"music_toggle.exe"),
+                             '0', f"{self.sett.general.music_fade_time}"])
 
     def get_sound_state(self) -> bool:
         return self.sound_on
@@ -77,7 +79,7 @@ class AutomationController:
             self.give_window_focus("obs")
             time.sleep(.5)
             keyboard.send(self.sett.hotkeys.obs.camera_scene_hotkey[1])
-            Logger.debug(f"Sending to obs: " + 
+            Logger.debug(f"Sending to obs: " +
                          f"{self.sett.hotkeys.obs.camera_scene_hotkey[1]}")
         elif scene == "center":
             self.give_window_focus("obs")
@@ -103,7 +105,7 @@ class AutomationController:
             keyboard.send(self.sett.hotkeys.obs.center_augmented[1])
             Logger.debug
             print(f"Sending to obs: " +
-                        f"{self.sett.hotkeys.obs.center_augmented[1]}")
+                  f"{self.sett.hotkeys.obs.center_augmented[1]}")
         self.give_window_focus("propresenter")
 
     def propre_send(self, hotkey):
@@ -145,6 +147,7 @@ class AutomationController:
         time.sleep(.2)
         self.obs_send("stop")
         Logger.debug("stopping the stream")
+
 
 if __name__ == "__main__":
     auto_contro = AutomationController(Settings())
