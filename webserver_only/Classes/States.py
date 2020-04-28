@@ -10,10 +10,12 @@ class States:
     stream_setup: bool
     stream_title: str
 
+    automatic_enabled: bool
+    current_scene: str
+
     timer_text: str
     timer_paused: bool
     timer_kill: threading.Event
-    
     
     callback: FunctionType = None
 
