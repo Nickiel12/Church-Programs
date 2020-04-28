@@ -24,35 +24,35 @@ master_app = None
 def loop():
     time.sleep(3)
     try:
-        if __name__ != "__main__":        
+        if __name__ != "__main__":
             print("starting webserver")
             global SceneController
             global master_app
             master_app = App.get_running_app()
             SceneController = master_app.root.ids.MainScreen.ids.ScenePanel
             while True:
-                socketio.emit("update", {"data": "None", 
-                              "states": [
-                                SceneController.current_scene == "camera",
-                                SceneController.current_scene == "center",
-                                SceneController.ids.SCQAutomatic.ids.cb.active,
-                                SceneController.ids.TimerLabel.text,
-                                master_app.auto_contro.get_sound_state(),
-                                SceneController.is_center_augmented
-                                ]})
+                socketio.emit("update", {"data": "None",
+                                         "states": [
+                                             SceneController.current_scene == "camera",
+                                             SceneController.current_scene == "center",
+                                             SceneController.ids.SCQAutomatic.ids.cb.active,
+                                             SceneController.ids.TimerLabel.text,
+                                             master_app.auto_contro.get_sound_state(),
+                                             SceneController.is_center_augmented
+                                         ]})
                 time.sleep(.2)
         else:
             print("starting test webserver")
             while True:
                 socketio.emit("update", {"data": "None",
-                              "states": [
-                                    True,
-                                    False,
-                                    True,
-                                    "Test",
-                                    True, 
-                                    False
-                                ]})
+                                         "states": [
+                                             True,
+                                             False,
+                                             True,
+                                             "Test",
+                                             True,
+                                             False
+                                         ]})
                 time.sleep(1)
     except KeyboardInterrupt:
         return
@@ -83,7 +83,7 @@ def index():
 def setup_stream():
     form = SetupStreamForm()
     if form.validate_on_submit():
-        if __name__ != "__main__":    
+        if __name__ != "__main__":
             startup = master_app.root.ids.StartupScreenId.ids.StartupControl
             startup.ids.StreamTitleInput.text = form.stream_title.data
             startup.on_submit(stream_name=form.stream_title.data)
@@ -146,6 +146,7 @@ def on_toggle_center(event):
 def start_web_server():
     loop()
     socketio.run(app, "0.0.0.0")
+
 
 if __name__ == "__main__":
     loop()

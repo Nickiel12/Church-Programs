@@ -18,7 +18,7 @@ for name, value in settings.startup.items():
         print(f"Setup program trying to open is {program}")
         program_path = settings.startup[str(program)+"_path"]
         subprocess.call([str(ahk_files_path/"program_opener.exe"),
-                            f".*{program}.*", program_path])
+                         f".*{program}.*", program_path])
 
 gui_app = GuiApp()
 
@@ -26,4 +26,3 @@ if __name__ == '__main__':
     webserver = Thread(target=start_web_server)
     webserver.start()
     gui_app.run()
-    
