@@ -14,13 +14,6 @@ from dialogs import WarningPopup, Question
 from utils import threaded, open_program
 
 
-def with_popup(func):
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        if self.popup is False:
-            raise PopupNotExist
-        func(self, *args, **kwargs)
-    return wrapper
 
 
 class AutomationController:

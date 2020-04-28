@@ -32,6 +32,15 @@ def threaded(func):
     return wrapper
 
 
+def with_popup(func):
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        if self.popup is False:
+            raise PopupNotExist
+        func(self, *args, **kwargs)
+    return wrapper
+
+
 @threaded
 def open_program(program, program_path=None):
     """opens the program argument, if present, program_path is opened instead

@@ -11,8 +11,8 @@ import eventlet
 
 #from utils import threaded
 from forms import SetupStreamForm, GoLiveForm
+from Classes.States import States
 from utils import DotDict
-from States import States
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
@@ -26,7 +26,9 @@ class MasterController:
     OPTIONS_FILE_PATH = pathlib.Path(".").parent/"extras"/"options.json"
     settings = None
 
-    States = States(stream_running = False
+    States = States(stream_running = False,
+                    stream_setup = False,
+                    stream_title = "",
                     )
 
     def __init__(self):
@@ -52,6 +54,10 @@ class MasterController:
             logger.error(e)
             self.settings = tmp_settings
 
+    def update_value(self, value, key):
+        States[key] = value
+
+MasterApp = MasterController()
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = '$hor!K#y'
@@ -103,33 +109,23 @@ def loop():
 
 @app.route("/")
 def send_to_index():
-    global SceneController
-    if __name__ != "__main__":
-        if master_app.stream_setup or master_app.stream_running:
-            return flask.redirect(flask.url_for("index"))
-        else:
-            return flask.redirect(flask.url_for('setup_stream'))
-    else:
+    if MasterApp.States.stream_setup or MasterApp.States.stream_running:
         return flask.redirect(flask.url_for("index"))
+    else:
+        return flask.redirect(flask.url_for('setup_stream'))
 
 
 @app.route("/index", methods=["GET", "POST"])
 def index():
-    if __name__ == "__main__":
-        return flask.render_template("index.html", state=True)
-    else:
-        state = master_app.stream_running
-        return flask.render_template("index.html", state=state)
+    return flask.render_template("index.html", state=MasterApp.States.stream_running)
 
 
 @app.route("/setup_stream", methods=['GET', 'POST'])
 def setup_stream():
     form = SetupStreamForm()
     if form.validate_on_submit():
-        if __name__ != "__main__":
-            startup = master_app.root.ids.StartupScreenId.ids.StartupControl
-            startup.ids.StreamTitleInput.text = form.stream_title.data
-            startup.on_submit(stream_name=form.stream_title.data)
+        MasterApp.States.stream_title = form.stream_title.data
+        MasterApp.setup_stream()
         return flask.redirect(flask.url_for('index'))
     return flask.render_template("setup_stream.html", form=form)
 
@@ -187,9 +183,9 @@ def on_toggle_center(event):
 
 
 def start_web_server():
-    loop()
+    #loop()
     socketio.run(app, "0.0.0.0")
 
 
 if __name__ == "__main__":
-    MasterState()
+    MasterApp.update_value("trust", )
