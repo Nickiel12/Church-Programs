@@ -146,48 +146,6 @@ class AutomationController:
         self.obs_send("stop")
         Logger.debug("stopping the stream")
 
-
-class Setup:
-    def __init__(self, popup: WarningPopup, stream_title: str, 
-                 auto_contro: AutomationController, *args, **kwargs):
-        self.auto_contro = auto_contro
-        self.popup = popup
-        self.stream_title = stream_title
-        self.settings = Settings()
-        self.platform_settings = self.settings[f"setup_" +
-                                    f"{self.settings.streaming_service}"]
-
-    def del_popup(self):
-        self.popup = False
-
-    def set_popup(self, popup):
-        self.popup = popup
-
-    def open_url(self, url, timer_time):
-        Logger.info(f"Opening {url}")
-        self.popup.set_task("Opening Browser", timer_time)
-        webbrowser.open(url)
-
-    @with_popup
-    @threaded
-    def sleep(self, time_to_sleep):
-        Logger.info(f"setup is sleeping for {time_to_sleep}")
-        self.popup.set_task("Waiting", time_to_sleep)
-        time.sleep(time_to_sleep)
-
-    @with_popup
-    @threaded
-    def mouse_click(self, mouse_pos: tuple, timer_time):
-        self.popup.set_task("Moving & Clicking Mouse", timer_time)
-        mouse.move(mouse_pos[0], mouse_pos[1])
-        mouse.click()
-
-    @with_popup
-    @threaded
-    def write(self, text: str, timer_time):
-        self.popup.set_task("Entering Text", timer_time)
-        keyboard.write(text)
-
 if __name__ == "__main__":
     auto_contro = AutomationController(Settings())
     keyboard.wait("esc")
