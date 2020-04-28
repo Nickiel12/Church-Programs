@@ -8,11 +8,13 @@ from flask_mobility.decorators import mobile_template
 from flask_socketio import SocketIO
 from functools import partial
 import time
+import threading
 import eventlet
 
 #from utils import threaded
 from forms import SetupStreamForm, GoLiveForm
 from Classes.States import States
+from Classes.Timer import Timer
 from utils import DotDict, threaded
 
 import logging
@@ -32,9 +34,13 @@ class MasterController:
         self.States = States(stream_running = False,
                              stream_setup   = False,
                              stream_title   = "",
-                             callback = self.on_update,
+                             timer_text     = "0.0",
+                             timer_paused   = False,
+                             timer_kill      = threading.Event(),
+                             callback       = self.on_update,
                              )
         self.update_settings()
+        self.Timer = Timer(self)
 
     def update_settings(self):
         if self.settings != None:
@@ -56,58 +62,8 @@ class MasterController:
             logger.error(e)
             self.settings = tmp_settings
 
-    def on_update(self, key):
-        logger.debug(f"{key} was changed")
-
-    def _stop_timer(self, *args):
-        print("timer stopped")
-        self.timer_run.set()
-
-    def zero_timer(self, *args):
-        self.pause_timer()
-        self.ids.TimerLabel.text = "0.0"
-
-    def pause_timer(self, *args):
-        self._timer_paused = True
-
-    def start_timer(self, *args):
-        self._timer_paused = False
-
-    def reset_timer(self):
-        self.timer_start_time = time.time()
-        self.start_timer()
-
-    def timer_unavailable(self):
-        self.timer_text = "Unvailable"
-
-    def timer_available(self):
-        self.timer_text = None
-        self.zero_timer()
-
-    @threaded
-    def _timer(self):
-        while not self.timer_run.is_set():
-            if self.timer_text is None:
-                try:
-                    if self._timer_paused is False:
-                        end_time = self.timer_start_time + self.timer_length
-                        self.timer_left = round(end_time - time.time(), 1)
-                        if self.timer_left >= 0:
-                            self.ids.TimerLabel.text = str(self.timer_left)
-                        else:
-                            self.timer_run_out()
-                    else:
-                        time.sleep(.3)
-                except KeyboardInterrupt:
-                    return
-            else:
-                self.ids.TimerLabel.text = self.timer_text
-                time.sleep(.3)
-            time.sleep(.1)
-
-    def timer_run_out(self):
-        self._timer_paused = True
-        self.on_hotkey("camera")
+    def on_update(self, var_name):
+        logger.debug(f"{var_name} was changed")
 
     def start_hotkeys(self):
         obs_settings = self.app.settings.hotkeys.obs
