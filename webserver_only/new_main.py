@@ -6,12 +6,14 @@ import flask
 from flask_mobility import Mobility
 from flask_mobility.decorators import mobile_template
 from flask_socketio import SocketIO
+from functools import partial
 import time
 import eventlet
 
 #from utils import threaded
 from forms import SetupStreamForm, GoLiveForm
 from Classes.States import States
+from Classes.Watch_Classes import WatchBool, WatchNumber, WatchStr
 from utils import DotDict
 
 import logging
@@ -21,17 +23,17 @@ logging.basicConfig(level=logging.DEBUG,
 logger = logging.getLogger("Main")
 web_logger = logging.getLogger("Main.webserver")
 
+
 class MasterController:
 
     OPTIONS_FILE_PATH = pathlib.Path(".").parent/"extras"/"options.json"
     settings = None
 
-    States = States(stream_running = False,
-                    stream_setup = False,
-                    stream_title = "",
-                    )
-
     def __init__(self):
+        States = States(stream_running=WatchBool(False, partial(on_update, "stream_running")),
+                        stream_setup=False,
+                        stream_title="",
+                        )
         self.update_settings()
 
     def update_settings(self):
@@ -54,8 +56,9 @@ class MasterController:
             logger.error(e)
             self.settings = tmp_settings
 
-    def update_value(self, value, key):
-        States[key] = value
+    def on_update(self, key):
+        logger.debug(f"{key} was changed")
+
 
 MasterApp = MasterController()
 
@@ -183,9 +186,10 @@ def on_toggle_center(event):
 
 
 def start_web_server():
-    #loop()
+    # loop()
     socketio.run(app, "0.0.0.0")
 
 
 if __name__ == "__main__":
-    MasterApp.update_value("trust", )
+    #MasterApp.update_value("trust", )
+    pass
