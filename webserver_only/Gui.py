@@ -12,7 +12,7 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
-import pathlib2
+import pathlib
 import sys
 from tkinter import messagebox
 import time
@@ -422,7 +422,7 @@ class GuiApp(App):
         self.auto_contro = AutomationController(self.settings)
         self.stream_running = False
         self.stream_setup = False
-        self.file_path = pathlib2.Path(os.path.abspath(__file__)).parent
+        self.file_path = pathlib.Path(os.path.abspath(__file__)).parent
 
     def _modifier_down(self):
         return keyboard.is_pressed(self.settings.hotkeys.kivy.modifier)
@@ -432,7 +432,7 @@ class GuiApp(App):
         self.root.ids.MainScreen.ids.check_image()
 
     def build(self):
-        self.icon = str(pathlib2.Path(os.path.abspath(__file__)).parent /
+        self.icon = str(pathlib.Path(os.path.abspath(__file__)).parent /
                         "extras"/"gear_camera_icon.ico")
         return Controller()
 

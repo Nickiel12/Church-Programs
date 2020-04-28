@@ -2,7 +2,7 @@ import atexit
 from kivy.app import App
 import json
 import math
-import pathlib2
+import pathlib
 import threading
 from functools import partial, wraps
 import os
@@ -35,14 +35,13 @@ def open_program(program, program_path=None):
         program {str} -- either "obs", or "propresenter"
 
     Keyword Arguments:
-        program_path {str or pathlib2 path object} -- a path to a file to open (default: {None})
+        program_path {str or pathlib path object} -- a path to a file to open (default: {None})
     """
 
     # TODO add propresenter path
-    obs_path = pathlib2.Path(
-                            "C:\\ProgramData\\Microsoft\\Windows\\Start Menu" +
+    obs_path = pathlib.Path("C:\\ProgramData\\Microsoft\\Windows\\Start Menu" +
                             "\\Programs\\OBS Studio\\OBS Studio (64bit).lnk")
-    pro_path = pathlib2.Path("C:\\Program Files (x86)\\Renewed Vision\\+" +
+    pro_path = pathlib.Path("C:\\Program Files (x86)\\Renewed Vision\\+" +
                              "ProPresenter 6\\ProPresenter.exe")
 
     if not program_path:

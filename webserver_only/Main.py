@@ -1,7 +1,7 @@
 import os
 import subprocess
 from threading import Thread
-import pathlib2
+import pathlib
 from kivy.app import App
 
 from Gui import GuiApp
@@ -10,7 +10,7 @@ from webserver import start_web_server
 
 settings = Settings()
 
-ahk_files_path = pathlib2.Path(os.path.abspath(__file__)).parent/"ahk_scripts"
+ahk_files_path = pathlib.Path(os.path.abspath(__file__)).parent/"ahk_scripts"
 
 for name, value in settings.startup.items():
     if name[:4] == "open" and value == True:

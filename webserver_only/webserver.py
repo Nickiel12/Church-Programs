@@ -3,7 +3,7 @@ from flask_socketio import SocketIO
 from flask_mobility import Mobility
 from flask_mobility.decorators import mobile_template
 import time
-from engineio.async_drivers import gevent
+import eventlet
 
 from utils import threaded
 from forms import SetupStreamForm, GoLiveForm

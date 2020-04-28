@@ -1,7 +1,7 @@
 import keyboard
 from kivy.app import App
 from kivy.logger import Logger
-import pathlib2
+import pathlib
 import mouse
 import os
 import subprocess
@@ -27,7 +27,7 @@ def with_popup(func):
 
 class AutomationController:
     def __init__(self, settings, default_browser="CHROME"):
-        self.ahk_files_path = pathlib2.Path(os.path.abspath(__file__)
+        self.ahk_files_path = pathlib.Path(os.path.abspath(__file__)
                                             ).parent/"ahk_scripts"
         self.app = App.get_running_app()
         self.sett = self.app.settings
