@@ -34,6 +34,8 @@ class MasterController:
         self.States = States(stream_running = False,
                              stream_setup   = False,
                              stream_title   = "",
+                             automatic_enabled = False,
+                             current_scene  = "",
                              timer_text     = "0.0",
                              timer_paused   = False,
                              timer_kill      = threading.Event(),
@@ -64,6 +66,38 @@ class MasterController:
 
     def on_update(self, var_name):
         logger.debug(f"{var_name} was changed")
+        if var_name == "automatic_enabled":
+            self.check_auto()
+
+    def set_scene_camera(self, *args):
+        if self.States.current_scene != "camera":
+            logger.info(f"on_camera called with camera not selected")
+            self.States.current_scene = "camera"
+            self.auto_contro.obs_send("camera")
+            self.zero_timer()
+
+    def set_scene_center(self, *args):
+        if self.States.current_scene != "center":
+            logger.info(f"on_center_screen called with center not selected")
+            self.States.current_scene = "center"
+            self.auto_contro.obs_send("center")
+        self.on_auto()
+
+    def set_scene_augmented(self, *args):
+        self.States.automatic_enabled = False
+        self.on_auto()
+        self.States.current_scene = "augmented"
+        self.auto_contro.obs_send("center_augmented")
+
+    def check_auto(self, *args):
+        if self.States.automatic_enabled is False:
+            logger.info(f"chech_auto called while inactive")
+            self.zero_timer()
+        else:
+            logger.info(f"check_auto called while active")
+            if self.States.current_scene == "center":
+                logger.info(f"check_auto reseting timer")
+                self.reset_timer()
 
     def start_hotkeys(self):
         obs_settings = self.app.settings.hotkeys.obs
@@ -102,49 +136,40 @@ class MasterController:
                     f"{general_settings.clicker_backward}")
 
     def on_hotkey(self, *hotkey):
-        sett = self.app.settings
+        sett = self.settings
         event = hotkey[-1]
-        print(f"The hotkey event was: {event}")
+        logger.info(f"The hotkey event was: {event}")
         hotkey = "".join(hotkey[:-1])
         logger.debug(f"hotkey {hotkey} caught")
         if hotkey == "camera" or event == "camera":
-            self._do_fake_press_camera()
+            self.set_scene_camera()
         elif hotkey == "center" or event == "center":
-            self._do_fake_press_center()
+            self.set_scene_center()
         elif hotkey == "scene_lock" or event == "scene_lock":
-            self.ids.SCQAutomatic.ids.cb._do_press()
+            self.States.automatic_enabled = False
         elif hotkey == "clicker_next" or event == "clicker_next":
-            self.app.auto_contro.propre_send("next")
+            self.auto_contro.propre_send("next")
             time.sleep(.2)
             if sett.general.clicker_change_scene_without_automatic:
-                self._do_fake_press_center()
+                self.set_scene_center()
             else:
-                if self.auto_state:
-                    self._do_fake_press_center()
+                if self.States.automatic_enabled:
+                    self.set_scene_center()
         elif hotkey == "clicker_prev" or event == "clicker_prev":
-            self.app.auto_contro.propre_send("prev")
+            self.auto_contro.propre_send("prev")
             time.sleep(.2)
             if sett.general.clicker_change_scene_without_automatic:
-                self._do_fake_press_center()
+                self.set_scene_center()
             else:
-                if self.auto_state:
-                    self._do_fake_press_center()
+                if self.States.automatic_enabled:
+                    self.set_scene_center()
         elif hotkey == "toggle_center_augmented" or event == "toggle_center_augmented":
-            print("toggleing center augmented")
-            if (self.is_center_augmented == False):
-                self.ids.center_screen.ids.cb.active = False
-                self.ids.live_camera.ids.cb.active = False
-                self.ids.SCQAutomatic.ids.cb.active = False
-                self.on_auto()
-                self.app.auto_contro.obs_send("center_augmented")
-                self.current_scene = "augmented"
-                self.is_center_augmented = True
+            logger.debug("toggling center augmented")
+            if not (self.States.current_scene == "augmented"):
+                self.set_scene_augmented()
             else:
-                self.ids.SCQAutomatic.ids.cb.active = True
-                self.ids.live_camera.ids.cb.active = True
-                self._do_fake_press_camera()
-                self.is_center_augmented = False
-
+                self.States.automatic_enabled = True
+                self.set_scene_camera()
 
 MasterApp = MasterController()
 
