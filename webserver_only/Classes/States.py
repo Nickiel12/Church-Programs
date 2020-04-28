@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+import threading
 from types import FunctionType
 
 
@@ -7,8 +8,13 @@ class States:
 
     stream_running: bool
     stream_setup: bool
-
     stream_title: str
+
+    timer_text: str
+    timer_paused: bool
+    timer_kill: threading.Event
+    
+    
     callback: FunctionType = None
 
     def __setattr__(self, name, value):
