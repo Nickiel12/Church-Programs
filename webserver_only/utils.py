@@ -78,19 +78,6 @@ def make_functions(setup_inst):
     return output
 
 
-def Settings():
-    path = pathlib2.Path(os.path.abspath(__file__)
-                         ).parent/"extras"/"options.json"
-    with open(path) as file:
-        json_file = json.load(file)
-    dot_dict = DotDict(json_file)
-    path = path.parent / "options" / str(dot_dict.streaming_service + ".json")
-    with open(path) as file:
-        json_file_2 = json.load(file)
-    dot_dict["setup_" + dot_dict.streaming_service] = DotDict(json_file_2)
-    return dot_dict
-
-
 class DotDict(dict):
     """dot.notation access to dictionary attributes"""
     def __init__(self, iterable):
