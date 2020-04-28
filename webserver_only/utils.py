@@ -1,5 +1,4 @@
 import atexit
-from kivy.app import App
 import json
 import math
 import pathlib
