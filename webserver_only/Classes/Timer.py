@@ -13,7 +13,6 @@ class Timer:
         timer_length = MasterApp.settings.kivy.scene_timer_time
 
     def _kill_timer(self, *args):
-        print("timer stopped")
         self.MasterApp.States.timer_run.set()
 
     def zero_timer(self, *args):
@@ -54,6 +53,7 @@ class Timer:
             else:
                 time.sleep(.3)
             time.sleep(.1)
+        logger.info("timer killed")
 
     def timer_run_out(self):
         self.MasterApp.States.timer_paused = True
