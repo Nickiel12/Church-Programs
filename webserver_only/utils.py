@@ -3,10 +3,15 @@ import json
 import math
 import pathlib
 import threading
+import keyboard
+import mouse
 from functools import partial, wraps
 import os
+import time
+import webbrowser
 import logging
-from logging import debug
+
+logger = logging.getlogger(__name__)
 
 from exceptions import PopupNotExist
 
@@ -17,7 +22,7 @@ if __name__ == "__main__":
 
 def threaded(func):
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(debug = False, *args, **kwargs):
         thread = threading.Thread(target=func, args=args, kwargs=kwargs)
         thread.start()
         if debug == None:
@@ -49,6 +54,46 @@ def open_program(program, program_path=None):
         elif program.lower() == "propresenter":
             os.startfile(str(pro_path))
 
+class Setup:
+    def __init__(self, popup: WarningPopup, stream_title: str, 
+                 auto_contro: AutomationController, settings, *args, **kwargs):
+        self.auto_contro = auto_contro
+        self.popup = popup
+        self.stream_title = stream_title
+        self.settings = settings
+        self.platform_settings = self.settings[f"setup_" +
+                                    f"{self.settings.streaming_service}"]
+
+    def del_popup(self):
+        self.popup = False
+
+    def set_popup(self, popup):
+        self.popup = popup
+
+    def open_url(self, url, timer_time):
+        logger.info(f"Opening {url}")
+        self.popup.set_task("Opening Browser", timer_time)
+        webbrowser.open(url)
+
+    @with_popup
+    @threaded
+    def sleep(self, time_to_sleep):
+        logger.info(f"setup is sleeping for {time_to_sleep}")
+        self.popup.set_task("Waiting", time_to_sleep)
+        time.sleep(time_to_sleep)
+
+    @with_popup
+    @threaded
+    def mouse_click(self, mouse_pos: tuple, timer_time):
+        self.popup.set_task("Moving & Clicking Mouse", timer_time)
+        mouse.move(mouse_pos[0], mouse_pos[1])
+        mouse.click()
+
+    @with_popup
+    @threaded
+    def write(self, text: str, timer_time):
+        self.popup.set_task("Entering Text", timer_time)
+        keyboard.write(text)
 
 def make_functions(setup_inst):
     output = []
@@ -70,7 +115,6 @@ def make_functions(setup_inst):
                            setup_inst.stream_title, 1), 1])
         elif current_type == "Go Live":
             setup_inst.auto_contro.settings["go_live"]= platform_settings[str(i)]["value"]
-            print(setup_inst.auto_contro.settings)
     output.append([partial(setup_inst.auto_contro.obs_send,
         "start"), 1])
     return output
