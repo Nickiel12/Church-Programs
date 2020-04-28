@@ -13,7 +13,6 @@ import eventlet
 #from utils import threaded
 from forms import SetupStreamForm, GoLiveForm
 from Classes.States import States
-from Classes.Watch_Classes import WatchBool, WatchNumber, WatchStr
 from utils import DotDict
 
 import logging
@@ -30,10 +29,10 @@ class MasterController:
     settings = None
 
     def __init__(self):
-        States = States(stream_running=WatchBool(False, partial(on_update, "stream_running")),
-                        stream_setup=False,
-                        stream_title="",
-                        )
+        self.States = States(stream_running = False,
+                             stream_setup   = False,
+                             stream_title   = "",
+                             )
         self.update_settings()
 
     def update_settings(self):
@@ -59,6 +58,136 @@ class MasterController:
     def on_update(self, key):
         logger.debug(f"{key} was changed")
 
+    def _stop_timer(self, *args):
+        print("timer stopped")
+        self.timer_run.set()
+
+    def zero_timer(self, *args):
+        self.pause_timer()
+        self.ids.TimerLabel.text = "0.0"
+
+    def pause_timer(self, *args):
+        self._timer_paused = True
+
+    def start_timer(self, *args):
+        self._timer_paused = False
+
+    def reset_timer(self):
+        self.timer_start_time = time.time()
+        self.start_timer()
+
+    def timer_unavailable(self):
+        self.timer_text = "Unvailable"
+
+    def timer_available(self):
+        self.timer_text = None
+        self.zero_timer()
+
+    @threaded
+    def _timer(self):
+        while not self.timer_run.is_set():
+            if self.timer_text is None:
+                try:
+                    if self._timer_paused is False:
+                        end_time = self.timer_start_time + self.timer_length
+                        self.timer_left = round(end_time - time.time(), 1)
+                        if self.timer_left >= 0:
+                            self.ids.TimerLabel.text = str(self.timer_left)
+                        else:
+                            self.timer_run_out()
+                    else:
+                        time.sleep(.3)
+                except KeyboardInterrupt:
+                    return
+            else:
+                self.ids.TimerLabel.text = self.timer_text
+                time.sleep(.3)
+            time.sleep(.1)
+
+    def timer_run_out(self):
+        self._timer_paused = True
+        self.on_hotkey("camera")
+
+    def start_hotkeys(self):
+        obs_settings = self.app.settings.hotkeys.obs
+        kivy_settings = self.app.settings.hotkeys.kivy
+        general_settings = self.app.settings.hotkeys.general
+
+        # Camera Hotkey
+        keyboard.hook_key(obs_settings.camera_scene_hotkey[0],
+                          lambda x: self.on_hotkey("camera", x), suppress=True)
+        logger.info("binding hotkey " +
+                    f"{obs_settings.camera_scene_hotkey[0]}")
+
+        # Center Scene Hotkey
+        keyboard.hook_key(obs_settings.center_screen_hotkey[0],
+                          lambda x: self.on_hotkey("center", x), suppress=True)
+        logger.info("binding hotkey" +
+                    f" {obs_settings.center_screen_hotkey[0]}")
+
+        # Automatic Checkbox Hotkey
+        keyboard.add_hotkey(kivy_settings.scene_lock,
+                            lambda x: self.on_hotkey("scene_lock", x),
+                            suppress=True)
+        logger.info(f"binding hotkey {kivy_settings.scene_lock}")
+
+        # Next Button for the clicker
+        keyboard.on_release_key(general_settings.clicker_forward,
+                                lambda x: self.on_hotkey("clicker_next", x),
+                                suppress=True)
+        logger.info(f"binding hotkey {general_settings.clicker_forward}")
+        # Previous Button for the clicker
+
+        keyboard.on_release_key(general_settings.clicker_backward,
+                                lambda x: self.on_hotkey("clicker_prev", x),
+                                suppress=True)
+        logger.info("binding hotkey " +
+                    f"{general_settings.clicker_backward}")
+
+    def on_hotkey(self, *hotkey):
+        sett = self.app.settings
+        event = hotkey[-1]
+        print(f"The hotkey event was: {event}")
+        hotkey = "".join(hotkey[:-1])
+        logger.debug(f"hotkey {hotkey} caught")
+        if hotkey == "camera" or event == "camera":
+            self._do_fake_press_camera()
+        elif hotkey == "center" or event == "center":
+            self._do_fake_press_center()
+        elif hotkey == "scene_lock" or event == "scene_lock":
+            self.ids.SCQAutomatic.ids.cb._do_press()
+        elif hotkey == "clicker_next" or event == "clicker_next":
+            self.app.auto_contro.propre_send("next")
+            time.sleep(.2)
+            if sett.general.clicker_change_scene_without_automatic:
+                self._do_fake_press_center()
+            else:
+                if self.auto_state:
+                    self._do_fake_press_center()
+        elif hotkey == "clicker_prev" or event == "clicker_prev":
+            self.app.auto_contro.propre_send("prev")
+            time.sleep(.2)
+            if sett.general.clicker_change_scene_without_automatic:
+                self._do_fake_press_center()
+            else:
+                if self.auto_state:
+                    self._do_fake_press_center()
+        elif hotkey == "toggle_center_augmented" or event == "toggle_center_augmented":
+            print("toggleing center augmented")
+            if (self.is_center_augmented == False):
+                self.ids.center_screen.ids.cb.active = False
+                self.ids.live_camera.ids.cb.active = False
+                self.ids.SCQAutomatic.ids.cb.active = False
+                self.on_auto()
+                self.app.auto_contro.obs_send("center_augmented")
+                self.current_scene = "augmented"
+                self.is_center_augmented = True
+            else:
+                self.ids.SCQAutomatic.ids.cb.active = True
+                self.ids.live_camera.ids.cb.active = True
+                self._do_fake_press_camera()
+                self.is_center_augmented = False
+
 
 MasterApp = MasterController()
 
@@ -67,8 +196,6 @@ app.config['SECRET_KEY'] = '$hor!K#y'
 socketio = SocketIO(app)
 Mobility(app)
 
-SceneController = None
-master_app = None
 
 """
 @threaded
@@ -140,38 +267,38 @@ def go_live():
         answer = form.are_you_sure.data
         if answer == "yes":
             if __name__ != "__main__":
-                master_app.root.ids.MainScreen.ids.StreamPanel.fake_press_go_live()
+                MasterApp.go_live()
         return flask.redirect(flask.url_for('index'))
     if __name__ == "__main__":
         return flask.render_template("go_live.html", form=form, state=True)
     else:
-        state = master_app.stream_running
+        state = MasterApp.States.stream_running.value
         return flask.render_template("go_live.html", form=form, state=state)
 
 
 @socketio.on("scene_camera")
 def on_scene_camera(event):
-    SceneController.on_hotkey("camera")
+    MasterApp.on_hotkey("camera")
 
 
 @socketio.on("scene_center")
 def on_scene_center(event):
-    SceneController.on_hotkey("center")
+    MasterApp.on_hotkey("center")
 
 
 @socketio.on("automatic_change")
 def on_auto_change(event):
-    SceneController.on_hotkey("scene_lock")
+    MasterApp.on_hotkey("scene_lock")
 
 
 @socketio.on("slide_next")
 def on_slide_next(event):
-    SceneController.on_hotkey("clicker_next")
+    MasterApp.on_hotkey("clicker_next")
 
 
 @socketio.on("slide_prev")
 def on_slide_prev(event):
-    SceneController.on_hotkey("clicker_prev")
+    MasterApp.on_hotkey("clicker_prev")
 
 
 @socketio.on("volume")
@@ -182,7 +309,7 @@ def toggle_volume(event):
 
 @socketio.on("center_toggle")
 def on_toggle_center(event):
-    SceneController.on_hotkey("toggle_center_augmented")
+    MasterApp.on_hotkey("toggle_center_augmented")
 
 
 def start_web_server():
@@ -191,5 +318,5 @@ def start_web_server():
 
 
 if __name__ == "__main__":
-    #MasterApp.update_value("trust", )
+    MasterApp.States.stream_running.update(True)
     pass
