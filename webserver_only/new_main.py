@@ -7,6 +7,7 @@ from flask_mobility import Mobility
 from flask_mobility.decorators import mobile_template
 from flask_socketio import SocketIO
 from functools import partial
+import subprocess
 import time
 import threading
 import eventlet
@@ -43,6 +44,15 @@ class MasterController:
                              )
         self.update_settings()
         self.Timer = Timer(self)
+        ahk_files_path = pathlib.Path(".").parent/"ahk_scripts"
+
+        for name, value in self.settings.startup.items():
+            if name[:4] == "open" and value == True:
+                program = name[5:]
+                logger.debug(f"Setup program trying to open is {program}")
+                program_path = self.settings.startup[str(program)+"_path"]
+                subprocess.call([str(ahk_files_path/"program_opener.exe"),
+                                f".*{program}.*", program_path])
 
     def update_settings(self):
         if self.settings != None:
