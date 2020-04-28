@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from types import FunctionType
 
 
 @dataclass
@@ -8,10 +9,9 @@ class States:
     stream_setup: bool
 
     stream_title: str
-
-    def set_callback(self, callback):
-        self.callback = callback
+    callback: FunctionType = None
 
     def __setattr__(self, name, value):
-        self.callback(name)
+        if self.callback:
+            self.callback(name)
         return super().__setattr__(name, value)

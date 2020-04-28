@@ -13,7 +13,7 @@ import eventlet
 #from utils import threaded
 from forms import SetupStreamForm, GoLiveForm
 from Classes.States import States
-from utils import DotDict
+from utils import DotDict, threaded
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
@@ -32,6 +32,7 @@ class MasterController:
         self.States = States(stream_running = False,
                              stream_setup   = False,
                              stream_title   = "",
+                             callback = self.on_update,
                              )
         self.update_settings()
 
@@ -318,5 +319,5 @@ def start_web_server():
 
 
 if __name__ == "__main__":
-    MasterApp.States.stream_running.update(True)
+    MasterApp.States.stream_running = True
     pass
