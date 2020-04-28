@@ -1,9 +1,11 @@
-from kivy.logger import Logger
 import tkinter
 from tkinter import Tk, Label, StringVar
 from tkinter.font import Font
 import threading
 import time
+import logging
+
+logger = logging.getLogger(__name__)
 
 from exceptions import PopupError, PopupNotExist, PrematureExit
 

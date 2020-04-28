@@ -1,6 +1,4 @@
 import keyboard
-from kivy.app import App
-from kivy.logger import Logger
 import pathlib
 import mouse
 import os
@@ -13,7 +11,7 @@ from win32.win32gui import GetWindowText, GetForegroundWindow
 
 from exceptions import PopupNotExist
 from dialogs import WarningPopup, Question
-from utils import Settings, threaded, open_program
+from utils import threaded, open_program
 
 
 def with_popup(func):

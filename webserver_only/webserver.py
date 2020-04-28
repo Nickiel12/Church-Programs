@@ -1,15 +1,12 @@
 import flask
-from flask_socketio import SocketIO
 from flask_mobility import Mobility
 from flask_mobility.decorators import mobile_template
+from flask_socketio import SocketIO
 import time
 import eventlet
 
-from utils import threaded
+#from utils import threaded
 from forms import SetupStreamForm, GoLiveForm
-
-if __name__ != "__main__":
-    from kivy.app import App
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = '$hor!K#y'
@@ -19,7 +16,7 @@ Mobility(app)
 SceneController = None
 master_app = None
 
-
+"""
 @threaded
 def loop():
     time.sleep(3)
@@ -56,7 +53,7 @@ def loop():
                 time.sleep(1)
     except KeyboardInterrupt:
         return
-
+"""
 
 @app.route("/")
 def send_to_index():
@@ -149,5 +146,9 @@ def start_web_server():
 
 
 if __name__ == "__main__":
-    loop()
+    import logging
+    logging.basicConfig(level=logging.DEBUG,
+                        format='[%(asctime)s][%(levelname)s] %(message)s', datefmt='%H:%M:%S')
+    #datefmt='%m/%d/%Y %H:%M:%S'
+    logger = logging.getLogger("Main")
     socketio.run(app, "0.0.0.0", debug=True)

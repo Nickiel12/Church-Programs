@@ -11,9 +11,10 @@ import time
 import webbrowser
 import logging
 
-logger = logging.getlogger(__name__)
+logger = logging.getLogger(__name__)
 
 from exceptions import PopupNotExist
+from dialogs import WarningPopup, Question
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG,
@@ -56,7 +57,9 @@ def open_program(program, program_path=None):
 
 class Setup:
     def __init__(self, popup: WarningPopup, stream_title: str, 
-                 auto_contro: AutomationController, settings, *args, **kwargs):
+                 auto_contro
+                 #: AutomationController,
+                 ,settings, *args, **kwargs):
         self.auto_contro = auto_contro
         self.popup = popup
         self.stream_title = stream_title
@@ -122,6 +125,9 @@ def make_functions(setup_inst):
 
 class DotDict(dict):
     """dot.notation access to dictionary attributes"""
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+
     def __init__(self, iterable):
         super().__init__()
         if isinstance(iterable, dict):
@@ -131,5 +137,3 @@ class DotDict(dict):
     def __getattr__(*args):
         val = dict.get(*args)
         return DotDict(val) if type(val) is dict else val
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
