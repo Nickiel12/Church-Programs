@@ -43,7 +43,7 @@ def _run_startup(stream_name, *args):
         App.get_running_app().root.current = "MainScreen"
         popup = WarningPopup()
         popup.open()
-        
+
         setup = Setup(popup, stream_name, App.get_running_app().auto_contro)
         settings = make_functions(setup)
         for i in settings:
@@ -72,7 +72,7 @@ def _run_startup(stream_name, *args):
             Logger.debug("the user said no to the question")
         print("done with the question")
     finally:
-        popup.close()  
+        popup.close()
         ScenePanel.timer_available()
 
 
@@ -150,7 +150,7 @@ class StreamController(AnchorLayout):
             else:
                 self.app.auto_contro.go_live()
                 self.app.stream_running = True
-                
+
     def fake_press_go_live(self):
         if self.app.stream_running is True:
             self.app.auto_contro.end_stream()
@@ -174,7 +174,7 @@ class StreamController(AnchorLayout):
         if not self.app._modifier_down():
             print("modifier not down")
             if self.app.stream_running:
-                self.ids.go_live_button.text =f"{kivy_setts.stream_state_running}\n{kivy_setts.stream_toggle_default_state}"
+                self.ids.go_live_button.text = f"{kivy_setts.stream_state_running}\n{kivy_setts.stream_toggle_default_state}"
             else:
                 self.ids.go_live_button.text = f"{kivy_setts.stream_state_stopped}\n{kivy_setts.stream_toggle_default_state}"
 
@@ -228,7 +228,7 @@ class SceneController(AnchorLayout):
         self.ids.live_camera.ids.cb.bind(active=self.on_camera)
         self.ids.center_screen.ids.cb.bind(active=self.on_center_screen)
         self.ids.SCQAutomatic.ids.cb.bind(active=self.on_auto)
-    
+
     def _stop_timer(self, *args):
         print("timer stopped")
         self.timer_run.set()
@@ -239,7 +239,7 @@ class SceneController(AnchorLayout):
 
     def pause_timer(self, *args):
         self._timer_paused = True
-    
+
     def start_timer(self, *args):
         self._timer_paused = False
 
@@ -253,7 +253,7 @@ class SceneController(AnchorLayout):
     def timer_available(self):
         self.timer_text = None
         self.zero_timer()
-        
+
     @threaded
     def _timer(self):
         while not self.timer_run.is_set():
@@ -315,10 +315,10 @@ class SceneController(AnchorLayout):
         Logger.info("binding hotkey " +
                     f"{general_settings.clicker_backward}")
 
-    def on_hotkey(self, *hotkey):  
+    def on_hotkey(self, *hotkey):
         sett = self.app.settings
-        event = hotkey[-1]  
-        print(f"The hotkey event was: {event}")  
+        event = hotkey[-1]
+        print(f"The hotkey event was: {event}")
         hotkey = "".join(hotkey[:-1])
         Logger.debug(f"hotkey {hotkey} caught")
         if hotkey == "camera" or event == "camera":
@@ -436,7 +436,7 @@ class GuiApp(App):
                         "extras"/"gear_camera_icon.ico")
         return Controller()
 
+
 if __name__ == "__main__":
     app = GuiApp()
     app.run()
-    
