@@ -7,7 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from exceptions import PopupError, PopupNotExist, PrematureExit
+from Classes.Exceptions import PopupError, PopupNotExist, PrematureExit
 
 
 class ChangeableText:

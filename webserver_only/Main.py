@@ -14,20 +14,20 @@ import subprocess
 import time
 import threading
 
-from forms import SetupStreamForm, GoLiveForm
+from Classes.Forms import SetupStreamForm, GoLiveForm
 from Classes.Exceptions import PopupError, PrematureExit, PopupNotExist
 from Classes.States import States
 from Classes.Timer import Timer
 from Classes.Popups import WarningPopup, Question
 from utils import DotDict, threaded, Setup, make_functions
-from automation_controller import AutomationController
+from Classes.AutomationController import AutomationController
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
                     format='[%(asctime)s][%(levelname)s] %(message)s', datefmt='%H:%M:%S')
 #datefmt='%m/%d/%Y %H:%M:%S'
-logger = logging.getlogger("Main")
-web_logger = logging.getlogger("Main.webserver")
+logger = logging.getLogger("Main")
+web_logger = logging.getLogger("Main.webserver")
 
 
 class MasterController:
@@ -63,8 +63,8 @@ class MasterController:
         self.Timer = Timer(self)
 
     def start(self):
-        logging.getlogger('socketio').setLevel(logging.ERROR)
-        logging.getlogger('engineio').setLevel(logging.ERROR)
+        logging.getLogger('socketio').setLevel(logging.ERROR)
+        logging.getLogger('engineio').setLevel(logging.ERROR)
         self.socketio.run(app, "0.0.0.0", debug=False)
 
     def update_settings(self):

@@ -13,7 +13,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from exceptions import PopupNotExist
+from Classes.Exceptions import PopupNotExist
 from Classes.Popups import WarningPopup, Question
 
 if __name__ == "__main__":
