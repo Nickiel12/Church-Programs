@@ -2,21 +2,14 @@ import keyboard
 import pathlib
 import logging
 import mouse
-import os
 import subprocess
 import time
 import threading
-import webbrowser
-from functools import wraps
-from win32.win32gui import GetWindowText, GetForegroundWindow
 
-from exceptions import PopupNotExist
-from dialogs import WarningPopup, Question
 from utils import threaded, open_program
 
 if True == False:
     from new_main import MasterController
-
 
 logger = logging.getlogger(__name__)
 
@@ -115,9 +108,3 @@ class AutomationController:
     def end_stream(self):
         self.obs_send("stop")
         logger.debug("stopping the stream")
-
-
-if __name__ == "__main__":
-    auto_contro = AutomationController(Settings())
-    keyboard.wait("esc")
-    auto_contro.give_window_focus("obs")
