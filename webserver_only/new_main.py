@@ -1,3 +1,4 @@
+import atexit
 import copy
 import eventlet
 import keyboard
@@ -13,7 +14,6 @@ import subprocess
 import time
 import threading
 
-#from utils import threaded
 from forms import SetupStreamForm, GoLiveForm
 from Classes.States import States
 from Classes.Timer import Timer
@@ -33,15 +33,16 @@ class MasterController:
     settings = None
 
     def __init__(self):
-        self.States = States(stream_running = False,
-                             stream_setup   = False,
-                             stream_title   = "",
-                             automatic_enabled = False,
-                             current_scene  = "",
-                             timer_text     = "0.0",
-                             timer_paused   = False,
-                             timer_kill      = threading.Event(),
-                             callback       = self.on_update,
+        self.States = States(stream_running=False,
+                             stream_setup=False,
+                             stream_title="",
+                             automatic_enabled=False,
+                             current_scene="",
+                             timer_text="0.0",
+                             timer_paused=False,
+                             timer_kill=threading.Event(),
+                             sound_on=not(self.settings.general["music_default_state-on"]),
+                             callback=self.on_update,
                              )
         self.update_settings()
         self.Timer = Timer(self)
@@ -53,7 +54,7 @@ class MasterController:
                 logger.debug(f"Setup program trying to open is {program}")
                 program_path = self.settings.startup[str(program)+"_path"]
                 subprocess.call([str(ahk_files_path/"program_opener.exe"),
-                                f".*{program}.*", program_path])
+                                 f".*{program}.*", program_path])
 
     def update_settings(self):
         have_backup = False
@@ -85,6 +86,8 @@ class MasterController:
         logger.debug(f"{var_name} was changed")
         if var_name == "automatic_enabled":
             self.check_auto()
+        socketio.emit("update", {"data": "None",
+                                 "states": [var_name, self.States[var_name]]})
 
     def set_scene_camera(self, *args):
         if self.States.current_scene != "camera":
@@ -192,11 +195,13 @@ class MasterController:
                 self.States.automatic_enabled = True
                 self.set_scene_camera()
 
+
 MasterApp = MasterController()
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = '$hor!K#y'
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='eventlet')
+eventlet.monkey_patch()
 Mobility(app)
 
 
