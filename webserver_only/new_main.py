@@ -15,17 +15,19 @@ import time
 import threading
 
 from forms import SetupStreamForm, GoLiveForm
+from Classes.Exceptions import PopupError, PrematureExit, PopupNotExist
 from Classes.States import States
 from Classes.Timer import Timer
-from utils import DotDict, threaded
+from Classes.Popups import WarningPopup, Question
+from utils import DotDict, threaded, Setup, make_functions
 from automation_controller import AutomationController
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
                     format='[%(asctime)s][%(levelname)s] %(message)s', datefmt='%H:%M:%S')
 #datefmt='%m/%d/%Y %H:%M:%S'
-logger = logging.getLogger("Main")
-web_logger = logging.getLogger("Main.webserver")
+logger = logging.getlogger("Main")
+web_logger = logging.getlogger("Main.webserver")
 
 
 class MasterController:
@@ -37,10 +39,10 @@ class MasterController:
         self.socketio = socketio
         self.update_settings()
         self.States = States(stream_running=False,
-                             stream_setup=False,
+                             stream_is_setup=False,
                              stream_title="",
                              automatic_enabled=True,
-                             current_scene="",
+                             current_scene="camera",
                              timer_text="0.0",
                              timer_paused=False,
                              timer_kill=threading.Event(),
@@ -61,8 +63,8 @@ class MasterController:
         self.Timer = Timer(self)
 
     def start(self):
-        logging.getLogger('socketio').setLevel(logging.ERROR)
-        logging.getLogger('engineio').setLevel(logging.ERROR)
+        logging.getlogger('socketio').setLevel(logging.ERROR)
+        logging.getlogger('engineio').setLevel(logging.ERROR)
         self.socketio.run(app, "0.0.0.0", debug=False)
 
     def update_settings(self):
@@ -100,14 +102,29 @@ class MasterController:
         self.socketio.emit("update", {"data": "None",
                                  "states": [var_name, value]})
 
+    @threaded
+    def update_page(self):
+        self.socketio.emit("update", {"states":[
+                           "automatic_enabled", self.States.automatic_enabled]})
+        self.socketio.emit("update", {"states":[
+                            "current_scene", self.States.current_scene]})
+        self.socketio.emit("update", {"states":[
+                            "timer_text", self.States.timer_text]})
+        self.socketio.emit("update", {"states":[
+                            "sound_on", self.States.sound_on]})
+
     def set_scene_camera(self, *args):
+        if self.States.current_scene == "augmented":
+            self.States.automatic_enabled = True
         if self.States.current_scene != "camera":
             logger.debug(f"changing scene to camera")
-            self.States.current_scene = "camera"
             self.auto_contro.obs_send("camera")
+            self.States.current_scene = "camera"
             self.Timer.pause_timer()
 
     def set_scene_center(self, *args):
+        if self.States.current_scene == "augmented":
+            self.States.automatic_enabled = True
         if self.States.current_scene != "center":
             logger.debug(f"changing scene to center")
             self.States.current_scene = "center"
@@ -210,6 +227,43 @@ class MasterController:
                 self.States.automatic_enabled = True
                 self.set_scene_camera()
 
+    def setup_stream(self):
+        try:
+            self.Timer.timer_unavailable()
+            popup = WarningPopup()
+            popup.open()
+            
+            setup = Setup(popup, self)
+            settings = make_functions(setup)
+            for i in settings:
+                try:
+                    if popup.timer_event.is_set():
+                        raise PrematureExit("Timer caught event set")
+                    print(f"current function: {i[0]}")
+                    i[0]()
+                    print(f"sleeping for {i[1]} seconds")
+                    time.sleep(i[1])
+                except KeyboardInterrupt:
+                    raise PrematureExit("Keyboard Inturrupt caught in sleep_check")
+            self.auto_contro.give_window_focus("propresenter")
+            setup.del_popup()
+            self.States.stream_is_setup = True
+
+        except KeyboardInterrupt:
+            if popup.timer_thread and popup.timer_thread.isAlive():
+                popup.timer_event.set()
+        except (PopupNotExist, PrematureExit):
+            logger.debug("Popup was closed unexpectedly")
+            if Question("Setup was canceled before it was finished\n" +
+                        "Would you like to restart setup?", "Python"):
+                popup.close()
+                self.setup_stream()
+            else:
+                logger.debug("the user said no to the question")
+        finally:
+            popup.close()  
+            self.Timer.timer_available()
+
 
 
 app = flask.Flask(__name__)
@@ -223,7 +277,7 @@ MasterApp = MasterController(socketio=socketio)
 
 @app.route("/")
 def send_to_index():
-    if MasterApp.States.stream_setup or MasterApp.States.stream_running:
+    if MasterApp.States.stream_is_setup or MasterApp.States.stream_running:
         return flask.redirect(flask.url_for("index"))
     else:
         return flask.redirect(flask.url_for('setup_stream'))
@@ -253,7 +307,7 @@ def go_live():
             MasterApp.go_live()
         return flask.redirect(flask.url_for('index'))
     else:
-        state = MasterApp.States.stream_running.value
+        state = MasterApp.States.stream_running
         return flask.render_template("go_live.html", form=form, state=state)
 
 
@@ -290,6 +344,10 @@ def toggle_volume(event):
 @socketio.on("center_toggle")
 def on_toggle_center(event):
     MasterApp.on_hotkey("toggle_center_augmented")
+
+@socketio.on("new_connection")
+def refresh_new_page(event):
+    MasterApp.update_page()
 
 
 if __name__ == "__main__":
