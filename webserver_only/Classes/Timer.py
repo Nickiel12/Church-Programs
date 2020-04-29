@@ -10,7 +10,7 @@ class Timer:
     def __init__(self, MasterApp):
         self.MasterApp = MasterApp
         imer_start_time = time.time()
-        timer_length = MasterApp.settings.kivy.scene_timer_time
+        self.timer_length = MasterApp.settings.general.default_timer_length
 
     def _kill_timer(self, *args):
         self.MasterApp.States.timer_run.set()
