@@ -37,20 +37,13 @@
     "general":{
         "clicker_change_scene_without_automatic" : false,
         "music_default_state-on" : true,
-        "music_fade_time": 5
+        "music_fade_time": 5,
+        "default_timer_length": 15
     },
     "windows":{
         "obs_re": "OBS ",
         "propresenter_re": "ProPresenter - .*",
         "chrome_re": ".* - Google Chrome"
-    },
-    "kivy":{
-        "scene_timer_time": 15,
-        "stream_state_running": "Stream Running",
-        "stream_state_stopped": "Stream Offline",
-        "stream_toggle_default_state": "(Hold Shift for Stream Start/Stop)",
-        "stream_toggle_shown_text_state_running": "Stop Stream",
-        "stream_toggle_shown_text_state_stopped": "Start Stream"
     },
     "hotkeys":{
         "obs":{
@@ -59,10 +52,6 @@
             "center_augmented" : ["F3", "shift+alt+ctrl+-"],
             "start_stream" : "ctrl+shift+j",
             "stop_stream" : "ctrl+alt+j"
-        },
-        "kivy":{
-            "modifier": "shift",
-            "scene_lock": "shift + 3"
         },
         "general":{
             "clicker_forward" : "page down", 
