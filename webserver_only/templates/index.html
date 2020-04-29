@@ -8,6 +8,7 @@
 			var socket = io();
 			socket.on("connect", function(){
 					socket.emit("my event", {data:"I\'m connected!"});
+					socket.emit("new_connection", {data:"new connection, please send updates"})
 			});
 			window.onbeforeunload = function() {
 				socket.onclose = function () {}; // disable onclose handler first
@@ -19,7 +20,7 @@
 				var value = msg.states[1]
 
 				switch (name) {
-					case "stream_setup":
+					case "stream_is_setup":
 					case "stream_title":
 					case "timer_kill":
 					case "timer_paused":
