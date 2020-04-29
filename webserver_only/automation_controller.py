@@ -8,14 +8,11 @@ import threading
 
 from utils import threaded, open_program
 
-if True == False:
-    from new_main import MasterController
-
-logger = logging.getlogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class AutomationController:
-    def __init__(self, MasterApp: MasterController, default_browser="CHROME"):
+    def __init__(self, MasterApp, default_browser="CHROME"):
         self.ahk_files_path = pathlib.Path(".").parent/"ahk_scripts"
         self.MasterApp = MasterApp
         self.sett = self.MasterApp.settings
