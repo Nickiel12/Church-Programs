@@ -14,7 +14,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from exceptions import PopupNotExist
-from dialogs import WarningPopup, Question
+from Classes.Popups import WarningPopup, Question
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG,
@@ -64,14 +64,11 @@ def open_program(program, program_path=None):
             os.startfile(str(pro_path))
 
 class Setup:
-    def __init__(self, popup: WarningPopup, stream_title: str, 
-                 auto_contro
-                 #: AutomationController,
-                 ,settings, *args, **kwargs):
-        self.auto_contro = auto_contro
+    def __init__(self, popup: WarningPopup, MasterApp):
+        self.auto_contro = MasterApp.auto_contro
         self.popup = popup
-        self.stream_title = stream_title
-        self.settings = settings
+        self.stream_title = MasterApp.States.stream_title
+        self.settings = MasterApp.settings
         self.platform_settings = self.settings[f"setup_" +
                                     f"{self.settings.streaming_service}"]
 
