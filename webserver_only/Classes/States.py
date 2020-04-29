@@ -23,5 +23,5 @@ class States:
 
     def __setattr__(self, name, value):
         if self.callback:
-            self.callback(name)
+            self.callback(name, value)
         return super().__setattr__(name, value)
