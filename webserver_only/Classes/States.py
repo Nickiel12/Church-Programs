@@ -7,7 +7,7 @@ from types import FunctionType
 class States:
 
     stream_running: bool
-    stream_setup: bool
+    stream_is_setup: bool
     stream_title: str
 
     automatic_enabled: bool
