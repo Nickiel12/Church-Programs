@@ -16,6 +16,8 @@ class States:
     timer_text: str
     timer_paused: bool
     timer_kill: threading.Event
+
+    sound_on: bool
     
     callback: FunctionType = None
 
