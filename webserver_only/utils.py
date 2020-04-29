@@ -23,11 +23,10 @@ if __name__ == "__main__":
 
 def threaded(func):
     @wraps(func)
-    def wrapper(debug = False, *args, **kwargs):
+    def wrapper(*args, **kwargs):
+        logger.debug(f"starting thread with target {func}")
         thread = threading.Thread(target=func, args=args, kwargs=kwargs)
         thread.start()
-        if debug == None:
-            print(f"thread with target \"{func}\" has been started")
         return thread
     return wrapper
 
