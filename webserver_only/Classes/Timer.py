@@ -10,20 +10,20 @@ class Timer:
 
     def __init__(self, MasterApp):
         self.MasterApp = MasterApp
-        imer_start_time = time.time()
         self.timer_length = MasterApp.settings.general.default_timer_length
+        self.timer_start_time = time.time() - self.timer_length
+        self.started_once = False
+        self._timer()
 
     def _kill_timer(self, *args):
-        self.MasterApp.States.timer_run.set()
-
-    def zero_timer(self, *args):
-        self.pause_timer()
-        self.MasterApp.States.timer_time = 0.0
+        self.MasterApp.States.timer_kill.set()
 
     def pause_timer(self, *args):
         self.MasterApp.States.timer_paused = True
+        self.MasterApp.States.timer_text = "0.0"
 
     def start_timer(self, *args):
+        self.started_once = True
         self.MasterApp.States.timer_paused = False
 
     def reset_timer(self):
@@ -34,25 +34,24 @@ class Timer:
         self.MasterApp.States.timer_text = "Unvailable"
 
     def timer_available(self):
-        self.MasterApp.States.timer_text = None
-        self.zero_timer()
+        self.MasterApp.States.timer_text = "0.0"
+        self.pause_timer()
 
     @threaded
     def _timer(self):
-        while not self.MasterApp.States.timer_run.is_set():
-            if self.MasterApp.States.timer_text is None:
+        while not self.MasterApp.States.timer_kill.is_set():
+            if self.started_once == True:
                 try:
-                    if self.MasterApp.States.timer_paused is False:
+                    if self.MasterApp.States.timer_paused == False:
                         end_time = self.timer_start_time + self.timer_length
                         self.timer_left = round(end_time - time.time(), 1)
+                        self.MasterApp.States.timer_text = self.timer_left
                         if not (self.timer_left >= 0):
                             self.timer_run_out()
                     else:
                         time.sleep(.3)
                 except KeyboardInterrupt:
                     return
-            else:
-                time.sleep(.3)
             time.sleep(.1)
         logger.info("timer killed")
 
