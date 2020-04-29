@@ -39,7 +39,7 @@ class MasterController:
         self.States = States(stream_running=False,
                              stream_setup=False,
                              stream_title="",
-                             automatic_enabled=False,
+                             automatic_enabled=True,
                              current_scene="",
                              timer_text="0.0",
                              timer_paused=False,
@@ -47,7 +47,7 @@ class MasterController:
                              sound_on=not(self.settings.general["music_default_state-on"]),
                              callback=self.on_update,
                              )
-        self.Timer = Timer(self)
+        atexit.register(partial(self.States.timer_kill.set))
         ahk_files_path = pathlib.Path(".").parent/"ahk_scripts"
 
         for name, value in self.settings.startup.items():
@@ -57,10 +57,12 @@ class MasterController:
                 program_path = self.settings.startup[str(program)+"_path"]
                 subprocess.call([str(ahk_files_path/"program_opener.exe"),
                                  f".*{program}.*", program_path])
-
         self.auto_contro = AutomationController(self)
+        self.Timer = Timer(self)
 
     def start(self):
+        logging.getLogger('socketio').setLevel(logging.ERROR)
+        logging.getLogger('engineio').setLevel(logging.ERROR)
         self.socketio.run(app, "0.0.0.0", debug=False)
 
     def update_settings(self):
@@ -89,8 +91,10 @@ class MasterController:
                 logger.error("loading the settings has failed")
                 raise e
 
+    @threaded
     def on_update(self, var_name, value):
-        logger.debug(f"{var_name} was changed")
+        if var_name != "timer_text":
+            logger.debug(f"{var_name} was changed")
         if var_name == "automatic_enabled":
             self.check_auto()
         self.socketio.emit("update", {"data": "None",
@@ -101,7 +105,7 @@ class MasterController:
             logger.debug(f"changing scene to camera")
             self.States.current_scene = "camera"
             self.auto_contro.obs_send("camera")
-            self.Timer.zero_timer()
+            self.Timer.pause_timer()
 
     def set_scene_center(self, *args):
         if self.States.current_scene != "center":
@@ -119,13 +123,15 @@ class MasterController:
             self.auto_contro.obs_send("center_augmented")
 
     def check_auto(self, *args):
-        if self.States.automatic_enabled is False:
-            logger.info(f"chech_auto called while automatic_enabled is false")
-            self.Timer.zero_timer()
+        logger.info(f"check_auto called with automatic enable = {self.States.automatic_enabled}")
+        if self.States.automatic_enabled == False:
+            logger.info(f"check_auto called while automatic_enabled is false")
+            logger.info(f"pausing timer")
+            self.Timer.pause_timer()
         else:
             logger.info(f"check_auto called while automatic_enabled is true")
             if self.States.current_scene == "center":
-                logger.info(f"check_auto reseting timer")
+                logger.info(f"check_auto restarting timer")
                 self.Timer.reset_timer()
 
     def start_hotkeys(self):
@@ -177,7 +183,9 @@ class MasterController:
         elif hotkey == "center" or event == "center":
             self.set_scene_center()
         elif hotkey == "auto_lock" or event == "auto_lock":
-            self.States.automatic_enabled = False
+            state = self.States.automatic_enabled
+            logger.info(f"reverted auto_state to {state}")
+            self.States.automatic_enabled = not state
         elif hotkey == "clicker_next" or event == "clicker_next":
             self.auto_contro.propre_send("next")
             time.sleep(.2)
@@ -211,46 +219,6 @@ eventlet.monkey_patch()
 Mobility(app)
 
 MasterApp = MasterController(socketio=socketio)
-
-
-"""
-@threaded
-def loop():
-    time.sleep(3)
-    try:
-        if __name__ != "__main__":
-            print("starting webserver")
-            global SceneController
-            global master_app
-            master_app = App.get_running_app()
-            SceneController = master_app.root.ids.MainScreen.ids.ScenePanel
-            while True:
-                socketio.emit("update", {"data": "None",
-                                         "states": [
-                                             SceneController.current_scene == "camera",
-                                             SceneController.current_scene == "center",
-                                             SceneController.ids.SCQAutomatic.ids.cb.active,
-                                             SceneController.ids.TimerLabel.text,
-                                             master_app.auto_contro.get_sound_state(),
-                                             SceneController.is_center_augmented
-                                         ]})
-                time.sleep(.2)
-        else:
-            print("starting test webserver")
-            while True:
-                socketio.emit("update", {"data": "None",
-                                         "states": [
-                                             True,
-                                             False,
-                                             True,
-                                             "Test",
-                                             True,
-                                             False
-                                         ]})
-                time.sleep(1)
-    except KeyboardInterrupt:
-        return
-"""
 
 
 @app.route("/")
