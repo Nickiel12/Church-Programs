@@ -1,6 +1,8 @@
 import copy
-import pathlib
+import eventlet
+import keyboard
 import json
+import pathlib
 import logging
 import flask
 from flask_mobility import Mobility
@@ -10,7 +12,6 @@ from functools import partial
 import subprocess
 import time
 import threading
-import eventlet
 
 #from utils import threaded
 from forms import SetupStreamForm, GoLiveForm
@@ -55,8 +56,10 @@ class MasterController:
                                 f".*{program}.*", program_path])
 
     def update_settings(self):
+        have_backup = False
         if self.settings != None:
             tmp_settings = copy.deepcopy(self.settings)
+            have_backup = True
         try:
             with open(self.OPTIONS_FILE_PATH) as file:
                 json_file = json.load(file)
@@ -72,7 +75,11 @@ class MasterController:
         except (json.JSONDecodeError) as e:
             logger.warning("Loading settings from file failed")
             logger.error(e)
-            self.settings = tmp_settings
+            if have_backup:
+                self.settings = tmp_settings
+            else:
+                logger.error("loading the settings has failed")
+                raise e
 
     def on_update(self, var_name):
         logger.debug(f"{var_name} was changed")
@@ -81,30 +88,32 @@ class MasterController:
 
     def set_scene_camera(self, *args):
         if self.States.current_scene != "camera":
-            logger.info(f"on_camera called with camera not selected")
+            logger.debug(f"changing scene to camera")
             self.States.current_scene = "camera"
             self.auto_contro.obs_send("camera")
             self.zero_timer()
 
     def set_scene_center(self, *args):
         if self.States.current_scene != "center":
-            logger.info(f"on_center_screen called with center not selected")
+            logger.debug(f"changing scene to center")
             self.States.current_scene = "center"
             self.auto_contro.obs_send("center")
         self.on_auto()
 
     def set_scene_augmented(self, *args):
-        self.States.automatic_enabled = False
-        self.on_auto()
-        self.States.current_scene = "augmented"
-        self.auto_contro.obs_send("center_augmented")
+        if self.States.current_scene != "augmented":
+            logger.debug(f"changing scene to augmented")
+            self.States.automatic_enabled = False
+            self.on_auto()
+            self.States.current_scene = "augmented"
+            self.auto_contro.obs_send("center_augmented")
 
     def check_auto(self, *args):
         if self.States.automatic_enabled is False:
-            logger.info(f"chech_auto called while inactive")
+            logger.info(f"chech_auto called while automatic_enabled is false")
             self.zero_timer()
         else:
-            logger.info(f"check_auto called while active")
+            logger.info(f"check_auto called while automatic_enabled is true")
             if self.States.current_scene == "center":
                 logger.info(f"check_auto reseting timer")
                 self.reset_timer()
@@ -126,19 +135,21 @@ class MasterController:
         logger.info("binding hotkey" +
                     f" {obs_settings.center_screen_hotkey[0]}")
 
+        """
         # Automatic Checkbox Hotkey
-        keyboard.add_hotkey(kivy_settings.scene_lock,
-                            lambda x: self.on_hotkey("scene_lock", x),
+        keyboard.add_hotkey(kivy_settings.automatic_toggle,
+                            lambda x: self.on_hotkey("automatic_toggle", x),
                             suppress=True)
-        logger.info(f"binding hotkey {kivy_settings.scene_lock}")
+        logger.info(f"binding hotkey {kivy_settings.automatic_toggle}")
+        """
 
         # Next Button for the clicker
         keyboard.on_release_key(general_settings.clicker_forward,
                                 lambda x: self.on_hotkey("clicker_next", x),
                                 suppress=True)
         logger.info(f"binding hotkey {general_settings.clicker_forward}")
-        # Previous Button for the clicker
 
+        # Previous Button for the clicker
         keyboard.on_release_key(general_settings.clicker_backward,
                                 lambda x: self.on_hotkey("clicker_prev", x),
                                 suppress=True)
@@ -148,14 +159,14 @@ class MasterController:
     def on_hotkey(self, *hotkey):
         sett = self.settings
         event = hotkey[-1]
-        logger.info(f"The hotkey event was: {event}")
         hotkey = "".join(hotkey[:-1])
         logger.debug(f"hotkey {hotkey} caught")
+        logger.debug(f"The hotkey event was: {event}")
         if hotkey == "camera" or event == "camera":
             self.set_scene_camera()
         elif hotkey == "center" or event == "center":
             self.set_scene_center()
-        elif hotkey == "scene_lock" or event == "scene_lock":
+        elif hotkey == "auto_lock" or event == "auto_lock":
             self.States.automatic_enabled = False
         elif hotkey == "clicker_next" or event == "clicker_next":
             self.auto_contro.propre_send("next")
@@ -258,11 +269,8 @@ def go_live():
     if form.validate_on_submit():
         answer = form.are_you_sure.data
         if answer == "yes":
-            if __name__ != "__main__":
-                MasterApp.go_live()
+            MasterApp.go_live()
         return flask.redirect(flask.url_for('index'))
-    if __name__ == "__main__":
-        return flask.render_template("go_live.html", form=form, state=True)
     else:
         state = MasterApp.States.stream_running.value
         return flask.render_template("go_live.html", form=form, state=state)
@@ -280,7 +288,7 @@ def on_scene_center(event):
 
 @socketio.on("automatic_change")
 def on_auto_change(event):
-    MasterApp.on_hotkey("scene_lock")
+    MasterApp.on_hotkey("auto_lock")
 
 
 @socketio.on("slide_next")
@@ -295,8 +303,7 @@ def on_slide_prev(event):
 
 @socketio.on("volume")
 def toggle_volume(event):
-    global master_app
-    master_app.auto_contro.toggle_sound()
+    MasterApp.auto_contro.toggle_sound()
 
 
 @socketio.on("center_toggle")
