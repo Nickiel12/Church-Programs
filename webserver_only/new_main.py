@@ -18,6 +18,7 @@ from forms import SetupStreamForm, GoLiveForm
 from Classes.States import States
 from Classes.Timer import Timer
 from utils import DotDict, threaded
+from automation_controller import AutomationController
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
@@ -32,7 +33,9 @@ class MasterController:
     OPTIONS_FILE_PATH = pathlib.Path(".").parent/"extras"/"options.json"
     settings = None
 
-    def __init__(self):
+    def __init__(self, socketio):
+        self.socketio = socketio
+        self.update_settings()
         self.States = States(stream_running=False,
                              stream_setup=False,
                              stream_title="",
@@ -44,7 +47,6 @@ class MasterController:
                              sound_on=not(self.settings.general["music_default_state-on"]),
                              callback=self.on_update,
                              )
-        self.update_settings()
         self.Timer = Timer(self)
         ahk_files_path = pathlib.Path(".").parent/"ahk_scripts"
 
@@ -55,6 +57,11 @@ class MasterController:
                 program_path = self.settings.startup[str(program)+"_path"]
                 subprocess.call([str(ahk_files_path/"program_opener.exe"),
                                  f".*{program}.*", program_path])
+
+        self.auto_contro = AutomationController(self)
+
+    def start(self):
+        self.socketio.run(app, "0.0.0.0", debug=False)
 
     def update_settings(self):
         have_backup = False
@@ -82,44 +89,44 @@ class MasterController:
                 logger.error("loading the settings has failed")
                 raise e
 
-    def on_update(self, var_name):
+    def on_update(self, var_name, value):
         logger.debug(f"{var_name} was changed")
         if var_name == "automatic_enabled":
             self.check_auto()
-        socketio.emit("update", {"data": "None",
-                                 "states": [var_name, self.States[var_name]]})
+        self.socketio.emit("update", {"data": "None",
+                                 "states": [var_name, value]})
 
     def set_scene_camera(self, *args):
         if self.States.current_scene != "camera":
             logger.debug(f"changing scene to camera")
             self.States.current_scene = "camera"
             self.auto_contro.obs_send("camera")
-            self.zero_timer()
+            self.Timer.zero_timer()
 
     def set_scene_center(self, *args):
         if self.States.current_scene != "center":
             logger.debug(f"changing scene to center")
             self.States.current_scene = "center"
             self.auto_contro.obs_send("center")
-        self.on_auto()
+        self.check_auto()
 
     def set_scene_augmented(self, *args):
         if self.States.current_scene != "augmented":
             logger.debug(f"changing scene to augmented")
             self.States.automatic_enabled = False
-            self.on_auto()
+            self.check_auto()
             self.States.current_scene = "augmented"
             self.auto_contro.obs_send("center_augmented")
 
     def check_auto(self, *args):
         if self.States.automatic_enabled is False:
             logger.info(f"chech_auto called while automatic_enabled is false")
-            self.zero_timer()
+            self.Timer.zero_timer()
         else:
             logger.info(f"check_auto called while automatic_enabled is true")
             if self.States.current_scene == "center":
                 logger.info(f"check_auto reseting timer")
-                self.reset_timer()
+                self.Timer.reset_timer()
 
     def start_hotkeys(self):
         obs_settings = self.app.settings.hotkeys.obs
@@ -196,13 +203,14 @@ class MasterController:
                 self.set_scene_camera()
 
 
-MasterApp = MasterController()
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = '$hor!K#y'
 socketio = SocketIO(app, async_mode='eventlet')
 eventlet.monkey_patch()
 Mobility(app)
+
+MasterApp = MasterController(socketio=socketio)
 
 
 """
@@ -316,11 +324,5 @@ def on_toggle_center(event):
     MasterApp.on_hotkey("toggle_center_augmented")
 
 
-def start_web_server():
-    # loop()
-    socketio.run(app, "0.0.0.0")
-
-
 if __name__ == "__main__":
-    MasterApp.States.stream_running = True
-    pass
+    MasterApp.start()
