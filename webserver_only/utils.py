@@ -24,7 +24,7 @@ if __name__ == "__main__":
 def threaded(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        logger.debug(f"starting thread with target {func}")
+        #logger.debug(f"starting thread with target {func}")
         thread = threading.Thread(target=func, args=args, kwargs=kwargs)
         thread.start()
         return thread
