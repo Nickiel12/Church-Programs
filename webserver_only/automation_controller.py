@@ -45,6 +45,7 @@ class AutomationController:
     @threaded
     def toggle_sound(self):
         self.sound_on = not self.sound_on
+        self.MasterApp.States.sound_on = not self.sound_on
         if self.sound_on:
             # False is for the endpoint of the toggle.
             subprocess.call([str(self.ahk_files_path/"music_toggle.exe"),
