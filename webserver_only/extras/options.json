@@ -8,32 +8,6 @@
         "itunes_path" : " Not Implemented "
     },
     "streaming_service": "w3schools",
-    "setup_facebook":{
-        "url": "https://www.facebook.com/CenterEvents1/",
-        "wait_0": 8,
-        "mos_one": [430, 593],
-        "wait_1": 5,
-        "mos_two": [719, 152],
-        "wait_2": 1.5,
-        "mos_three": [1018, 518],
-        "title": "",
-        "go_live": [1174, 922]
-    },
-    "setup_youtube": {
-        "url": "https://studio.youtube.com/channel/UCIZt-G-gLcNfjT-4SzrI4Cg/livestreaming/stream",
-        "wait_0": 8,
-        "mos_one": [402, 450],
-        "title": "",
-        "wait_1": 1,
-        "mos_two": [823, 759],
-        "wait_2": 7,
-        "mos_three": [863, 796],
-        "wait_3": 2,
-        "mos_four": [401, 621],
-        "wait_4": 2,
-        "mos_five": [398, 789],
-        "go_live": [1167, 131]
-    },
     "general":{
         "clicker_change_scene_without_automatic" : false,
         "music_default_state-on" : true,
