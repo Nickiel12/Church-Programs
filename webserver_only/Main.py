@@ -1,10 +1,11 @@
 import atexit
 import copy
-import eventlet
 import keyboard
 import json
 import pathlib
 import logging
+import engineio.async_drivers.gevent
+from gevent import monkey
 import flask
 from flask_mobility import Mobility
 from flask_mobility.decorators import mobile_template
@@ -268,8 +269,8 @@ class MasterController:
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = '$hor!K#y'
-socketio = SocketIO(app, async_mode='eventlet')
-eventlet.monkey_patch()
+socketio = SocketIO(app, async_mode='gevent')
+monkey.patch_all()
 Mobility(app)
 
 MasterApp = MasterController(socketio=socketio)
