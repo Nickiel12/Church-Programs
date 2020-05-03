@@ -50,7 +50,7 @@ class MasterController:
                              sound_on=not(self.settings.general["music_default_state-on"]),
                              callback=self.on_update,
                              )
-        atexit.register(partial(self.States.timer_kill.set))
+        atexit.register(self.States.timer_kill.set)
         ahk_files_path = pathlib.Path(".").parent/"ahk_scripts"
 
         for name, value in self.settings.startup.items():
@@ -60,6 +60,7 @@ class MasterController:
                 program_path = self.settings.startup[str(program)+"_path"]
                 subprocess.call([str(ahk_files_path/"program_opener.exe"),
                                  f".*{program}.*", program_path])
+        self.start_hotkeys()
         self.auto_contro = AutomationController(self)
         self.Timer = Timer(self)
 
@@ -153,9 +154,8 @@ class MasterController:
                 self.Timer.reset_timer()
 
     def start_hotkeys(self):
-        obs_settings = self.app.settings.hotkeys.obs
-        kivy_settings = self.app.settings.hotkeys.kivy
-        general_settings = self.app.settings.hotkeys.general
+        obs_settings = self.settings.hotkeys.obs
+        general_settings = self.settings.hotkeys.general
 
         # Camera Hotkey
         keyboard.hook_key(obs_settings.camera_scene_hotkey[0],
@@ -168,14 +168,6 @@ class MasterController:
                           lambda x: self.on_hotkey("center", x), suppress=True)
         logger.info("binding hotkey" +
                     f" {obs_settings.center_screen_hotkey[0]}")
-
-        """
-        # Automatic Checkbox Hotkey
-        keyboard.add_hotkey(kivy_settings.automatic_toggle,
-                            lambda x: self.on_hotkey("automatic_toggle", x),
-                            suppress=True)
-        logger.info(f"binding hotkey {kivy_settings.automatic_toggle}")
-        """
 
         # Next Button for the clicker
         keyboard.on_release_key(general_settings.clicker_forward,
@@ -270,7 +262,7 @@ class MasterController:
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = '$hor!K#y'
 socketio = SocketIO(app, async_mode='gevent')
-monkey.patch_all()
+monkey.patch_socket()
 Mobility(app)
 
 MasterApp = MasterController(socketio=socketio)
