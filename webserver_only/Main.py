@@ -42,6 +42,7 @@ class MasterController:
         self.States = States(stream_running=False,
                              stream_is_setup=False,
                              stream_title="",
+                             stream_is_muted=False,
                              automatic_enabled=True,
                              current_scene="camera",
                              timer_text="0.0",
@@ -114,6 +115,8 @@ class MasterController:
                             "timer_text", self.States.timer_text]})
         self.socketio.emit("update", {"states":[
                             "sound_on", self.States.sound_on]})
+        self.socketio.emit("update", {"states":[
+                            "stream_is_muted", self.States.stream_is_muted]})
 
     def set_scene_camera(self, *args):
         if self.States.current_scene == "augmented":
@@ -219,6 +222,14 @@ class MasterController:
             else:
                 self.States.automatic_enabled = True
                 self.set_scene_camera()
+        elif hotkey == "muted" or event == "muted":
+            logger.debug("Toggling muted")
+            if self.States.stream_is_muted:
+                self.auto_contro.obs_send("unmute")
+                self.States.stream_is_muted = False
+            else:
+                self.auto_contro.obs_send("mute")
+                self.States.stream_is_muted = True
 
     def setup_stream(self):
         try:
@@ -333,6 +344,9 @@ def on_slide_prev(event):
 def toggle_volume(event):
     MasterApp.auto_contro.toggle_sound()
 
+@socketio.on("muted")
+def toggle_muted(event):
+    MasterApp.on_hotkey("muted")
 
 @socketio.on("center_toggle")
 def on_toggle_center(event):

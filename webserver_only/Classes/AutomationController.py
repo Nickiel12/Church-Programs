@@ -59,7 +59,7 @@ class AutomationController:
 
         Arguments:
             scene {str} -- specify which scene to switch to \n one of "camera", "center", and "augmented"
-            or "start" or "stop"
+            or "start" or "stop" or "mute" or "unmute"
         """
         logger.debug(f"Sending {scene}'s hotkey to obs")
 
@@ -75,6 +75,10 @@ class AutomationController:
             hotkey = self.sett.hotkeys.obs.center_screen_hotkey[1]
         elif scene == "center_augmented":
             hotkey = self.sett.hotkeys.obs.center_augmented[1]
+        elif scene == "mute":
+            hotkey = self.sett.hotkeys.obs.mute_stream
+        elif scene == "unmute":
+            hotkey = self.sett.hotkeys.obs.unmute_stream
         logger.debug(f"Sending to obs: {hotkey}")
         keyboard.send(hotkey)
         self.give_window_focus("propresenter")

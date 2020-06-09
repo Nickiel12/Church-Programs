@@ -28,6 +28,17 @@
 					case "stream_running":
 						console.log(name + " skipped")
 						break;
+
+					case "stream_is_muted":
+						console.log("stream has been muted updated");
+						if (value == true){
+							document.getElementById("mute_button").style.backgroundImage
+								= "url({{ url_for('static', filename='images/volume_on.png') }})";
+						}else{
+							document.getElementById("mute_button").style.backgroundImage
+								= "url({{ url_for('static', filename='images/volume_off.png') }})";
+						}
+						break;
 						
 					case "automatic_enabled":
 						if (value == true){
@@ -99,7 +110,10 @@
 			function on_toggle(){
 				socket.emit("center_toggle", {data:"Button"})
 			}
-				</script>
+			function toggle_mute(){
+				socket.emit("muted", {data:"Button"})
+			}
+			</script>
 </head>
 <body ontouchstart="">
 	<p class=body>
@@ -130,7 +144,9 @@
 					{% endif %}>
 				</form> 
 				<button onclick=on_volume() id=volume_button style="background-image: url({{ url_for('static', filename='images/volume_off.png') }});"> 
-					<div class=white id=volume_backgound></div></button>
+					Desktop Sound</button>
+				<button onclick=toggle_mute() id=mute_button style="background-image: url({{ url_for('static', filename='images/volume_off.png') }});">
+					Stream Sound</button>
 		</div>
 	</p>
 	<div id=credits>

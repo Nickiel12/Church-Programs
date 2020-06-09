@@ -9,6 +9,7 @@ class States:
     stream_running: bool
     stream_is_setup: bool
     stream_title: str
+    stream_is_muted: bool
 
     automatic_enabled: bool
     current_scene: str
