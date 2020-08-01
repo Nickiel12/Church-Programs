@@ -73,8 +73,8 @@ class AutomationController:
             hotkey = self.sett.hotkeys.obs.camera_scene_hotkey[1]
         elif scene == "center":
             hotkey = self.sett.hotkeys.obs.center_screen_hotkey[1]
-        elif scene == "center_augmented":
-            hotkey = self.sett.hotkeys.obs.center_augmented[1]
+        elif scene == "camera_scene_augmented":
+            hotkey = self.sett.hotkeys.obs.camera_scene_augmented[1]
         elif scene == "mute":
             hotkey = self.sett.hotkeys.obs.mute_stream
         elif scene == "unmute":

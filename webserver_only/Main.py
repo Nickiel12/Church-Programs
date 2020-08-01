@@ -142,7 +142,7 @@ class MasterController:
             self.States.automatic_enabled = False
             self.check_auto()
             self.States.current_scene = "augmented"
-            self.auto_contro.obs_send("center_augmented")
+            self.auto_contro.obs_send("camera_scene_augmented")
 
     def check_auto(self, *args):
         logger.info(f"check_auto called with automatic enable = {self.States.automatic_enabled}")
@@ -215,7 +215,7 @@ class MasterController:
             else:
                 if self.States.automatic_enabled:
                     self.set_scene_center()
-        elif hotkey == "toggle_center_augmented" or event == "toggle_center_augmented":
+        elif hotkey == "toggle_camera_scene_augmented" or event == "toggle_camera_scene_augmented":
             logger.debug("toggling center augmented")
             if not (self.States.current_scene == "augmented"):
                 self.set_scene_augmented()
@@ -348,9 +348,9 @@ def toggle_volume(event):
 def toggle_muted(event):
     MasterApp.on_hotkey("muted")
 
-@socketio.on("center_toggle")
+@socketio.on("camera_augmented_toggle")
 def on_toggle_center(event):
-    MasterApp.on_hotkey("toggle_center_augmented")
+    MasterApp.on_hotkey("toggle_camera_scene_augmented")
 
 @socketio.on("new_connection")
 def refresh_new_page(event):
