@@ -230,6 +230,10 @@ class MasterController:
             else:
                 self.auto_contro.obs_send("mute")
                 self.States.stream_is_muted = True
+        elif hotkey.startswith("Camera") or hotkey.startswith("Screen"):
+            self.auto_contro.obs_send(hotkey)
+        elif event.startswith("Camera") or event.startswith("Screen"):
+            self.auto_contro.obs_send(event)
 
     def setup_stream(self):
         try:
@@ -351,6 +355,10 @@ def toggle_muted(event):
 @socketio.on("camera_augmented_toggle")
 def on_toggle_center(event):
     MasterApp.on_hotkey("toggle_camera_scene_augmented")
+
+@socketio.on("special_scene")
+def on_special_scene(event):
+    MasterApp.on_hotkey(event["data"])
 
 @socketio.on("new_connection")
 def refresh_new_page(event):

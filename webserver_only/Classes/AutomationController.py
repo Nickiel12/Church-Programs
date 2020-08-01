@@ -54,7 +54,7 @@ class AutomationController:
     def get_sound_state(self) -> bool:
         return self.sound_on
 
-    def obs_send(self, scene):
+    def obs_send(self, scene:str):
         """Change the current obs scene
 
         Arguments:
@@ -79,6 +79,8 @@ class AutomationController:
             hotkey = self.sett.hotkeys.obs.mute_stream
         elif scene == "unmute":
             hotkey = self.sett.hotkeys.obs.unmute_stream
+        elif scene.startswith("Camera") or scene.startswith("Screen"):
+            hotkey = self.sett.hotkey.obs[scene]
         logger.debug(f"Sending to obs: {hotkey}")
         keyboard.send(hotkey)
         self.give_window_focus("propresenter")

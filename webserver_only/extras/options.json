@@ -27,7 +27,12 @@
             "unmute_stream" : "shift+alt+ctrl+u",
             "mute_stream" : "shift+alt+ctrl+i",
             "start_stream" : "ctrl+shift+j",
-            "stop_stream" : "ctrl+alt+j"
+            "stop_stream" : "ctrl+alt+j",
+            "Camera_Top_Right" : "ctrl+alt+]",
+            "Camera_Bottom_Right" : "ctrl+shift+]",
+            "Camera_Bottom_Left" : "ctrl+shift+alt+]",
+            "Screen_Top_Right" : "ctrl+alt+[",
+            "Screen_Bottom_Right" : "ctrl+shift+["
         },
         "general":{
             "clicker_forward" : "page down", 

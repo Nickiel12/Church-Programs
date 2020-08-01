@@ -59,7 +59,7 @@
 							document.getElementById("center_button").style.backgroundColor = "#FF0000";
 						}
 						if (value == "augmented") {
-							var t_b = document.getElementById("toggle_center_button")
+							var t_b = document.getElementById("toggle_augmented_button")
 							t_b.style.backgroundColor =	"turquoise"
 							t_b.style.color = "black"
 							t_b.innerText = "Augmented"
@@ -67,7 +67,7 @@
 							document.getElementById("center_button").style.backgroundColor = "#FF0000";
 							document.getElementById("camera_button").style.backgroundColor = "#FF0000";
 						} else {
-							var t_b = document.getElementById("toggle_center_button")
+							var t_b = document.getElementById("toggle_augmented_button")
 							t_b.style.backgroundColor = "cadetblue"
 							t_b.style.color = "white"
 							t_b.innerText = "Not Augmented"
@@ -107,16 +107,61 @@
 			function on_volume(){
 				socket.emit("volume", {data:"Button"})
 			}
-			function on_toggle(){
-				socket.emit("center_toggle", {data:"Button"})
+			function on_toggle_augmented(){
+				socket.emit("camera_augmented_toggle", {data:"Button"})
 			}
 			function toggle_mute(){
 				socket.emit("muted", {data:"Button"})
+			}
+			function on_special_scene(special_scene){
+				socket.emit("special_scene", {data:special_scene})
+			}
+			var hidden_controls_hidden = true;
+			function toggle_collapseable_content(){
+				if (hidden_controls_hidden){
+					document.getElementById("hidden_controls_scenes").style.display = "flex"
+					document.getElementById("toggle_hidden_scene_button").innerText = "Show Extra Scene Controls"
+					hidden_controls_hidden = false;
+				}else{
+					document.getElementById("hidden_controls_scenes").style.display = "none"
+					document.getElementById("toggle_hidden_scene_button").innerText = "Hide Extra Scene Controls"
+					hidden_controls_hidden = true;
+				}
 			}
 			</script>
 </head>
 <body ontouchstart="">
 	<p class=body>
+		<div id=hidden_controls_scenes>
+			<div id=hidden_left_box class=hidden_scene_grid_div>
+				<button class="hidden_scene_button" onclick=on_camera()
+				style="background-image: url({{ url_for('static', filename='images/Camera-Main-Bottom-Left.png') }});">
+				</button>
+				<button class="hidden_scene_button" onclick='on_special_scene("Camera_Top_Right")'
+				style="background-image: url({{ url_for('static', filename='images/Camera-Main-Top-Right.png') }});">
+				</button>
+				<button class="hidden_scene_button" onclick='on_special_scene("Camera_Bottom_Left")'
+				style="background-image: url({{ url_for('static', filename='images/Camera-Main-Bottom-Left.png') }});">
+				</button>
+				<button class="hidden_scene_button" onclick='on_special_scene("Camera_Bottom_Right")'
+				style="background-image: url({{ url_for('static', filename='images/Camera-Main-Bottom-Right.png') }});">
+				</button>
+			</div>
+			<div id=hidden_right_box class=hidden_scene_grid_div>
+				<button class="hidden_scene_button" onclick=on_center()
+				style="background-image: url({{ url_for('static', filename='images/Screen-Main-Top-Right.png') }});">
+				</button>
+				<button class="hidden_scene_button" onclick='on_special_scene("Screen_Top_Right")'
+				style="background-image: url({{ url_for('static', filename='images/Screen-Main-Top-Right.png') }});">
+				</button>
+				<button class="hidden_scene_button"
+				style="background-image: url({{ url_for('static', filename='images/Screen-Main-Top-Right.png') }});">
+				</button>
+				<button class="hidden_scene_button" onclick='on_special_scene("Screen_Bottom_Right")'
+				style="background-image: url({{ url_for('static', filename='images/Screen-Main-Bottom-Right.png') }});">
+				</button>
+			</div>
+		</div>
 		<div id=top_buttons>
 			<button id=camera_button onclick=on_camera()>Live Camera Scene</button>
 			<button id=center_button onclick=on_center()> Center Screen Scene</button> <br>
@@ -131,7 +176,8 @@
 		<div id=mid_spacer1>
 		</div>
 		<div id=options_row_1>
-			<button id=toggle_center_button onclick=on_toggle()>Not Augmented</button>
+			<button id=toggle_augmented_button onclick=on_toggle_augmented()>Not Augmented</button>
+			<button id=toggle_hidden_scene_button onclick=toggle_collapseable_content()>Show Hidden Scene Controls</button>
 		</div>
 		<div id=mid_spacer2></div>
 		<div id=extra_buttons>
