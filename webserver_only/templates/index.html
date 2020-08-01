@@ -135,7 +135,7 @@
 		<div id=hidden_controls_scenes>
 			<div id=hidden_left_box class=hidden_scene_grid_div>
 				<button class="hidden_scene_button" onclick=on_camera()
-				style="background-image: url({{ url_for('static', filename='images/Camera-Main-Bottom-Left.png') }});">
+				style="background-image: url({{ url_for('static', filename='images/Camera-Main.png') }});">
 				</button>
 				<button class="hidden_scene_button" onclick='on_special_scene("Camera_Top_Right")'
 				style="background-image: url({{ url_for('static', filename='images/Camera-Main-Top-Right.png') }});">
@@ -149,13 +149,13 @@
 			</div>
 			<div id=hidden_right_box class=hidden_scene_grid_div>
 				<button class="hidden_scene_button" onclick=on_center()
-				style="background-image: url({{ url_for('static', filename='images/Screen-Main-Top-Right.png') }});">
+				style="background-image: url({{ url_for('static', filename='images/Screen-Main.png') }});">
 				</button>
 				<button class="hidden_scene_button" onclick='on_special_scene("Screen_Top_Right")'
-				style="background-image: url({{ url_for('static', filename='images/Screen-Main-Top-Right.png') }});">
+				style="background-image: url({{ url_for('static', filename='images/Screen-Main-Top-Right.png') }}); background-color:black;">
 				</button>
 				<button class="hidden_scene_button"
-				style="background-image: url({{ url_for('static', filename='images/Screen-Main-Top-Right.png') }});">
+				style="background-image: url({{ url_for('static', filename='images/No-Action.png') }});">
 				</button>
 				<button class="hidden_scene_button" onclick='on_special_scene("Screen_Bottom_Right")'
 				style="background-image: url({{ url_for('static', filename='images/Screen-Main-Bottom-Right.png') }});">
