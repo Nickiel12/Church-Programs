@@ -13,6 +13,8 @@ class States:
 
     automatic_enabled: bool
     current_scene: str
+    current_camera_sub_scene: str
+    current_screen_sub_scene: str
 
     timer_text: str
     timer_paused: bool

@@ -15,6 +15,7 @@
 				socket.onclose = function () {}; // disable onclose handler first
 				socket.close();
 			};
+            const ACTIVE_SCENE_SELECT_BORDER = "10px solid green"
 			socket.on('update', function(msg) {
 				console.log("update recieved");
 				var name = msg.states[0]
@@ -85,7 +86,51 @@
 								= "url({{ url_for('static', filename='images/volume_off.png') }})";
 						}
 						break;
-						
+                    case "current_camera_sub_scene":
+                        var items = document.getElementsByClassName("Camera_Hidden_Button");
+						for (var i = 0; i < items.length; i++) {
+							items.item(i).style.outline = "none";
+						}
+                        switch (value) {
+                        case "Camera_None":
+                            var item = document.getElementById("Camera_None")
+                            item.style.outline = ACTIVE_SCENE_SELECT_BORDER
+                            break;
+                        case "Camera_Top_Right":
+                            var item = document.getElementById("Camera_Top_Right")
+                            item.style.outline = ACTIVE_SCENE_SELECT_BORDER
+                            break;
+                        case "Camera_Bottom_Right":
+                            var item = document.getElementById("Camera_Bottom_Right")
+                            item.style.outline = ACTIVE_SCENE_SELECT_BORDER
+                            break;
+                        case "Camera_Bottom_Left":
+                            var item = document.getElementById("Camera_Bottom_Left")
+                            item.style.outline = ACTIVE_SCENE_SELECT_BORDER
+                            break;
+                        }
+                    break;
+
+                    case "current_screen_sub_scene":
+						var items = document.getElementsByClassName("Screen_Hidden_Button");
+                            for (var i = 0; i < items.length; i++) {
+                                items.item(i).style.outline = "none";
+                            }
+                        switch (value) {
+                        case "Screen_None":
+                            var item = document.getElementById("Screen_None")
+                            item.style.outline = ACTIVE_SCENE_SELECT_BORDER
+                            break;
+                        case "Screen_Top_Right":
+                            var item = document.getElementById("Screen_Top_Right")
+                            item.style.outline = ACTIVE_SCENE_SELECT_BORDER
+                            break;
+                        case "Screen_Bottom_Right":
+                            var item = document.getElementById("Screen_Bottom_Right")
+                            item.style.outline = ACTIVE_SCENE_SELECT_BORDER
+                            break;
+                        }
+                    break;
 				}
 			});
 
@@ -134,30 +179,36 @@
 	<p class=body>
 		<div id=hidden_controls_scenes>
 			<div id=hidden_left_box class=hidden_scene_grid_div>
-				<button class="hidden_scene_button" onclick=on_camera()
+				<button id="Camera_None" class="Camera_Hidden_Button hidden_scene_button"
+				onclick='on_special_scene("Camera_None")'
 				style="background-image: url({{ url_for('static', filename='images/Camera-Main.png') }});">
 				</button>
-				<button class="hidden_scene_button" onclick='on_special_scene("Camera_Top_Right")'
+				<button id="Camera_Top_Right" class="Camera_Hidden_Button hidden_scene_button"
+				onclick='on_special_scene("Camera_Top_Right")'
 				style="background-image: url({{ url_for('static', filename='images/Camera-Main-Top-Right.png') }});">
 				</button>
-				<button class="hidden_scene_button" onclick='on_special_scene("Camera_Bottom_Left")'
+				<button id="Camera_Bottom_Left" class="Camera_Hidden_Button hidden_scene_button"
+				onclick='on_special_scene("Camera_Bottom_Left")'
 				style="background-image: url({{ url_for('static', filename='images/Camera-Main-Bottom-Left.png') }});">
 				</button>
-				<button class="hidden_scene_button" onclick='on_special_scene("Camera_Bottom_Right")'
+				<button id="Camera_Bottom_Right" class="Camera_Hidden_Button hidden_scene_button"
+				onclick='on_special_scene("Camera_Bottom_Right")'
 				style="background-image: url({{ url_for('static', filename='images/Camera-Main-Bottom-Right.png') }});">
 				</button>
 			</div>
 			<div id=hidden_right_box class=hidden_scene_grid_div>
-				<button class="hidden_scene_button" onclick=on_center()
+				<button id="Screen_None" class="Screen_Hidden_Button hidden_scene_button"
+				onclick='on_special_scene("Screen_None")'
 				style="background-image: url({{ url_for('static', filename='images/Screen-Main.png') }});">
 				</button>
-				<button class="hidden_scene_button" onclick='on_special_scene("Screen_Top_Right")'
+				<button id="Screen_Top_Right" class="Screen_Hidden_Button hidden_scene_button"
+				onclick='on_special_scene("Screen_Top_Right")'
 				style="background-image: url({{ url_for('static', filename='images/Screen-Main-Top-Right.png') }}); background-color:black;">
 				</button>
-				<button class="hidden_scene_button"
+                <button class="Screen_Hidden_Button hidden_scene_button"
 				style="background-image: url({{ url_for('static', filename='images/No-Action.png') }});">
 				</button>
-				<button class="hidden_scene_button" onclick='on_special_scene("Screen_Bottom_Right")'
+				<button id="Screen_Bottom_Right"  class="Screen_Hidden_Button hidden_scene_button" onclick='on_special_scene("Screen_Bottom_Right")'
 				style="background-image: url({{ url_for('static', filename='images/Screen-Main-Bottom-Right.png') }});">
 				</button>
 			</div>

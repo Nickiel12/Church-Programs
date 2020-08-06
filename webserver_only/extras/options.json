@@ -21,9 +21,9 @@
     },
     "hotkeys":{
         "obs":{
-            "camera_scene_hotkey" : ["F1", "shift+alt+ctrl+*"], 
-            "center_screen_hotkey" : ["F2", "shift+alt+ctrl+/"],
-            "camera_scene_augmented" : ["F3", "shift+alt+ctrl+-"],
+            "camera_scene_hotkey" : "shift+alt+ctrl+*", 
+            "screen_sene_hotkey" : "shift+alt+ctrl+/",
+            "camera_scene_augmented" : "shift+alt+ctrl+-",
             "unmute_stream" : "shift+alt+ctrl+u",
             "mute_stream" : "shift+alt+ctrl+i",
             "start_stream" : "ctrl+shift+j",

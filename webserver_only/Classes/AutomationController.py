@@ -2,6 +2,7 @@ import keyboard
 import pathlib
 import logging
 import mouse
+import os
 import subprocess
 import time
 import threading
@@ -20,6 +21,8 @@ class AutomationController:
                                            f"{self.sett.streaming_service}"]
         self.sound_on = not self.sett.general["music_default_state-on"]
         self.toggle_sound()
+        assert os.path.exists(str(self.ahk_files_path/"window_activator.exe"))
+        assert os.path.exists(str(self.ahk_files_path/"music_toggle.exe"))
 
     def give_window_focus(self, window_to_focus):
         if window_to_focus.lower() == "propresenter":
@@ -72,7 +75,7 @@ class AutomationController:
         elif scene == "camera":
             hotkey = self.sett.hotkeys.obs.camera_scene_hotkey[1]
         elif scene == "center":
-            hotkey = self.sett.hotkeys.obs.center_screen_hotkey[1]
+            hotkey = self.sett.hotkeys.obs.screen_sene_hotkey[1]
         elif scene == "camera_scene_augmented":
             hotkey = self.sett.hotkeys.obs.camera_scene_augmented[1]
         elif scene == "mute":
@@ -80,7 +83,10 @@ class AutomationController:
         elif scene == "unmute":
             hotkey = self.sett.hotkeys.obs.unmute_stream
         elif scene.startswith("Camera") or scene.startswith("Screen"):
-            hotkey = self.sett.hotkey.obs[scene]
+            try:
+                hotkey = self.sett.hotkeys.obs[scene]
+            except KeyError as e:
+                logger.warn(f"Special Scene Not Found: {hotkey}\n {e}")
         logger.debug(f"Sending to obs: {hotkey}")
         keyboard.send(hotkey)
         self.give_window_focus("propresenter")
