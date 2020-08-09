@@ -73,11 +73,11 @@ class AutomationController:
         elif scene == "stop":
             hotkey = self.sett.hotkeys.obs.stop_stream
         elif scene == "camera":
-            hotkey = self.sett.hotkeys.obs.camera_scene_hotkey[1]
+            hotkey = self.sett.hotkeys.obs.camera_scene_hotkey
         elif scene == "center":
-            hotkey = self.sett.hotkeys.obs.screen_sene_hotkey[1]
+            hotkey = self.sett.hotkeys.obs.screen_sene_hotkey
         elif scene == "camera_scene_augmented":
-            hotkey = self.sett.hotkeys.obs.camera_scene_augmented[1]
+            hotkey = self.sett.hotkeys.obs.camera_scene_augmented
         elif scene == "mute":
             hotkey = self.sett.hotkeys.obs.mute_stream
         elif scene == "unmute":
