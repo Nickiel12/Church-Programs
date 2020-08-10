@@ -21,8 +21,8 @@ class AutomationController:
                                            f"{self.sett.streaming_service}"]
         self.sound_on = not self.sett.general["music_default_state-on"]
         self.toggle_sound()
-        assert os.path.exists(str(self.ahk_files_path/"window_activator.exe"))
-        assert os.path.exists(str(self.ahk_files_path/"music_toggle.exe"))
+        assert os.path.exists(str(self.ahk_files_path/"window_activator.exe")), "missing required files"
+        assert os.path.exists(str(self.ahk_files_path/"music_toggle.exe")), "missing required files"
 
     def give_window_focus(self, window_to_focus):
         if window_to_focus.lower() == "propresenter":
@@ -61,32 +61,32 @@ class AutomationController:
         """Change the current obs scene
 
         Arguments:
-            scene {str} -- specify which scene to switch to \n one of "camera", "center", and "augmented"
+            scene {str} -- specify which scene to switch to \n one of "camera", "screen", and "augmented"
             or "start" or "stop" or "mute" or "unmute"
         """
         logger.debug(f"Sending {scene}'s hotkey to obs")
 
         self.give_window_focus("obs")
         time.sleep(.4)
-        if scene == "start":
-            hotkey = self.sett.hotkeys.obs.start_stream
-        elif scene == "stop":
-            hotkey = self.sett.hotkeys.obs.stop_stream
-        elif scene == "camera":
-            hotkey = self.sett.hotkeys.obs.camera_scene_hotkey
-        elif scene == "center":
-            hotkey = self.sett.hotkeys.obs.screen_sene_hotkey
-        elif scene == "camera_scene_augmented":
-            hotkey = self.sett.hotkeys.obs.camera_scene_augmented
-        elif scene == "mute":
-            hotkey = self.sett.hotkeys.obs.mute_stream
-        elif scene == "unmute":
-            hotkey = self.sett.hotkeys.obs.unmute_stream
-        elif scene.startswith("Camera") or scene.startswith("Screen"):
-            try:
-                hotkey = self.sett.hotkeys.obs[scene]
-            except KeyError as e:
-                logger.warn(f"Special Scene Not Found: {hotkey}\n {e}")
+
+        hotkey = { 
+            "start" : self.sett.hotkeys.obs.start_stream,
+            "stop" : self.sett.hotkeys.obs.stop_stream,
+            "camera" : self.sett.hotkeys.camera_scene_hotkey,
+            "screen" : self.sett.hotkeys.screen_scene_hotkey,
+            "camera_scene_augmented" : self.sett.hotkeys.camera_scene_augmented,
+            "mute" : self.sett.hotkeys.mute_stream,
+            "unmute" : self.sett.hotkeys.unmute_stream,
+            "Camera_Top_Right" : self.sett.hotkeys.Camera_Top_Right,
+            "Camera_Bottom_Right" : self.sett.hotkeys.Camera_Bottom_Right,
+            "Camera_Bottom_Left" : self.sett.hotkeys.Camera_Bottom_Left,
+            "Screen_Top_Right" : self.sett.hotkeys.Screen_Top_Right,
+            "Screen_Bottom_Right" : self.sett.hotkeys.Screen_Bottom_Right,
+        }.get(scene, None)
+        if hotkey == None:
+            logger.debug(f"Unable to find hotkey for: {scene}")
+            return
+
         logger.debug(f"Sending to obs: {hotkey}")
         keyboard.send(hotkey)
         self.give_window_focus("propresenter")

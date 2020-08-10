@@ -54,10 +54,10 @@
 						}else{
 							document.getElementById("camera_button").style.backgroundColor = "#FF0000";
 						}
-						if (value == "center"){
-							document.getElementById("center_button").style.backgroundColor = "#00FF00";
+						if (value == "screen"){
+							document.getElementById("screen_button").style.backgroundColor = "#00FF00";
 						}else{
-							document.getElementById("center_button").style.backgroundColor = "#FF0000";
+							document.getElementById("screen_button").style.backgroundColor = "#FF0000";
 						}
 						if (value == "augmented") {
 							var t_b = document.getElementById("toggle_augmented_button")
@@ -65,7 +65,7 @@
 							t_b.style.color = "black"
 							t_b.innerText = "Augmented"
 								
-							document.getElementById("center_button").style.backgroundColor = "#FF0000";
+							document.getElementById("screen_button").style.backgroundColor = "#FF0000";
 							document.getElementById("camera_button").style.backgroundColor = "#FF0000";
 						} else {
 							var t_b = document.getElementById("toggle_augmented_button")
@@ -137,8 +137,8 @@
 			function on_camera(){
 				socket.emit("scene_camera", {data:"Button"})
 			}     
-			function on_center(){
-				socket.emit("scene_center", {data:"Button"})
+			function on_screen(){
+				socket.emit("scene_screen", {data:"Button"})
 			}
 			function on_auto(){
 				socket.emit("automatic_change", {data:"Checkbox"})
@@ -215,7 +215,7 @@
 		</div>
 		<div id=top_buttons>
 			<button id=camera_button onclick=on_camera()>Live Camera Scene</button>
-			<button id=center_button onclick=on_center()> Center Screen Scene</button> <br>
+			<button id=screen_button onclick=on_screen()> screen Screen Scene</button> <br>
 		</div>
 		<div id=top_spacer></div>
 		<div id=mid_panel>

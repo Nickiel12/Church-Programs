@@ -78,16 +78,22 @@ class MasterController:
             tmp_settings = copy.deepcopy(self.settings)
             have_backup = True
         try:
-            with open(self.OPTIONS_FILE_PATH) as file:
-                json_file = json.load(file)
+            with open(self.OPTIONS_FILE_PATH) as f:
+                json_file = json.load(f)
+
             dot_dict = DotDict(json_file)
+
             path = self.OPTIONS_FILE_PATH.parent / "options" / \
                 str(dot_dict.streaming_service + ".json")
-            with open(path) as file:
-                json_file_2 = json.load(file)
+
+            with open(path) as f:
+                json_file_2 = json.load(f)
+
             dot_dict["setup_" +
                      dot_dict.streaming_service] = DotDict(json_file_2)
+
             self.settings = dot_dict
+
             logger.info("Successfully updated settings from file")
         except (json.JSONDecodeError) as e:
             logger.warning("Loading settings from file failed")
@@ -109,25 +115,22 @@ class MasterController:
 
     @threaded
     def update_page(self):
-        self.socketio.emit("update", {"states":[
-                           "automatic_enabled", self.States.automatic_enabled]})
-        self.socketio.emit("update", {"states":[
-                            "current_scene", self.States.current_scene]})
-        self.socketio.emit("update", {"states":[
-                            "timer_text", self.States.timer_text]})
-        self.socketio.emit("update", {"states":[
-                            "sound_on", self.States.sound_on]})
-        self.socketio.emit("update", {"states":[
-                            "stream_is_muted", self.States.stream_is_muted]})
-        self.socketio.emit("update",  {"states":[
-                            "current_camera_sub_scene", self.States.current_camera_sub_scene]})
-        self.socketio.emit("update", {"states":[
-                            "current_screen_sub_scene", self.States.current_screen_sub_scene]})
-    
+        send_on_update = [
+            "automatic_enabled",
+            "current_scene",
+            "timer_text",
+            "sound_on",
+            "stream_is_muted",
+            "current_camera_sub_scene",
+            "current_screen_sub_scene",
+        ]
+        for i in send_on_update:
+            self.socketio.emit("update", {"states":[i, self.States[i]]})
 
     def set_scene_camera(self, *args):
         if self.States.current_scene == "augmented":
             self.States.automatic_enabled = True
+
         if self.States.current_scene != "camera":
             logger.debug(f"changing scene to camera")
             if self.States.current_camera_sub_scene != "Camera_None":
@@ -137,16 +140,16 @@ class MasterController:
             self.States.current_scene = "camera"
             self.Timer.pause_timer()
 
-    def set_scene_center(self, *args):
+    def set_scene_screen(self, *args):
         if self.States.current_scene == "augmented":
             self.States.automatic_enabled = True
-        if self.States.current_scene != "center":
-            logger.debug(f"changing scene to center")
+        if self.States.current_scene != "screen":
+            logger.debug(f"changing scene to screen")
             if self.States.current_screen_sub_scene != "Screen_None":
                 self.auto_contro.obs_send(self.States.current_screen_sub_scene)
             else:
-                self.auto_contro.obs_send("center")
-            self.States.current_scene = "center"
+                self.auto_contro.obs_send("screen")
+            self.States.current_scene = "screen"
         self.check_auto()
 
     def set_scene_augmented(self, *args):
@@ -165,7 +168,7 @@ class MasterController:
             self.Timer.pause_timer()
         else:
             logger.info(f"check_auto called while automatic_enabled is true")
-            if self.States.current_scene == "center":
+            if self.States.current_scene == "screen":
                 logger.info(f"check_auto restarting timer")
                 self.Timer.reset_timer()
 
@@ -175,35 +178,35 @@ class MasterController:
         """ 
         # Camera Hotkey
         keyboard.hook_key(obs_settings.camera_scene_hotkey[0],
-                          lambda x: self.on_hotkey("camera"), suppress=True)
+                          lambda x: self.handle_state_change("camera"), suppress=True)
         logger.info("binding hotkey " +
                     f"{obs_settings.camera_scene_hotkey[0]}")
 
-        # Center Scene Hotkey
+        # screen Scene Hotkey
         keyboard.hook_key(obs_settings.screen_sene_hotkey[0],
-                          lambda x: self.on_hotkey("center"), suppress=True)
+                          lambda x: self.handle_state_change("screen"), suppress=True)
         logger.info("binding hotkey" +
                     f" {obs_settings.screen_sene_hotkey[0]}")
         """
         # Next Button for the clicker
         keyboard.on_release_key(general_settings.clicker_forward,
-                                lambda x: self.on_hotkey("clicker_next"),
+                                lambda x: self.handle_state_change("clicker_next"),
                                 suppress=True)
         logger.info(f"binding hotkey {general_settings.clicker_forward}")
         # Previous Button for the clicker
         keyboard.on_release_key(general_settings.clicker_backward,
-                                lambda x: self.on_hotkey("clicker_prev"),
+                                lambda x: self.handle_state_change("clicker_prev"),
                                 suppress=True)
         logger.info("binding hotkey " +
                     f"{general_settings.clicker_backward}")
 
-    def on_hotkey(self, hotkey):
+    def handle_state_change(self, hotkey):
         sett = self.settings
         logger.debug(f"hotkey {hotkey} caught")
         if hotkey == "camera":
             self.set_scene_camera()
-        elif hotkey == "center":
-            self.set_scene_center()
+        elif hotkey == "screen":
+            self.set_scene_screen()
         elif hotkey == "auto_lock":
             state = self.States.automatic_enabled
             self.States.automatic_enabled = not state
@@ -211,18 +214,18 @@ class MasterController:
             self.auto_contro.propre_send("next")
             time.sleep(.2)
             if sett.general.clicker_change_scene_without_automatic:
-                self.set_scene_center()
+                self.set_scene_screen()
             else:
                 if self.States.automatic_enabled:
-                    self.set_scene_center()
+                    self.set_scene_screen()
         elif hotkey == "clicker_prev":
             self.auto_contro.propre_send("prev")
             time.sleep(.2)
             if sett.general.clicker_change_scene_without_automatic:
-                self.set_scene_center()
+                self.set_scene_screen()
             else:
                 if self.States.automatic_enabled:
-                    self.set_scene_center()
+                    self.set_scene_screen()
         elif hotkey == "toggle_camera_scene_augmented":
             if not (self.States.current_scene == "augmented"):
                 self.set_scene_augmented()
@@ -237,19 +240,11 @@ class MasterController:
                 self.auto_contro.obs_send("mute")
                 self.States.stream_is_muted = True
         elif hotkey.startswith("Camera"):
-            if hotkey == "Camera_None":
-                self.set_scene_camera()
-                self.States.current_camera_sub_scene = "None"
-            else:
-                self.auto_contro.obs_send(hotkey)
-                self.States.current_camera_sub_scene = hotkey
+            self.States.current_camera_sub_scene = hotkey
+            self.set_scene_camera()
         elif hotkey.startswith("Screen"):
-            if hotkey == "Screen_None":
-                self.set_scene_center()
-                self.States.current_screen_sub_scene = "None"
-            else:
-                self.auto_contro.obs_send(hotkey)
-                self.States.current_screen_sub_scene = hotkey
+            self.States.current_screen_sub_scene = hotkey
+            self.set_scene_screen(hotkey)
  
 
     def setup_stream(self):
@@ -335,27 +330,27 @@ def go_live():
 
 @socketio.on("scene_camera")
 def on_scene_camera(event):
-    MasterApp.on_hotkey("camera")
+    MasterApp.handle_state_change("camera")
 
 
-@socketio.on("scene_center")
-def on_scene_center(event):
-    MasterApp.on_hotkey("center")
+@socketio.on("scene_screen")
+def on_scene_screen(event):
+    MasterApp.handle_state_change("screen")
 
 
 @socketio.on("automatic_change")
 def on_auto_change(event):
-    MasterApp.on_hotkey("auto_lock")
+    MasterApp.handle_state_change("auto_lock")
 
 
 @socketio.on("slide_next")
 def on_slide_next(event):
-    MasterApp.on_hotkey("clicker_next")
+    MasterApp.handle_state_change("clicker_next")
 
 
 @socketio.on("slide_prev")
 def on_slide_prev(event):
-    MasterApp.on_hotkey("clicker_prev")
+    MasterApp.handle_state_change("clicker_prev")
 
 
 @socketio.on("volume")
@@ -364,15 +359,15 @@ def toggle_volume(event):
 
 @socketio.on("muted")
 def toggle_muted(event):
-    MasterApp.on_hotkey("muted")
+    MasterApp.handle_state_change("muted")
 
 @socketio.on("camera_augmented_toggle")
-def on_toggle_center(event):
-    MasterApp.on_hotkey("toggle_camera_scene_augmented")
+def on_toggle_screen(event):
+    MasterApp.handle_state_change("toggle_camera_scene_augmented")
 
 @socketio.on("special_scene")
 def on_special_scene(event):
-    MasterApp.on_hotkey(event["data"])
+    MasterApp.handle_state_change(event["data"])
 
 @socketio.on("new_connection")
 def refresh_new_page(event):

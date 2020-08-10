@@ -173,7 +173,7 @@ class QuestionDialog():
 
     def create_yes_no(self, question):
         self.frame = tkinter.Frame(self.root)
-        self.frame.place(relx=.5, rely=.5, anchor=tkinter.CENTER,)
+        self.frame.place(relx=.5, rely=.5, anchor=tkinter.screen,)
         self.label = tkinter.Label(self.frame, text=question)
         self.yes_button = tkinter.Button(self.frame,
                                          text="Yes", command=self.msg_yes,
