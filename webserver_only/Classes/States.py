@@ -25,7 +25,7 @@ class States:
     callback: FunctionType = None
 
     def __setattr__(self, name, value):
-        returnble = super().__setattr__(name, value)
+        returnable = super().__setattr__(name, value)
         if self.callback:
             self.callback(name, value)
-        return returnble
+        return returnable
