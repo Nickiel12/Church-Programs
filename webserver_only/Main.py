@@ -125,7 +125,7 @@ class MasterController:
             "current_screen_sub_scene",
         ]
         for i in send_on_update:
-            self.socketio.emit("update", {"states":[i, self.States[i]]})
+            self.socketio.emit("update", {"states":[i, self.States.__getattribute__(i)]})
 
     def set_scene_camera(self, *args):
         if self.States.current_scene == "augmented":

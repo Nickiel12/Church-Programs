@@ -47,7 +47,7 @@ class AutomationController:
         self.sound_on = not self.sound_on
         self.MasterApp.States.sound_on = not self.sound_on
         if self.sound_on:
-            # False is for the endpoint of the toggle.
+            # the second argument (1 or 0) determines whether the volume is going up or down.
             subprocess.call([str(self.ahk_files_path/"music_toggle.exe"),
                              '1', f"{self.sett.general.music_fade_time}"])
         else:
