@@ -15,7 +15,7 @@
 				socket.onclose = function () {}; // disable onclose handler first
 				socket.close();
 			};
-            const ACTIVE_SCENE_SELECT_BORDER = "10px solid green"
+            const ACTIVE_SCENE_SELECT_BORDER = "5px solid green"
 			socket.on('update', function(msg) {
 				console.log("update recieved");
 				var name = msg.states[0]
@@ -166,10 +166,14 @@
 				if (hidden_controls_hidden){
 					document.getElementById("hidden_controls_scenes").style.display = "flex"
 					document.getElementById("toggle_hidden_scene_button").innerText = "Show Extra Scene Controls"
+					document.getElementById("camera_button").style.height = "20%"
+					document.getElementById("screen_button").style.height = "20%"
 					hidden_controls_hidden = false;
 				}else{
 					document.getElementById("hidden_controls_scenes").style.display = "none"
 					document.getElementById("toggle_hidden_scene_button").innerText = "Hide Extra Scene Controls"
+					document.getElementById("camera_button").style.height = ""
+					document.getElementById("screen_button").style.height = ""
 					hidden_controls_hidden = true;
 				}
 			}
@@ -215,7 +219,7 @@
 		</div>
 		<div id=top_buttons>
 			<button id=camera_button onclick=on_camera()>Live Camera Scene</button>
-			<button id=screen_button onclick=on_screen()> screen Screen Scene</button> <br>
+			<button id=screen_button onclick=on_screen()> Screen Scene</button> <br>
 		</div>
 		<div id=top_spacer></div>
 		<div id=mid_panel>

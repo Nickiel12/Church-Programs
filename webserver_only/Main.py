@@ -127,29 +127,28 @@ class MasterController:
         for i in send_on_update:
             self.socketio.emit("update", {"states":[i, self.States.__getattribute__(i)]})
 
-    def set_scene_camera(self, *args):
+    def set_scene_camera(self, change_sub_scene = False):
         if self.States.current_scene == "augmented":
             self.States.automatic_enabled = True
 
         if self.States.current_scene != "camera":
             logger.debug(f"changing scene to camera")
-            if self.States.current_camera_sub_scene != "Camera_None":
-                self.auto_contro.obs_send(self.States.current_camera_sub_scene)
-            else:
-                self.auto_contro.obs_send("camera")
+            self.auto_contro.obs_send(self.States.current_camera_sub_scene)
             self.States.current_scene = "camera"
             self.Timer.pause_timer()
+        elif change_sub_scene:
+            self.auto_contro.obs_send(self.States.current_camera_sub_scene)
 
-    def set_scene_screen(self, *args):
+    def set_scene_screen(self, change_sub_scene = False):
         if self.States.current_scene == "augmented":
             self.States.automatic_enabled = True
+
         if self.States.current_scene != "screen":
             logger.debug(f"changing scene to screen")
-            if self.States.current_screen_sub_scene != "Screen_None":
-                self.auto_contro.obs_send(self.States.current_screen_sub_scene)
-            else:
-                self.auto_contro.obs_send("screen")
+            self.auto_contro.obs_send(self.States.current_screen_sub_scene)
             self.States.current_scene = "screen"
+        elif change_sub_scene:
+            self.auto_contro.obs_send(self.States.current_screen_sub_scene)
         self.check_auto()
 
     def set_scene_augmented(self, *args):
@@ -241,10 +240,12 @@ class MasterController:
                 self.States.stream_is_muted = True
         elif hotkey.startswith("Camera"):
             self.States.current_camera_sub_scene = hotkey
-            self.set_scene_camera()
+            if self.States.current_scene == "camera":
+                self.set_scene_camera(change_sub_scene = True)
         elif hotkey.startswith("Screen"):
             self.States.current_screen_sub_scene = hotkey
-            self.set_scene_screen(hotkey)
+            if self.States.current_scene == "screen":
+                self.set_scene_screen(change_sub_scene = True)
  
 
     def setup_stream(self):

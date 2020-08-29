@@ -69,25 +69,28 @@ class AutomationController:
         self.give_window_focus("obs")
         time.sleep(.4)
 
-        hotkey = { 
+        hotkey_dict = { 
             "start" : self.sett.hotkeys.obs.start_stream,
             "stop" : self.sett.hotkeys.obs.stop_stream,
-            "camera" : self.sett.hotkeys.camera_scene_hotkey,
-            "screen" : self.sett.hotkeys.screen_scene_hotkey,
-            "camera_scene_augmented" : self.sett.hotkeys.camera_scene_augmented,
-            "mute" : self.sett.hotkeys.mute_stream,
-            "unmute" : self.sett.hotkeys.unmute_stream,
-            "Camera_Top_Right" : self.sett.hotkeys.Camera_Top_Right,
-            "Camera_Bottom_Right" : self.sett.hotkeys.Camera_Bottom_Right,
-            "Camera_Bottom_Left" : self.sett.hotkeys.Camera_Bottom_Left,
-            "Screen_Top_Right" : self.sett.hotkeys.Screen_Top_Right,
-            "Screen_Bottom_Right" : self.sett.hotkeys.Screen_Bottom_Right,
-        }.get(scene, None)
-        if hotkey == None:
-            logger.debug(f"Unable to find hotkey for: {scene}")
+            "Camera_None" : self.sett.hotkeys.obs.camera_scene_hotkey,
+            "Screen_None" : self.sett.hotkeys.obs.screen_scene_hotkey,
+            "camera_scene_augmented" : self.sett.hotkeys.obs.camera_scene_augmented,
+            "mute" : self.sett.hotkeys.obs.mute_stream,
+            "unmute" : self.sett.hotkeys.obs.unmute_stream,
+            "Camera_Top_Right" : self.sett.hotkeys.obs.Camera_Top_Right,
+            "Camera_Bottom_Right" : self.sett.hotkeys.obs.Camera_Bottom_Right,
+            "Camera_Bottom_Left" : self.sett.hotkeys.obs.Camera_Bottom_Left,
+            "Screen_Top_Right" : self.sett.hotkeys.obs.Screen_Top_Right,
+            "Screen_Bottom_Right" : self.sett.hotkeys.obs.Screen_Bottom_Right,
+        }
+
+        hotkey = hotkey_dict.get(scene, "Failure")
+
+        if hotkey == "Failure":
+            logger.debug(f"Unable to find hotkey for: '{scene}'")
             return
 
-        logger.debug(f"Sending to obs: {hotkey}")
+        logger.debug(f"Sending to obs: '{hotkey}'")
         keyboard.send(hotkey)
         self.give_window_focus("propresenter")
 

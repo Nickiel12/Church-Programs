@@ -22,7 +22,7 @@
     "hotkeys":{
         "obs":{
             "camera_scene_hotkey" : "shift+alt+ctrl+*", 
-            "screen_sene_hotkey" : "shift+alt+ctrl+/",
+            "screen_scene_hotkey" : "shift+alt+ctrl+/",
             "camera_scene_augmented" : "shift+alt+ctrl+-",
             "unmute_stream" : "shift+alt+ctrl+u",
             "mute_stream" : "shift+alt+ctrl+i",
