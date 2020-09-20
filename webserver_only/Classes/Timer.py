@@ -57,4 +57,4 @@ class Timer:
 
     def timer_run_out(self):
         self.MasterApp.States.timer_paused = True
-        self.MasterApp.on_hotkey("camera")
+        self.MasterApp.handle_state_change("camera")
