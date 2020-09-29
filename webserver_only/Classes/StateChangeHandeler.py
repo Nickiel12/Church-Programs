@@ -1,8 +1,5 @@
 import time
-import States
-
-if __name__ == "__main__":
-    import Classes.States
+import Classes.States
 
 import logging
 logging.basicConfig(level=logging.DEBUG,

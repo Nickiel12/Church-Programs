@@ -56,8 +56,6 @@ class MasterController:
                              )
         atexit.register(self.States.timer_kill.set)
         ahk_files_path = pathlib.Path(".").parent/"ahk_scripts"
-        self.event_handler = EventHandeler(self)
-        self.handle_state_change = EventHandeler.handle_state_change
 
         for name, value in self.settings.startup.items():
             if name[:4] == "open" and value == True:
@@ -69,6 +67,7 @@ class MasterController:
         self.start_hotkeys()
         self.auto_contro = AutomationController(self)
         self.Timer = Timer(self)
+        self.event_handeler = EventHandeler(self)
 
     def start(self):
         logging.getLogger('socketio').setLevel(logging.ERROR)
@@ -201,6 +200,10 @@ class MasterController:
                                 suppress=True)
         logger.info("binding hotkey " +
                     f"{general_settings.clicker_backward}")
+
+    def handle_state_change(self, *args):
+        self.event_handeler.handle_state_change(*args)
+
     def setup_stream(self):
         try:
             self.Timer.timer_unavailable()
