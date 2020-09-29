@@ -20,6 +20,7 @@ from Classes.Exceptions import PopupError, PrematureExit, PopupNotExist
 from Classes.States import States
 from Classes.Timer import Timer
 from Classes.Popups import WarningPopup, Question
+from Classes.StateChangeHandeler import EventHandeler
 from utils import DotDict, threaded, Setup, make_functions
 from Classes.AutomationController import AutomationController
 
@@ -55,6 +56,8 @@ class MasterController:
                              )
         atexit.register(self.States.timer_kill.set)
         ahk_files_path = pathlib.Path(".").parent/"ahk_scripts"
+        self.event_handler = EventHandeler(self)
+        self.handle_state_change = EventHandeler.handle_state_change
 
         for name, value in self.settings.startup.items():
             if name[:4] == "open" and value == True:
@@ -198,57 +201,6 @@ class MasterController:
                                 suppress=True)
         logger.info("binding hotkey " +
                     f"{general_settings.clicker_backward}")
-
-    def handle_state_change(self, hotkey, event_type=""):
-        sett = self.settings
-        logger.debug(f"hotkey {hotkey} caught")
-        if hotkey == "camera":
-            self.set_scene_camera()
-        elif hotkey == "screen":
-            self.set_scene_screen()
-        elif hotkey == "auto_lock":
-            state = self.States.automatic_enabled
-            self.States.automatic_enabled = not state
-        elif hotkey == "clicker_next":
-            self.auto_contro.propre_send("next")
-            time.sleep(.2)
-            if self.States.automatic_enabled:
-                self.set_scene_screen()
-        elif hotkey == "clicker_prev":
-            self.auto_contro.propre_send("prev")
-            time.sleep(.2)
-            if self.States.automatic_enabled:
-                self.set_scene_screen()
-        elif hotkey == "toggle_camera_scene_augmented":
-            if not (self.States.current_scene == "augmented"):
-                self.set_scene_augmented()
-            else:
-                self.States.automatic_enabled = True
-                self.set_scene_camera()
-        elif hotkey == "muted":
-            if self.States.stream_is_muted:
-                self.auto_contro.obs_send("unmute")
-                self.States.stream_is_muted = False
-            else:
-                self.auto_contro.obs_send("mute")
-                self.States.stream_is_muted = True
-        elif event_type == "scene_event":
-            if hotkey.startswith("Camera"):
-                self.States.current_camera_sub_scene = hotkey
-                if self.States.current_scene == "camera":
-                    self.set_scene_camera(change_sub_scene = True)
-            elif hotkey.startswith("Screen"):
-                self.States.current_screen_sub_scene = hotkey
-                if self.States.current_scene == "screen":
-                    self.set_scene_screen(change_sub_scene = True)
-        elif event_type == "timer_event":
-            acceptable_values = {
-                "5" : 5,
-                "7.5" : 7.5,
-                "15" : 15,
-                "30" : 30,
-            }
-
     def setup_stream(self):
         try:
             self.Timer.timer_unavailable()
