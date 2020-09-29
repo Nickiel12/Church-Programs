@@ -14,7 +14,6 @@ class EventHandeler:
         self.MasterApp = MasterApp
 
     def handle_state_change(self, event_name, event_data=""):
-        sett = self.MasterApp.settings
         logger.debug(f"event_name {event_name} caught")
         {
             "camera"       : self.MasterApp.set_scene_camera,
@@ -63,5 +62,19 @@ class EventHandeler:
             if self.MasterApp.States.current_scene == "screen":
                 self.MasterApp.set_scene_screen(change_sub_scene = True)
 
+
+    timer_values = {
+        "5"   : 5,
+        "7.5" : 7.5,
+        "15"  : 15,
+        "30"  : 30,
+    }
+
     def timer_event(self, event_data):
-        pass
+        if not (event_data in self.timer_values):
+            try:
+                int(event_data)
+            except ValueError:
+                assert False == True, "Invalid timer event data provided"
+            
+        self.MasterApp.Timer.timer_length = self.timer_values[event_data]
