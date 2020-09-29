@@ -199,7 +199,7 @@ class MasterController:
         logger.info("binding hotkey " +
                     f"{general_settings.clicker_backward}")
 
-    def handle_state_change(self, hotkey):
+    def handle_state_change(self, hotkey, event_type=""):
         sett = self.settings
         logger.debug(f"hotkey {hotkey} caught")
         if hotkey == "camera":
@@ -212,19 +212,13 @@ class MasterController:
         elif hotkey == "clicker_next":
             self.auto_contro.propre_send("next")
             time.sleep(.2)
-            if sett.general.clicker_change_scene_without_automatic:
+            if self.States.automatic_enabled:
                 self.set_scene_screen()
-            else:
-                if self.States.automatic_enabled:
-                    self.set_scene_screen()
         elif hotkey == "clicker_prev":
             self.auto_contro.propre_send("prev")
             time.sleep(.2)
-            if sett.general.clicker_change_scene_without_automatic:
+            if self.States.automatic_enabled:
                 self.set_scene_screen()
-            else:
-                if self.States.automatic_enabled:
-                    self.set_scene_screen()
         elif hotkey == "toggle_camera_scene_augmented":
             if not (self.States.current_scene == "augmented"):
                 self.set_scene_augmented()
@@ -238,15 +232,22 @@ class MasterController:
             else:
                 self.auto_contro.obs_send("mute")
                 self.States.stream_is_muted = True
-        elif hotkey.startswith("Camera"):
-            self.States.current_camera_sub_scene = hotkey
-            if self.States.current_scene == "camera":
-                self.set_scene_camera(change_sub_scene = True)
-        elif hotkey.startswith("Screen"):
-            self.States.current_screen_sub_scene = hotkey
-            if self.States.current_scene == "screen":
-                self.set_scene_screen(change_sub_scene = True)
- 
+        elif event_type == "scene_event":
+            if hotkey.startswith("Camera"):
+                self.States.current_camera_sub_scene = hotkey
+                if self.States.current_scene == "camera":
+                    self.set_scene_camera(change_sub_scene = True)
+            elif hotkey.startswith("Screen"):
+                self.States.current_screen_sub_scene = hotkey
+                if self.States.current_scene == "screen":
+                    self.set_scene_screen(change_sub_scene = True)
+        elif event_type == "timer_event":
+            acceptable_values = {
+                "5" : 5,
+                "7.5" : 7.5,
+                "15" : 15,
+                "30" : 30,
+            }
 
     def setup_stream(self):
         try:
@@ -368,7 +369,11 @@ def on_toggle_screen(event):
 
 @socketio.on("special_scene")
 def on_special_scene(event):
-    MasterApp.handle_state_change(event["data"])
+    MasterApp.handle_state_change(event["data"], "scene_event")
+
+@socketio.on("change_timer_event")
+def on_change_timer_event(event):
+    MasterApp.handle_state_change(event["data"], "timer_event")
 
 @socketio.on("new_connection")
 def refresh_new_page(event):
