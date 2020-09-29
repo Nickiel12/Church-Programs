@@ -9,7 +9,6 @@
     },
     "streaming_service": "w3schools",
     "general":{
-        "clicker_change_scene_without_automatic" : false,
         "music_default_state-on" : true,
         "music_fade_time": 5,
         "default_timer_length": 15
