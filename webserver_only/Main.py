@@ -324,11 +324,11 @@ def on_toggle_screen(event):
 
 @socketio.on("special_scene")
 def on_special_scene(event):
-    MasterApp.handle_state_change(event["data"], "scene_event")
+    MasterApp.handle_state_change("scene_event", event["data"])
 
 @socketio.on("change_timer_event")
 def on_change_timer_event(event):
-    MasterApp.handle_state_change(event["data"], "timer_event")
+    MasterApp.handle_state_change("timer_event", event["data"])
 
 @socketio.on("new_connection")
 def refresh_new_page(event):
