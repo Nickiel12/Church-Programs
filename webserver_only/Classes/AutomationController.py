@@ -13,16 +13,22 @@ logger = logging.getLogger(__name__)
 
 
 class AutomationController:
-    def __init__(self, MasterApp, default_browser="CHROME"):
-        self.ahk_files_path = pathlib.Path(".").parent/"ahk_scripts"
-        self.MasterApp = MasterApp
-        self.sett = self.MasterApp.settings
-        self.platform_settings = self.sett[f"setup_" +
-                                           f"{self.sett.streaming_service}"]
-        self.sound_on = not self.sett.general["music_default_state-on"]
-        self.toggle_sound()
-        assert os.path.exists(str(self.ahk_files_path/"window_activator.exe")), "missing required files"
-        assert os.path.exists(str(self.ahk_files_path/"music_toggle.exe")), "missing required files"
+    def __init__(self, MasterApp, default_browser="CHROME", debug=False):
+        if debug:
+            self.__getattribute__ = self.defanged
+        else:
+            self.ahk_files_path = pathlib.Path(".").parent/"ahk_scripts"
+            self.MasterApp = MasterApp
+            self.sett = self.MasterApp.settings
+            self.platform_settings = self.sett[f"setup_" +
+                                            f"{self.sett.streaming_service}"]
+            self.sound_on = not self.sett.general["music_default_state-on"]
+            self.toggle_sound()
+            assert os.path.exists(str(self.ahk_files_path/"window_activator.exe")), "missing required files"
+            assert os.path.exists(str(self.ahk_files_path/"music_toggle.exe")), "missing required files"
+
+    def defanged(self):
+        return True
 
     def give_window_focus(self, window_to_focus):
         if window_to_focus.lower() == "propresenter":
