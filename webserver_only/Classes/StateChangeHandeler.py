@@ -1,6 +1,5 @@
 import time
 from functools import partial
-import Classes.States
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
@@ -78,3 +77,4 @@ class EventHandeler:
                 assert False == True, "Invalid timer event data provided"
             
         self.MasterApp.Timer.timer_length = self.timer_values[event_data]
+        
