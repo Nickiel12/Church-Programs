@@ -40,6 +40,13 @@ class MasterController:
     settings = None
 
     def __init__(self, socketio):
+        opts, args = getopt.getopt(argv[1:], "t")
+        self.in_debug_mode = False
+        for opt, val in opts:
+            if opt in ["-t"]:
+                self.in_debug_mode = True
+                logger.warning("\nIn Debugging mode!!! Certain behavior disabled!!!\n")
+
         self.socketio = socketio
         self.update_settings()
         self.States = States(stream_running=False,
@@ -60,13 +67,7 @@ class MasterController:
         atexit.register(self.States.timer_kill.set)
         ahk_files_path = pathlib.Path(".").parent/"ahk_scripts"
 
-        opts, args = getopt.getopt(argv[1:], "t:")
-        in_debug_mode = False
-        for opt, val in opts:
-            if opt in ["-t"]:
-                in_debug_mode = val
-
-        if not in_debug_mode:
+        if not self.in_debug_mode:
             for name, value in self.settings.startup.items():
                 if name[:4] == "open" and value == True:
                     program = name[5:]
@@ -74,16 +75,19 @@ class MasterController:
                     program_path = self.settings.startup[str(program)+"_path"]
                     subprocess.call([str(ahk_files_path/"program_opener.exe"),
                                     f".*{program}.*", program_path])
-        
-        self.start_hotkeys()
-        self.auto_contro = AutomationController(self)
+        if not self.in_debug_mode:
+            self.start_hotkeys()
+        self.auto_contro = AutomationController(self, debug = self.in_debug_mode)
         self.Timer = Timer(self)
         self.event_handeler = EventHandeler(self)
 
     def start(self):
         logging.getLogger('socketio').setLevel(logging.ERROR)
         logging.getLogger('engineio').setLevel(logging.ERROR)
-        self.socketio.run(app, "0.0.0.0", debug=False)
+        try:
+            self.socketio.run(app, "0.0.0.0", debug=False)
+        except KeyboardInterrupt:
+            self.States.timer_kill.set()
 
     def update_settings(self):
         have_backup = False
@@ -91,7 +95,7 @@ class MasterController:
             tmp_settings = copy.deepcopy(self.settings)
             have_backup = True
         try:
-            with open(self.OPTIONS_FILE_PATH) as f:
+            with open(str(self.OPTIONS_FILE_PATH)) as f:
                 json_file = json.load(f)
 
             dot_dict = DotDict(json_file)
