@@ -11,7 +11,9 @@ from flask_mobility import Mobility
 from flask_mobility.decorators import mobile_template
 from flask_socketio import SocketIO
 from functools import partial
+import getopt
 import subprocess
+from sys import argv
 import time
 import threading
 
@@ -49,6 +51,7 @@ class MasterController:
                              current_camera_sub_scene="Camera_None",
                              current_screen_sub_scene="Screen_None",
                              timer_text="0.0",
+                             timer_length=15,
                              timer_paused=False,
                              timer_kill=threading.Event(),
                              sound_on=not(self.settings.general["music_default_state-on"]),
@@ -57,13 +60,21 @@ class MasterController:
         atexit.register(self.States.timer_kill.set)
         ahk_files_path = pathlib.Path(".").parent/"ahk_scripts"
 
-        for name, value in self.settings.startup.items():
-            if name[:4] == "open" and value == True:
-                program = name[5:]
-                logger.debug(f"Setup program trying to open is {program}")
-                program_path = self.settings.startup[str(program)+"_path"]
-                subprocess.call([str(ahk_files_path/"program_opener.exe"),
-                                 f".*{program}.*", program_path])
+        opts, args = getopt.getopt(argv[1:], "t:")
+        in_debug_mode = False
+        for opt, val in opts:
+            if opt in ["-t"]:
+                in_debug_mode = val
+
+        if not in_debug_mode:
+            for name, value in self.settings.startup.items():
+                if name[:4] == "open" and value == True:
+                    program = name[5:]
+                    logger.debug(f"Setup program trying to open is {program}")
+                    program_path = self.settings.startup[str(program)+"_path"]
+                    subprocess.call([str(ahk_files_path/"program_opener.exe"),
+                                    f".*{program}.*", program_path])
+        
         self.start_hotkeys()
         self.auto_contro = AutomationController(self)
         self.Timer = Timer(self)
