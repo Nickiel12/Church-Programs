@@ -23,7 +23,7 @@ class EventHandeler:
             "toggle_camera_scene_augmented" : self.toggle_augmented,
             "muted"        : self.toggle_muted,
             "scene_event"  : partial(self.scene_event, event_data),
-            "timer_event"  : partial(self.timer_event, event_data),
+            "timer_length" : partial(self.timer_length, event_data),
         }.get(event_name)()
 
 
@@ -69,12 +69,13 @@ class EventHandeler:
         "30"  : 30,
     }
 
-    def timer_event(self, event_data):
+    def timer_length(self, event_data):
         if not (event_data in self.timer_values):
             try:
-                int(event_data)
+                event_data = int(event_data)
             except ValueError:
                 assert False == True, "Invalid timer event data provided"
             
         self.MasterApp.Timer.timer_length = self.timer_values[event_data]
+        logger.debug(f"Changed timer length to {event_data}")
         

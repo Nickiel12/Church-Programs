@@ -345,6 +345,10 @@ def on_special_scene(event):
 def on_change_timer_event(event):
     MasterApp.handle_state_change("timer_event", event["data"])
 
+@socketio.on("timer_length")
+def on_change_timer_length(event):
+    MasterApp.handle_state_change("timer_length", event["data"])
+
 @socketio.on("new_connection")
 def refresh_new_page(event):
     MasterApp.update_page()

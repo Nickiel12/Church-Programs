@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import threading
 from types import FunctionType
 
@@ -21,6 +21,7 @@ class States:
     timer_kill: threading.Event
 
     sound_on: bool
+    timer_length: int
     
     callback: FunctionType = None
 

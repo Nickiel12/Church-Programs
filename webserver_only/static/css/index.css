@@ -13,7 +13,6 @@ button {
     border: 0;
     border-radius: 8px;
 }
-
 p {
     color: white;
 }
@@ -36,12 +35,60 @@ p {
     height: 10%
 }
 #mid_panel {
-    display: block;
+    display: inline-grid;
+    grid-template-areas:
+        'timer timer timer play play'
+        'timer timer timer repeat repeat'
+        'auto auto five seven blank'
+        'auto auto fifteen thirty blank';
+    grid-gap: 10px;
     text-align: center;
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    justify-content: space-evenly;
+}
+#play_pause {
+    grid-area: play;
+    justify-content: center;
+    display: flex;
+    background-color: #d1d1d1;
+    border-radius: 15%;
+}
+#repeat {
+    grid-area: repeat;
+    justify-content: center;
+    display: flex;
+    background-color: #d1d1d1;
+    border-radius: 15%;
+}
+#auto {
+    grid-area: auto;
+    justify-content: center;
+    display: flex;
+    background-color: #d1d1d1;
+    border-radius: 15%;
+}
+#timer_radio_5 {
+    grid-area: five;
+}
+#timer_radio_7 {
+    grid-area: seven;
+}
+#timer_radio_15 {
+    grid-area: fifteen;
+}
+#timer_radio_30 {
+    grid-area: thirty;
+}
+#mid_panel_left {
+    grid-area: timer;
     background-color: rgb(209, 209, 209);
-    width: 50%;
-    margin-left: 23%;
-    margin-right: 25%; 
+}
+.timer_control_button {
+    width: 95%;
+    border-radius: inherit;
+    margin: 5%
 }
 #auto_check {
     padding-top: 5%;
@@ -54,6 +101,30 @@ p {
 }
 #timer {
     font-size: 70px;
+}
+.custom_radio {
+    position: absolute;
+    cursor: pointer;
+    opacity: 50;
+}
+
+.c_radio_label {
+    background-color: #ffff00;
+    color: #ff00ff;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 25px;
+    padding-left: 5px;
+    
+    cursor: pointer;
+}
+
+.c_radio_label:hover{
+    background-color: #eee;
+}
+
+.c_radio_label .custom_radio:checked{
+    background-color: #0000ff;
 }
 #mid_spacer1 {
     display: block;
