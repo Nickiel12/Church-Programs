@@ -12,6 +12,7 @@ class States:
     stream_is_muted: bool
 
     automatic_enabled: bool
+    auto_change_to_camera: bool
     current_scene: str
     current_camera_sub_scene: str
     current_screen_sub_scene: str

@@ -92,6 +92,13 @@
 							document.getElementById("timer_play_pause_button").style.backgroundColor="#f0f0f0"
 						}
 						break;
+					case "auto_change_to_camera": 
+						if (value == true){
+							document.getElementById("auto_change_to_camera_button").style.backgroundColor="green"
+						} else {
+							document.getElementById("auto_change_to_camera_button").style.backgroundColor="red"
+						}
+						break;
 					case "timer_length":
 						switch (value) {
 							case 5:
@@ -166,31 +173,34 @@
 			});
 
 			function on_camera(){
-				socket.emit("scene_camera", {data:"Button"})
+				socket.emit("scene_camera")
 			}     
 			function on_screen(){
-				socket.emit("scene_screen", {data:"Button"})
+				socket.emit("scene_screen")
 			}
 			function on_auto(){
-				socket.emit("automatic_change", {data:"Checkbox"})
+				socket.emit("automatic_change")
+			}
+			function on_auto_back(){
+				socket.emit("auto_change_to_camera")
 			}
 			function radio_change(radio){
 				socket.emit("timer_length", {data:radio.value})
 			}
 			function on_next(){
-				socket.emit("slide_next", {data:"Button"})
+				socket.emit("slide_next")
 			}
 			function on_prev(){
-				socket.emit("slide_prev", {data:"Button"})
+				socket.emit("slide_prev")
 			}
 			function on_volume(){
-				socket.emit("volume", {data:"Button"})
+				socket.emit("volume")
 			}
 			function on_toggle_augmented(){
-				socket.emit("camera_augmented_toggle", {data:"Button"})
+				socket.emit("camera_augmented_toggle")
 			}
 			function toggle_mute(){
-				socket.emit("muted", {data:"Button"})
+				socket.emit("muted")
 			}
 			function on_special_scene(special_scene){
 				socket.emit("special_scene", {data:special_scene})
@@ -259,7 +269,7 @@
 		<div id=mid_panel>
 			<div id=mid_panel_left>
 				<div id=auto_box>
-					<input type="checkbox" id="auto_check" onclick="on_auto()"> Automatic <br>
+					<input type="checkbox" id="auto_check" onclick="on_auto()"> Clicker Change <br>
 				</div>
 				<div id="timer_div">
 					<span id="timer">0.0</span>
@@ -272,7 +282,8 @@
 				<button class=timer_control_button id=repeat_button>0o</button>
 			</div>
 			<div id=auto>
-				<button class=timer_control_button id=auto_button>/> /|</button>
+				<button class=timer_control_button id=auto_change_to_camera_button onclick="on_auto_back()">
+					/> /|</button>
 			</div>
 			<div id=timer_radio_5>
 				<label class="c_radio_label">5

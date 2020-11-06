@@ -21,6 +21,7 @@ class EventHandeler:
             "clicker_next" : partial(self.clicker, "next"),
             "clicker_prev" : partial(self.clicker, "prev"),
             "toggle_camera_scene_augmented" : self.toggle_augmented,
+            "auto_change_to_camera" : self.toggle_auto_back,
             "muted"        : self.toggle_muted,
             "scene_event"  : partial(self.scene_event, event_data),
             "timer_length" : partial(self.timer_length, event_data),
@@ -42,6 +43,10 @@ class EventHandeler:
         else:
             self.MasterApp.States.automatic_enabled = True
             self.MasterApp.set_scene_camera()
+
+    def toggle_auto_back(self):
+        self.MasterApp.States.auto_change_to_camera = not self.MasterApp.States.auto_change_to_camera
+        self.MasterApp.check_auto()
 
     def toggle_muted(self):
         if self.MasterApp.States.stream_is_muted:

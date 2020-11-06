@@ -24,8 +24,8 @@ class AutomationController:
                                             f"{self.sett.streaming_service}"]
             self.sound_on = not self.sett.general["music_default_state-on"]
             self.toggle_sound()
-            assert os.path.exists(str(self.ahk_files_path/"window_activator.exe")), "missing required files"
-            assert os.path.exists(str(self.ahk_files_path/"music_toggle.exe")), "missing required files"
+            assert os.path.exists(str(self.ahk_files_path/"window_activator.exe")), "missing required file: window_activator.exe"
+            assert os.path.exists(str(self.ahk_files_path/"music_toggle.exe")), "missing required file: music_toggle.exe"
 
     def defanged(self):
         return True
