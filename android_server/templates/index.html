@@ -1,0 +1,345 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width", initial-scale=1>
+		<title>VCC Livestream Controller</title>
+		<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+		<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+		<script type="text/javascript", charset="utf-8">
+			var socket = io();
+			socket.on("connect", function(){
+					socket.emit("my event", {data:"I\'m connected!"});
+					socket.emit("new_connection", {data:"new connection, please send updates"})
+			});
+			window.onbeforeunload = function() {
+				socket.onclose = function () {}; // disable onclose handler first
+				socket.close();
+			};
+			window.onload = function() {
+				const TIMER_5 = document.getElementById("timer_radio_5").getElementsByClassName("c_radio_label")[0].getElementsByClassName("custom_radio")[0]
+				const TIMER_7 = document.getElementById("timer_radio_7").getElementsByClassName("c_radio_label")[0].getElementsByClassName("custom_radio")[0]
+				const TIMER_15 = document.getElementById("timer_radio_15").getElementsByClassName("c_radio_label")[0].getElementsByClassName("custom_radio")[0]
+				const TIMER_30 = document.getElementById("timer_radio_30").getElementsByClassName("c_radio_label")[0].getElementsByClassName("custom_radio")[0]
+
+			}
+            const ACTIVE_SCENE_SELECT_BORDER = "5px solid green"
+						
+			socket.on('update', function(msg) {
+				console.log("update recieved");
+				var name = msg.states[0]
+				var value = msg.states[1]
+
+				switch (name) {
+					case "stream_is_setup":
+					case "stream_title":
+					case "timer_kill":
+					case "timer_paused":
+					case "stream_running":
+						console.log(name + " skipped")
+						break;
+
+					case "stream_is_muted":
+						console.log("stream has been muted updated");
+						if (value == true){
+							document.getElementById("mute_button").style.backgroundImage
+								= "url({{ url_for('static', filename='images/volume_on.png') }})";
+						}else{
+							document.getElementById("mute_button").style.backgroundImage
+								= "url({{ url_for('static', filename='images/volume_off.png') }})";
+						}
+						break;
+						
+					case "automatic_enabled":
+						if (value == true){
+							document.getElementById("auto_check").checked = true;
+						}else{
+							document.getElementById("auto_check").checked = false;
+						}
+						break;
+					case "current_scene":
+						if (value == "camera") {
+							document.getElementById("camera_button").style.backgroundColor = "#00FF00";
+						}else{
+							document.getElementById("camera_button").style.backgroundColor = "#FF0000";
+						}
+						if (value == "screen"){
+							document.getElementById("screen_button").style.backgroundColor = "#00FF00";
+						}else{
+							document.getElementById("screen_button").style.backgroundColor = "#FF0000";
+						}
+						if (value == "augmented") {
+							var t_b = document.getElementById("toggle_augmented_button")
+							t_b.style.backgroundColor =	"turquoise"
+							t_b.style.color = "black"
+							t_b.innerText = "Augmented"
+								
+							document.getElementById("screen_button").style.backgroundColor = "#FF0000";
+							document.getElementById("camera_button").style.backgroundColor = "#FF0000";
+						} else {
+							var t_b = document.getElementById("toggle_augmented_button")
+							t_b.style.backgroundColor = "cadetblue"
+							t_b.style.color = "white"
+							t_b.innerText = "Not Augmented"
+						}
+						break;
+					case "timer_text":
+						document.getElementById('timer').innerHTML = value
+						break;
+                    case "timer_paused":
+						if (value == true){
+							document.getElementById("timer_play_pause_button").style.backgroundColor="#6c8893"
+						}else{
+							document.getElementById("timer_play_pause_button").style.backgroundColor="#f0f0f0"
+						}
+						break;
+					case "auto_change_to_camera": 
+						if (value == true){
+							document.getElementById("auto_change_to_camera_button").style.backgroundColor="green"
+						} else {
+							document.getElementById("auto_change_to_camera_button").style.backgroundColor="red"
+						}
+						break;
+					case "timer_length":
+						switch (value) {
+							case 5:
+								TIMER_5.checked = "checked"
+								break;
+							case 7.5: 
+								TIMER_7.checked = "checked"
+								break;
+							case 15: 
+								TIMER_15.checked = "checked"
+								break;
+							case 30: 
+								TIMER_30.checked = "checked"
+								break;
+						}
+						break;
+					case "sound_on":
+						if (value == true){
+							document.getElementById("volume_button").style.backgroundImage
+								= "url({{ url_for('static', filename='images/volume_on.png') }})";
+						}else{
+							document.getElementById("volume_button").style.backgroundImage
+								= "url({{ url_for('static', filename='images/volume_off.png') }})";
+						}
+						break;
+                    case "current_camera_sub_scene":
+                        var items = document.getElementsByClassName("Camera_Hidden_Button");
+						for (var i = 0; i < items.length; i++) {
+							items.item(i).style.outline = "none";
+						}
+                        switch (value) {
+                        case "Camera_None":
+                            var item = document.getElementById("Camera_None")
+                            item.style.outline = ACTIVE_SCENE_SELECT_BORDER
+                            break;
+                        case "Camera_Top_Right":
+                            var item = document.getElementById("Camera_Top_Right")
+                            item.style.outline = ACTIVE_SCENE_SELECT_BORDER
+                            break;
+                        case "Camera_Bottom_Right":
+                            var item = document.getElementById("Camera_Bottom_Right")
+                            item.style.outline = ACTIVE_SCENE_SELECT_BORDER
+                            break;
+                        case "Camera_Bottom_Left":
+                            var item = document.getElementById("Camera_Bottom_Left")
+                            item.style.outline = ACTIVE_SCENE_SELECT_BORDER
+                            break;
+                        }
+                    break;
+
+                    case "current_screen_sub_scene":
+						var items = document.getElementsByClassName("Screen_Hidden_Button");
+                            for (var i = 0; i < items.length; i++) {
+                                items.item(i).style.outline = "none";
+                            }
+                        switch (value) {
+                        case "Screen_None":
+                            var item = document.getElementById("Screen_None")
+                            item.style.outline = ACTIVE_SCENE_SELECT_BORDER
+                            break;
+                        case "Screen_Top_Right":
+                            var item = document.getElementById("Screen_Top_Right")
+                            item.style.outline = ACTIVE_SCENE_SELECT_BORDER
+                            break;
+                        case "Screen_Bottom_Right":
+                            var item = document.getElementById("Screen_Bottom_Right")
+                            item.style.outline = ACTIVE_SCENE_SELECT_BORDER
+                            break;
+                        }
+                    break;
+				}
+			});
+
+			function on_camera(){
+				socket.emit("scene_camera")
+			}     
+			function on_screen(){
+				socket.emit("scene_screen")
+			}
+			function on_auto(){
+				socket.emit("automatic_change")
+			}
+			function on_auto_back(){
+				socket.emit("auto_change_to_camera")
+			}
+			function radio_change(radio){
+				socket.emit("timer_length", {data:radio.value})
+			}
+			function on_next(){
+				socket.emit("slide_next")
+			}
+			function on_prev(){
+				socket.emit("slide_prev")
+			}
+			function on_volume(){
+				socket.emit("volume")
+			}
+			function on_toggle_augmented(){
+				socket.emit("camera_augmented_toggle")
+			}
+			function toggle_mute(){
+				socket.emit("muted")
+			}
+			function on_special_scene(special_scene){
+				socket.emit("special_scene", {data:special_scene})
+			}
+			var hidden_controls_hidden = true;
+			function toggle_collapseable_content(){
+				if (hidden_controls_hidden){
+					document.getElementById("hidden_controls_scenes").style.display = "flex"
+					document.getElementById("toggle_hidden_scene_button").innerText = "Show Extra Scene Controls"
+					document.getElementById("camera_button").style.height = "20%"
+					document.getElementById("screen_button").style.height = "20%"
+					hidden_controls_hidden = false;
+				}else{
+					document.getElementById("hidden_controls_scenes").style.display = "none"
+					document.getElementById("toggle_hidden_scene_button").innerText = "Hide Extra Scene Controls"
+					document.getElementById("camera_button").style.height = ""
+					document.getElementById("screen_button").style.height = ""
+					hidden_controls_hidden = true;
+				}
+			}
+			</script>
+</head>
+<body ontouchstart="">
+	<p class=body>
+		<div id=hidden_controls_scenes>
+			<div id=hidden_left_box class=hidden_scene_grid_div>
+				<button id="Camera_None" class="Camera_Hidden_Button hidden_scene_button"
+				onclick='on_special_scene("Camera_None")'
+				style="background-image: url({{ url_for('static', filename='images/Camera-Main.png') }});">
+				</button>
+				<button id="Camera_Top_Right" class="Camera_Hidden_Button hidden_scene_button"
+				onclick='on_special_scene("Camera_Top_Right")'
+				style="background-image: url({{ url_for('static', filename='images/Camera-Main-Top-Right.png') }});">
+				</button>
+				<button id="Camera_Bottom_Left" class="Camera_Hidden_Button hidden_scene_button"
+				onclick='on_special_scene("Camera_Bottom_Left")'
+				style="background-image: url({{ url_for('static', filename='images/Camera-Main-Bottom-Left.png') }});">
+				</button>
+				<button id="Camera_Bottom_Right" class="Camera_Hidden_Button hidden_scene_button"
+				onclick='on_special_scene("Camera_Bottom_Right")'
+				style="background-image: url({{ url_for('static', filename='images/Camera-Main-Bottom-Right.png') }});">
+				</button>
+			</div>
+			<div id=hidden_right_box class=hidden_scene_grid_div>
+				<button id="Screen_None" class="Screen_Hidden_Button hidden_scene_button"
+				onclick='on_special_scene("Screen_None")'
+				style="background-image: url({{ url_for('static', filename='images/Screen-Main.png') }});">
+				</button>
+				<button id="Screen_Top_Right" class="Screen_Hidden_Button hidden_scene_button"
+				onclick='on_special_scene("Screen_Top_Right")'
+				style="background-image: url({{ url_for('static', filename='images/Screen-Main-Top-Right.png') }}); background-color:black;">
+				</button>
+                <button class="Screen_Hidden_Button hidden_scene_button"
+				style="background-image: url({{ url_for('static', filename='images/No-Action.png') }});">
+				</button>
+				<button id="Screen_Bottom_Right"  class="Screen_Hidden_Button hidden_scene_button" onclick='on_special_scene("Screen_Bottom_Right")'
+				style="background-image: url({{ url_for('static', filename='images/Screen-Main-Bottom-Right.png') }});">
+				</button>
+			</div>
+		</div>
+		<div id=top_buttons>
+			<button id=camera_button onclick=on_camera()>Live Camera Scene</button>
+			<button id=screen_button onclick=on_screen()> Screen Scene</button> <br>
+		</div>
+		<div id=top_spacer></div>
+		<div id=mid_panel>
+			<div id=mid_panel_left>
+				<div id=auto_box>
+					<input type="checkbox" id="auto_check" onclick="on_auto()"> Clicker Change <br>
+				</div>
+				<div id="timer_div">
+					<span id="timer">0.0</span>
+				</div>
+			</div>
+			<div id=play_pause>
+				<button class=timer_control_button id=timer_play_pause_button>|> ||</button>
+			</div>
+			<div id=repeat>
+				<button class=timer_control_button id=repeat_button>0o</button>
+			</div>
+			<div id=auto>
+				<button class=timer_control_button id=auto_change_to_camera_button onclick="on_auto_back()">
+					/> /|</button>
+			</div>
+			<div id=timer_radio_5>
+				<input class="custom_radio" type="radio" name="timer_length_radio"
+				id=radio_5 onchange="radio_change(this)" value="5">
+				<label class="c_radio_label" for=radio_5>5</label>
+			</div>
+			<div id=timer_radio_7>
+				<input class="custom_radio" type="radio" name="timer_length_radio"
+				id=radio_7 onchange="radio_change(this)" value="7.5">
+				<label class="c_radio_label" for=radio_7>7.5</label>
+			</div>
+			<div id=timer_radio_15>
+				<input class="custom_radio" type="radio" name="timer_length_radio"
+				id=radio_15 onchange="radio_change(this)" value="15">
+				<label class="c_radio_label" for=radio_15>15</label>
+			</div>
+			<div id=timer_radio_30>
+				<input class="custom_radio" type="radio" name="timer_length_radio"
+				id=radio_30 onchange="radio_change(this)" value="30">
+				<label class="c_radio_label" for=radio_30>30</label>
+			</div>
+			</div>
+		</div>
+		<div id=mid_spacer1>
+		</div>
+		<div id=options_row_1>
+			<button id=toggle_augmented_button onclick=on_toggle_augmented()>Not Augmented</button>
+			<button id=toggle_hidden_scene_button onclick=toggle_collapseable_content()>Show Hidden Scene Controls</button>
+		</div>
+		<div id=mid_spacer2></div>
+		<div id=extra_buttons>
+			<form novalidate action="{{ url_for('go_live') }}" id=form>
+				<input type="submit" class = form_button
+					{% if state==True %} id=red_button
+					value="Stop Livestream"
+					{% else %} id=green_button
+					value="Start Livestream"
+					{% endif %}>
+				</form> 
+				<button onclick=on_volume() id=volume_button style="background-image: url({{ url_for('static', filename='images/volume_off.png') }});"> 
+					Desktop Sound</button>
+				<button onclick=toggle_mute() id=mute_button style="background-image: url({{ url_for('static', filename='images/volume_off.png') }});">
+					Stream Sound</button>
+		</div>
+	</p>
+	<div id=credits>
+		<div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
+			 from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+			</div><div>Icons made by <a href="https://www.flaticon.com/authors/google" title="Google">Google</a>
+				 from <a href="https://www.flaticon.com/"     title="Flaticon">www.flaticon.com</a></div>
+	</div>
+	<div id=bottom_spacer>
+		<div id=bottom_buttons>
+			<button id=clicker_prev onclick=on_prev() class=push_button>Prev<br>Slide</button>
+			<button id=clicker_next onclick=on_next() class=push_button>Next<br>Slide</button>
+		</div>
+	</div>	
+	</body>
+</html>

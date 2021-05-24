@@ -100,3 +100,8 @@ def route(app:flask.Flask, socketio:SocketIO, MasterApp:MasterController):
     @socketio.on("new_connection")
     def refresh_new_page(event=None):
         MasterApp.update_page()
+    
+    @socketio.on("test")
+    def test(event=None):
+        print("testing!")
+        print(event)

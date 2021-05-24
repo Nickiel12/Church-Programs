@@ -1,0 +1,265 @@
+#boxes {
+    display: block;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    color: royalblue;
+}
+body {
+    height: 100%;
+}
+
+button {
+    border: 0;
+    border-radius: 8px;
+}
+p {
+    color: white;
+}
+#camera_button {
+    width: 46%;
+    height: 40%;
+    margin-left: 3%;
+    font-size: 1.5em;
+    background-color: rgb(0, 145, 0);
+}
+#screen_button {
+    width: 46%;
+    height: 40%;
+    font-size: 1.5em;
+    margin-right: 2%;
+    background-color: red;
+}
+#top_spacer {
+    width: 100%;
+    height: 10%
+}
+#mid_panel {
+    display: inline-grid;
+    grid-template-areas:
+        'timer timer timer play play'
+        'timer timer timer repeat repeat'
+        'auto auto five seven blank'
+        'auto auto fifteen thirty blank';
+    grid-gap: 10px;
+    text-align: center;
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    justify-content: space-evenly;
+}
+#play_pause {
+    grid-area: play;
+    justify-content: center;
+    display: flex;
+    background-color: #d1d1d1;
+    border-radius: 15%;
+}
+#repeat {
+    grid-area: repeat;
+    justify-content: center;
+    display: flex;
+    background-color: #d1d1d1;
+    border-radius: 15%;
+}
+#auto {
+    grid-area: auto;
+    justify-content: center;
+    display: flex;
+    background-color: #d1d1d1;
+    border-radius: 15%;
+}
+#timer_radio_5 {
+    grid-area: five;
+}
+#timer_radio_7 {
+    grid-area: seven;
+}
+#timer_radio_15 {
+    grid-area: fifteen;
+}
+#timer_radio_30 {
+    grid-area: thirty;
+}
+#mid_panel_left {
+    grid-area: timer;
+    background-color: rgb(209, 209, 209);
+}
+.timer_control_button {
+    width: 95%;
+    border-radius: inherit;
+    margin: 5%
+}
+#auto_check {
+    padding-top: 5%;
+    padding-bottom: 5%;
+    padding-right: 8%;
+}
+#auto_box {
+    padding: 1%;
+    display: block;
+}
+#timer {
+    font-size: 70px;
+}
+
+.c_radio_label {
+    color: white;
+    cursor: pointer;
+}
+
+.c_radio_label:hover{
+    background-color: rgb(165, 165, 165);
+}
+
+.custom_radio:checked + .c_radio_label{
+    background-color: #0000ff;
+}
+#mid_spacer1 {
+    display: block;
+    width: 100%;
+    height: 10%;
+}
+#options_row_1{
+    display: flex;
+    width: 100%;
+    height: 10%;
+}
+#toggle_augmented_button{
+    display: block;
+    background-color: turquoise;
+    height: 100%;
+    width: 40%;
+    margin-left: 6%;
+    color: white;
+    font-size: large;
+}
+#toggle_hidden_scene_button{
+    display: block;
+    background-color: rgb(53, 209, 92);
+    height: 100%;
+    width: 40%;
+    margin-left: 6%;
+    color: white;
+    font-size: large;
+}
+#mid_spacer2 {
+    display: block;
+    width: 100%;
+    height: 20%;
+}
+#extra_buttons {
+    position: absolute;
+    width: 94%;
+    margin-left: 3%;
+    margin-right: 3%;
+    height: 15%;
+}
+#form {
+    width: 45%;
+    height: 100%;
+    margin-left: 0%;
+}
+.form_button {
+    width: 100%;
+    height: 100%;
+}
+#red_button {
+    background-color: #ff0000
+}
+#green_button {
+    background-color: #00FF00
+}
+.white {
+    background-color: rgb(117, 117, 117);
+}
+#volume_background {
+    padding: 3%;
+}
+#volume_button {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: rgb(0, 0, 0, 0);
+    position: inherit;
+    height: 100%;
+    width: 15%;
+    right: 30%;
+    top: 0%;
+}
+#mute_button{
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: rgb(0, 0, 0, 0);
+    color: white;
+    position: inherit;
+    height: 100%;
+    width: 15%;
+    right: 5%;
+    top: 0%;
+}
+#bottom_spacer {
+    width: 100%;
+    height: 40%
+}
+#bottom_buttons {
+    position: fixed;
+    bottom: 2%;
+    left: 0;
+    width: 100%;
+    height: 20%;
+}
+#clicker_prev:active{
+    background-color: beige;
+    color: rgb(59, 59, 59);
+}
+#clicker_next:active{
+    background-color: beige;
+    color: rgb(59, 59, 59);
+}
+#clicker_prev {
+    width: 46%;
+    height: 100%;
+    font-size: 1.5em;
+    margin-left: 3%;
+    color: whitesmoke;
+    background-color: grey;
+}
+#clicker_next {
+    width: 46%;
+    height: 100%;
+    font-size: 1.5em;
+    margin-right: 2%;
+    color: whitesmoke;
+    background-color: grey;
+}
+#credits {
+    position: relative;
+    top: 20%;
+}
+
+#hidden_controls_scenes{
+    padding: 18px 18px;
+    margin: 1%;
+    display: none;
+    overflow: hidden;
+    background-color: rgb(95, 197, 231);
+    border-radius: 8px;
+  }
+
+.hidden_scene_grid_div{
+    display:grid;
+    grid-template-columns: 20vw 20vw;
+    grid-template-rows: 12.25vw 12.25vw;
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
+    margin: auto;
+}
+
+.hidden_scene_button{
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: rgb(0, 0, 0, 0);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}

@@ -72,10 +72,10 @@ class MasterController:
         self.event_handeler = EventHandeler(self)
 
     def start(self, app):
-        logging.getLogger('socketio').setLevel(logging.ERROR)
+        logging.getLogger('socketio').setLevel(logging.INFO)
         logging.getLogger('engineio').setLevel(logging.ERROR)
         try:
-            self.socketio.run(app, "0.0.0.0", debug=False)
+            self.socketio.run(app, "0.0.0.0", debug=True)
         except KeyboardInterrupt:
             self.States.timer_kill.set()
 
