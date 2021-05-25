@@ -1,7 +1,10 @@
 import socket as s
 import selectors
+import time
 import threading
 import types
+
+from utils import threaded
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
@@ -32,35 +35,41 @@ class SocketHandler:
         socket.setblocking(False)
         self.sel.register(socket, selectors.EVENT_READ, data=None)
 
-        self.listener_thread = threading.Thread(target=self.socketListenerLoop)
+        self.listener_thread = threading.Thread(target=self._listener_loop)
         self.listener_thread.start()
 
-    def socketListenerLoop(self):
+
+    def _listener_loop(self):
         while not self.doShutdown.is_set():
             events = self.sel.select(timeout=self.selector_timeout)
             if events == None:
                 continue
             for key, mask in events:
                 if key.data is None:
-                    self.accept_and_register(key.fileobj)
+                    self._accept_and_register(key.fileobj)
                 else:
-                    self.service_connection(key, mask)
+                    self._service_connection(key, mask)
 
-    def accept_and_register(self, sock):
+    def _accept_and_register(self, sock):
         conn, addr = sock.accept()
         logger.debug(f"Accepted connection from {addr}")
         conn.setblocking(False)
         data = types.SimpleNamespace(addr=addr, inb=b'', outb=b'')
-        events = selectors.EVENT_READ | selectors.EVENT_WRITE
+        events = selectors.EVENT_READ #only listen for incoming events
         self.sel.register(conn, events, data=data)
+        self.connected_sockets.append(conn)
     
-    def service_connection(self, key, mask):
+    def _service_connection(self, key, mask):
         sock = key.fileobj
         data = key.data
         if mask & selectors.EVENT_READ:
 
-            #read magic happens here
-            recv_data = sock.recv(1024)
+            # read the incoming length
+            recv_data = sock.recv(1)
+            #print(recv_data)
+            #print(int.from_bytes(recv_data[:1], "big"))
+            recv_data = sock.recv(int.from_bytes(recv_data[:1], "big"))
+            print(repr(recv_data))
             #current code is for an echo server
             if recv_data:
                 data.outb += recv_data
@@ -75,9 +84,21 @@ class SocketHandler:
                 sent = sock.send(data.outb)
                 data.outb = data.outb[sent:]
 
+    def send_all(self, message: bytes):
+        for sock in self.connected_sockets:
+            sock.sendall(message+b"\n")
+
     def close(self):
         self.doShutdown.set()
 
+@threaded
+def sneaky_sending_to_sockets(socket:SocketHandler):
+    message = b"tehe, this is a psuedo-random message for you!"
+    time.sleep(15)
+    socket.send_all(message)
+
+
 socket = SocketHandler()
+sneaky_sending_to_sockets(socket)
 input()
 socket.close()
