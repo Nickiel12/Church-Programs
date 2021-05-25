@@ -162,7 +162,9 @@ def sneaky_sending_to_sockets(socket:SocketHandler):
         socket.send_all(message)
 
 
-socket = SocketHandler("localhost", 5000)
-sneaky_sending_to_sockets(socket)
-input()
-socket.close()
+
+if (__name__ == "__main__"):
+    socket = SocketHandler("localhost", 5000)
+    #sneaky_sending_to_sockets(socket)
+    input()
+    socket.close()
