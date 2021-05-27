@@ -18,6 +18,7 @@ from Classes.StateChangeHandeler import EventHandeler
 from utils import DotDict, threaded, Setup, make_functions
 from Classes.AutomationController import AutomationController
 from Classes.SocketHandler import SocketHandler
+from Classes.MessageHandler import handle_message
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
@@ -74,6 +75,7 @@ class MasterController:
     def start(self, app):
         try:
             self.socket_handler = SocketHandler("localhost", 5000)
+            self.socket_handler.register_message_handler(handle_message)
         except KeyboardInterrupt:
             self.socket_handler.close()
             self.States.timer_kill.set()

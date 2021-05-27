@@ -140,7 +140,12 @@ class SocketHandler:
                 logger.warning("Socket Forcibly close by host")
                 self._close_socket(sock)
 
-    def register_json_handler(self, function):
+    def register_message_handler(self, function):
+        """register function to be called when a message is recieve from the socket
+
+        Args:
+            function ([function(json.JSON)]): [description]
+        """
         self.handler_list.append(function)
 
     def unregister_handler(self, function):
