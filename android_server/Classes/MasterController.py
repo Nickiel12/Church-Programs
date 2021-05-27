@@ -17,6 +17,7 @@ from Classes.Popups import WarningPopup, Question
 from Classes.StateChangeHandeler import EventHandeler
 from utils import DotDict, threaded, Setup, make_functions
 from Classes.AutomationController import AutomationController
+from Classes.SocketHandler import SocketHandler
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
@@ -36,7 +37,6 @@ class MasterController:
                 self.in_debug_mode = True
                 logger.warning("\nIn Debugging mode!!! Certain behavior disabled!!!\n")
 
-        self.socketio = socketio
         self.update_settings()
         self.States = States(stream_running=False,
                              stream_is_setup=False,
@@ -72,11 +72,10 @@ class MasterController:
         self.event_handeler = EventHandeler(self)
 
     def start(self, app):
-        #logging.getLogger('socketio').setLevel(logging.ERROR)
-        logging.getLogger('engineio').setLevel(logging.ERROR)
         try:
-            self.socketio.run(app, "0.0.0.0", debug=False)
+            self.socket_handler = SocketHandler("localhost", 5000)
         except KeyboardInterrupt:
+            self.socket_handler.close()
             self.States.timer_kill.set()
 
     def update_settings(self):
@@ -117,8 +116,7 @@ class MasterController:
             logger.debug(f"{var_name} was changed")
         if var_name == "automatic_enabled":
             self.check_auto()
-        self.socketio.emit("update", {"data": "None",
-                                 "states": [var_name, value]})
+        self.socket_handler.send_all(json.dumps({"states": [var_name, value]}))
 
     @threaded
     def update_page(self):
@@ -132,7 +130,7 @@ class MasterController:
             "current_screen_sub_scene",
         ]
         for i in send_on_update:
-            self.socketio.emit("update", {"states":[i, self.States.__getattribute__(i)]})
+            self.socket_handler.send_all(json.dumps({"states":[i, self.States.__getattribute__(i)]}))
 
     def set_scene_camera(self, change_sub_scene = False):
         if self.States.current_scene == "augmented":
