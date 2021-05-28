@@ -26,10 +26,7 @@ class SocketHandler:
     connected_sockets = []
     handler_list = []
 
-    host_addr = "localhost"
-    port = 5000
-
-    def __init__(self, host_addr, socket_port) -> None:
+    def __init__(self, host_addr="localhost", socket_port=5000) -> None:
 
         self.host_addr = host_addr
         self.port = socket_port
@@ -64,7 +61,6 @@ class SocketHandler:
             recv_data = sock.recv(1)
             recv_data = sock.recv(int.from_bytes(recv_data, "big"))
             logger.debug(f"Recieve from {data.addr}: {recv_data}")
-            logger.critical(repr(sock))
             
             if recv_data:
                 self._handle_incoming(sock, recv_data)
@@ -88,6 +84,7 @@ class SocketHandler:
                             self._close_socket(key.fileobj)
                             logger.debug("Socket Closed")
                         else:
+                            raise e
                             logger.warning(f"Socket error!  {key.data.addr}:\n{e}")
 
     def _handle_incoming(self, sock, data:bytes):        
@@ -97,7 +94,12 @@ class SocketHandler:
             data = data[1:]
             str_version = data.decode("utf-8")
 
-        logger.debug(json.loads(str_version))  
+        str_version = str_version.replace('"true"', 'true').replace('"false"', 'false')
+
+        usable_json = json.loads(str_version)
+
+        for i in self.handler_list: 
+            i(usable_json)
 
     def _prune_sockets(self):
         index = 0
@@ -128,12 +130,13 @@ class SocketHandler:
             if self.connected_sockets[i].raddr == sock.raddr:
                 return i
 
-    def send_all(self, message: bytes):
+    def send_all(self, message: str):
         if (len(self.connected_sockets) == 0):
             logger.critical("TRY TO SEND MESSAGE TO NOTHING! regards, SocketHandler.send_all()")
+        logger.debug("trying to send: " + message)
         for sock in self.connected_sockets:
             try:
-                sock.sendall(message+b"\n")
+                sock.sendall(message.encode("utf-8")+b"\n")
             except BlockingIOError as e:
                 logger.critical(f"Sending IO Error!  {repr(e)}")
             except ConnectionResetError as e:

@@ -1,6 +1,7 @@
 import time
 import logging
 
+from Classes.StreamEvents import StreamEvents
 from utils import threaded
 
 logger = logging.getLogger(__name__)
@@ -57,4 +58,4 @@ class Timer:
 
     def timer_run_out(self):
         self.MasterApp.States.timer_paused = True
-        self.MasterApp.handle_state_change("camera")
+        self.MasterApp.handle_state_change(StreamEvents.CAMERA_SCENE)

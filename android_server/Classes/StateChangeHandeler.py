@@ -2,6 +2,7 @@ import time
 from functools import partial
 from Classes.StreamEvents import StreamEvents as SE
 
+
 import logging
 logging.basicConfig(level=logging.DEBUG,
                     format='[%(asctime)s][%(levelname)s] %(message)s', datefmt='%H:%M:%S')
@@ -11,7 +12,7 @@ logger = logging.getLogger("EventHandeler")
 class EventHandeler:
 
     def __init__(self, MasterApp):
-        self.MasterApp = MasterApp
+        self.MasterApp = MasterApp 
 
     def handle_state_change(self, event_name, event_data=""):
         logger.debug(f"event_name {event_name} caught")
@@ -26,6 +27,7 @@ class EventHandeler:
             SE.AUTO_CHANGE_SCENE_ON   : self.automatic_on,
             SE.AUTO_CHANGE_SCENE_OFF  : self.automatic_off,
             SE.TOGGLE_COMPUTER_VOLUME : self.toggle_muted,
+            SE.TIMER_PAUSE         : partial(self.set_timer_stopped, event_data),
             SE.TIMER_CHANGE_LENGTH : partial(self.timer_length, event_data),
             #SE.TOGGLE_STREAM_VOLUME   : ,
         }.get(event_name)()
@@ -69,6 +71,8 @@ class EventHandeler:
             if self.MasterApp.States.current_scene == "screen":
                 self.MasterApp.set_scene_screen(change_sub_scene = True)
 
+    def set_timer_stopped(self, value):
+        self.MasterApp.States.timer_paused = value
 
     timer_values = {
         "5"   : 5,

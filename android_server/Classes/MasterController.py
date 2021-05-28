@@ -22,7 +22,7 @@ from Classes.MessageHandler import handle_message
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
-                    format='[%(asctime)s][%(levelname)s] %(message)s', datefmt='%H:%M:%S')
+                    format='%(funcName)s[%(asctime)s][%(levelname)s] %(message)s', datefmt='%H:%M:%S')
 logger = logging.getLogger("MasterController")
 
 class MasterController:
@@ -30,13 +30,15 @@ class MasterController:
     OPTIONS_FILE_PATH = pathlib.Path(".").parent/"extras"/"options.json"
     settings = None
 
-    def __init__(self, socketio):
+    def __init__(self):
         opts, args = getopt.getopt(argv[1:], "t")
         self.in_debug_mode = False
         for opt, val in opts:
             if opt in ["-t"]:
                 self.in_debug_mode = True
                 logger.warning("\nIn Debugging mode!!! Certain behavior disabled!!!\n")
+
+        self.socket_handler = SocketHandler("10.0.0.170", 5000)
 
         self.update_settings()
         self.States = States(stream_running=False,
@@ -56,6 +58,7 @@ class MasterController:
                              callback=self.on_update,
                              )
         atexit.register(self.States.timer_kill.set)
+        atexit.register(self.socket_handler.close)
         ahk_files_path = pathlib.Path(".").parent/"ahk_scripts"
 
         if not self.in_debug_mode:
@@ -72,13 +75,11 @@ class MasterController:
         self.Timer = Timer(self)
         self.event_handeler = EventHandeler(self)
 
-    def start(self, app):
-        try:
-            self.socket_handler = SocketHandler("localhost", 5000)
-            self.socket_handler.register_message_handler(partial(handle_message, masterApp=self))
-        except KeyboardInterrupt:
-            self.socket_handler.close()
-            self.States.timer_kill.set()
+    def start(self):
+        self.socket_handler.register_message_handler(partial(handle_message, masterApp=self))
+    def stop(self):
+        self.socket_handler.close()
+        self.States.timer_kill.set()
 
     def update_settings(self):
         have_backup = False
@@ -118,7 +119,8 @@ class MasterController:
             logger.debug(f"{var_name} was changed")
         if var_name == "automatic_enabled":
             self.check_auto()
-        self.socket_handler.send_all(json.dumps({"states": [var_name, value]}))
+        if var_name != "callback":
+            self.socket_handler.send_all(json.dumps({"states": [var_name, value]}))
 
     @threaded
     def update_page(self):
@@ -140,11 +142,13 @@ class MasterController:
 
         if self.States.current_scene != "camera":
             logger.debug(f"changing scene to camera")
-            self.auto_contro.obs_send(self.States.current_camera_sub_scene)
+            if not self.in_debug_mode:
+                self.auto_contro.obs_send(self.States.current_camera_sub_scene)
             self.States.current_scene = "camera"
             self.Timer.pause_timer()
         elif change_sub_scene:
-            self.auto_contro.obs_send(self.States.current_camera_sub_scene)
+            if not self.in_debug_mode:
+                self.auto_contro.obs_send(self.States.current_camera_sub_scene)
 
     def set_scene_screen(self, change_sub_scene = False):
         if self.States.current_scene == "augmented":
@@ -152,10 +156,12 @@ class MasterController:
 
         if self.States.current_scene != "screen":
             logger.debug(f"changing scene to screen")
-            self.auto_contro.obs_send(self.States.current_screen_sub_scene)
+            if not self.in_debug_mode:
+                self.auto_contro.obs_send(self.States.current_screen_sub_scene)
             self.States.current_scene = "screen"
         elif change_sub_scene:
-            self.auto_contro.obs_send(self.States.current_screen_sub_scene)
+            if not self.in_debug_mode:
+                self.auto_contro.obs_send(self.States.current_screen_sub_scene)
         self.check_auto()
 
     def set_scene_augmented(self, *args):
@@ -164,7 +170,8 @@ class MasterController:
             self.States.automatic_enabled = False
             self.check_auto()
             self.States.current_scene = "augmented"
-            self.auto_contro.obs_send("camera_scene_augmented")
+            if not self.in_debug_mode:
+                self.auto_contro.obs_send("camera_scene_augmented")
 
     def check_auto(self, *args):
         logger.info(f"check_auto called with automatic enable = {self.States.automatic_enabled}")

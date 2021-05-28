@@ -17,3 +17,8 @@ MasterApp = MasterController()
 
 if __name__ == "__main__":
     MasterApp.start()
+    try:
+        input()
+    except KeyboardInterrupt:
+        pass
+    MasterApp.stop()
