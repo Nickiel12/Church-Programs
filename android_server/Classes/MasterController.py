@@ -75,7 +75,7 @@ class MasterController:
     def start(self, app):
         try:
             self.socket_handler = SocketHandler("localhost", 5000)
-            self.socket_handler.register_message_handler(handle_message)
+            self.socket_handler.register_message_handler(partial(handle_message, masterApp=self))
         except KeyboardInterrupt:
             self.socket_handler.close()
             self.States.timer_kill.set()

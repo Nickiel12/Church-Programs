@@ -2,7 +2,7 @@ import socket
 
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server_address = ('10.0.0.169', 5000)
+server_address = ('10.0.0.170', 5000)
 print("binding socket")
 my_socket.bind(server_address)
 

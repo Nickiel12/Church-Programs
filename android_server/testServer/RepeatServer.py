@@ -7,6 +7,7 @@ doQuit = False
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind(server_address)
     s.listen()
+    print("entering loop")
     while not doQuit:
         conn, addr = s.accept()
         with conn:

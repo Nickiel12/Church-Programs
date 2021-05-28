@@ -1,5 +1,6 @@
 import time
 from functools import partial
+from Classes.StreamEvents import StreamEvents as SE
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
@@ -15,38 +16,40 @@ class EventHandeler:
     def handle_state_change(self, event_name, event_data=""):
         logger.debug(f"event_name {event_name} caught")
         {
-            "camera"       : self.MasterApp.set_scene_camera,
-            "screen"       : self.MasterApp.set_scene_screen,
-            "auto_lock"    : self.toggle_automatic,
-            "clicker_next" : partial(self.clicker, "next"),
-            "clicker_prev" : partial(self.clicker, "prev"),
-            "toggle_camera_scene_augmented" : self.toggle_augmented,
-            "auto_change_to_camera" : self.toggle_auto_back,
-            "muted"        : self.toggle_muted,
-            "scene_event"  : partial(self.scene_event, event_data),
-            "timer_length" : partial(self.timer_length, event_data),
+            SE.CAMERA_SCENE  : self.MasterApp.set_scene_camera,
+            SE.SCREEN_SCENE  : self.MasterApp.set_scene_screen,
+            SE.SPECIAL_SCENE : partial(self.scene_event, event_data),
+            SE.AUGMENTED_ON  : self.augmented_on,
+            SE.AUGMENTED_OFF : self.augmented_off,
+            SE.PREV_SLIDE    : partial(self.clicker, "prev"),
+            SE.NEXT_SLIDE    : partial(self.clicker, "next"),
+            SE.AUTO_CHANGE_SCENE_ON   : self.automatic_on,
+            SE.AUTO_CHANGE_SCENE_OFF  : self.automatic_off,
+            SE.TOGGLE_COMPUTER_VOLUME : self.toggle_muted,
+            SE.TIMER_CHANGE_LENGTH : partial(self.timer_length, event_data),
+            #SE.TOGGLE_STREAM_VOLUME   : ,
         }.get(event_name)()
 
 
-    def toggle_automatic(self):
-        self.MasterApp.States.automatic_enabled = not self.MasterApp.States.automatic_enabled
+    def automatic_off(self):
+        self.MasterApp.States.automatic_enabled = False
+    def automatic_on(self):
+        self.MasterApp.States.automatic_enabled = True
     
+
     def clicker(self, direction):
         self.MasterApp.auto_contro.propre_send(direction)
         time.sleep(.2)
         if self.MasterApp.States.automatic_enabled:
             self.MasterApp.set_scene_screen()
 
-    def toggle_augmented(self):
+    def augmented_on(self):
         if not (self.MasterApp.States.current_scene == "augmented"):
             self.MasterApp.set_scene_augmented()
-        else:
-            self.MasterApp.States.automatic_enabled = True
-            self.MasterApp.set_scene_camera()
 
-    def toggle_auto_back(self):
-        self.MasterApp.States.auto_change_to_camera = not self.MasterApp.States.auto_change_to_camera
-        self.MasterApp.check_auto()
+    def augmented_off(self):
+        self.MasterApp.States.automatic_enabled = True
+        self.MasterApp.set_scene_camera()
 
     def toggle_muted(self):
         if self.MasterApp.States.stream_is_muted:
