@@ -1,11 +1,8 @@
 import json
 import socket as s
 import selectors
-import time
 import threading
 import types
-
-from utils import threaded
 
 import logging
 
@@ -80,7 +77,7 @@ class SocketHandler:
                     try:
                         self._service_connection(key, mask)
                     except Exception as e:
-                        if (str)(e).startswith("[WinError 10054]"):
+                        if str(e).startswith("[WinError 10054]"):
                             self._close_socket(key.fileobj)
                             logger.debug("Socket Closed")
                         else:
@@ -138,7 +135,7 @@ class SocketHandler:
                 sock.sendall(message.encode("utf-8") + b"\n")
             except BlockingIOError as e:
                 logger.critical(f"Sending IO Error!  {repr(e)}")
-            except ConnectionResetError as e:
+            except ConnectionResetError:
                 logger.warning("Socket Forcibly close by host")
                 self._close_socket(sock)
 
