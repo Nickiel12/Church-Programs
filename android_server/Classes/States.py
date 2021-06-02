@@ -19,7 +19,7 @@ class States:
     current_screen_sub_scene: str
 
     timer_text: str
-    timer_paused: bool
+    timer_not_running: bool
     timer_kill: threading.Event
 
     sound_on: bool

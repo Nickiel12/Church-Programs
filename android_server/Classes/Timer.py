@@ -20,12 +20,12 @@ class Timer:
         self.MasterApp.States.timer_kill.set()
 
     def pause_timer(self, *args):
-        self.MasterApp.States.timer_paused = True
+        self.MasterApp.States.timer_not_running = True
         self.MasterApp.States.timer_text = "0.0"
 
     def start_timer(self, *args):
         self.started_once = True
-        self.MasterApp.States.timer_paused = False
+        self.MasterApp.States.timer_not_running = False
 
     def reset_timer(self):
         self.timer_start_time = time.time()
@@ -43,7 +43,7 @@ class Timer:
         while not self.MasterApp.States.timer_kill.is_set():
             if self.started_once == True:
                 try:
-                    if self.MasterApp.States.timer_paused == False:
+                    if self.MasterApp.States.timer_not_running == False:
                         end_time = self.timer_start_time + self.timer_length
                         self.timer_left = round(end_time - time.time(), 1)
                         self.MasterApp.States.timer_text = self.timer_left
@@ -57,5 +57,5 @@ class Timer:
         logger.info("timer killed")
 
     def timer_run_out(self):
-        self.MasterApp.States.timer_paused = True
+        self.MasterApp.States.timer_not_running = True
         self.MasterApp.handle_state_change(StreamEvents.CAMERA_SCENE)

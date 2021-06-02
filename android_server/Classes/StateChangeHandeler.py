@@ -72,7 +72,7 @@ class EventHandeler:
                 self.MasterApp.set_scene_screen(change_sub_scene = True)
 
     def set_timer_stopped(self, value):
-        self.MasterApp.States.timer_paused = value
+        self.MasterApp.States.timer_not_running = value
 
     timer_values = {
         "5"   : 5,
