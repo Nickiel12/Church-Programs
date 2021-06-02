@@ -9,6 +9,8 @@ logging.basicConfig(level=logging.DEBUG,
 #datefmt='%m/%d/%Y %H:%M:%S'
 logger = logging.getLogger("Main")
 
+#TODO Replace AutomationController.obs_send.hotkey_dict with Enum, 
+# and replace all calls to State.curent scene to use the enum
 
 #Go here for intermediate processing (get event from socket, 
 # send it here, then send to automationcontroller for dispatch)

@@ -46,6 +46,7 @@ class MasterController:
                              stream_title="",
                              stream_is_muted=False,
                              automatic_enabled=True,
+                             augmented=True,
                              auto_change_to_camera=True,
                              current_scene="camera",
                              current_camera_sub_scene="Camera_None",

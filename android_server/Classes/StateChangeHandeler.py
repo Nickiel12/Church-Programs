@@ -38,20 +38,20 @@ class EventHandeler:
     def automatic_on(self):
         self.MasterApp.States.automatic_enabled = True
     
+    def augmented_on(self):
+        self.MasterApp.States.augmented = True
+        if not (self.MasterApp.States.current_scene == "augmented"):
+            self.MasterApp.set_scene_augmented()
+    def augmented_off(self):
+        self.MasterApp.States.augmented = False
+        self.MasterApp.States.automatic_enabled = True
+        self.MasterApp.set_scene_camera()
 
     def clicker(self, direction):
         self.MasterApp.auto_contro.propre_send(direction)
         time.sleep(.2)
         if self.MasterApp.States.automatic_enabled:
             self.MasterApp.set_scene_screen()
-
-    def augmented_on(self):
-        if not (self.MasterApp.States.current_scene == "augmented"):
-            self.MasterApp.set_scene_augmented()
-
-    def augmented_off(self):
-        self.MasterApp.States.automatic_enabled = True
-        self.MasterApp.set_scene_camera()
 
     def toggle_muted(self):
         if self.MasterApp.States.stream_is_muted:

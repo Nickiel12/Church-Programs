@@ -27,7 +27,10 @@ def handle_message(socket_json:dict, masterApp):
             elif button == "Timer_Pause":
                 masterApp.event_handeler.handle_state_change(SE.TIMER_PAUSE, event_data=socket_json["data"])
             elif button == "Augmented":
-                pass
+                if (socket_json["data"] == "true"):
+                    masterApp.event_handeler.handle_state_change(SE.AUGMENTED_ON)
+                else:
+                    masterApp.event_handeler.handle_state_change(SE.AUGMENTED_OFF)
             elif button == "ChangeWithClicker":
                 pass
             
