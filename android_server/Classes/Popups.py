@@ -1,3 +1,5 @@
+from Classes.Exceptions import PopupError, PopupNotExist, PrematureExit
+
 import tkinter
 from tkinter import Tk, Label, StringVar
 from tkinter.font import Font
@@ -7,7 +9,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from Classes.Exceptions import PopupError, PopupNotExist, PrematureExit
 
 
 class ChangeableText:
@@ -34,6 +35,7 @@ class WarningPopup:
     popup_open = False
 
     def __init__(self, *args, **kwargs):
+        self.timer_run = True
         self.win_x_size = 400
         self.win_y_size = 150
         self.timer_event = threading.Event()
@@ -45,7 +47,6 @@ class WarningPopup:
         if not self.popup_open:
             raise PopupNotExist("The Popup has been closed, " +
                                 "You shouldn't start a task")
-        self.timer_run = True
         if blocking:
             self._timer(secs_to_count)
         else:

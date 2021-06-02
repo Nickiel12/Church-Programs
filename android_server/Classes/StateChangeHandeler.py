@@ -27,7 +27,7 @@ class EventHandeler:
             SE.AUTO_CHANGE_SCENE_ON   : self.automatic_on,
             SE.AUTO_CHANGE_SCENE_OFF  : self.automatic_off,
             SE.TOGGLE_COMPUTER_VOLUME : self.toggle_muted,
-            SE.TIMER_PAUSE         : partial(self.set_timer_stopped, event_data),
+            SE.TIMER_RUNNING         : partial(self.set_timer_stopped, event_data),
             SE.TIMER_CHANGE_LENGTH : partial(self.timer_length, event_data),
             #SE.TOGGLE_STREAM_VOLUME   : ,
         }.get(event_name)()

@@ -25,7 +25,7 @@ def handle_message(socket_json:dict, masterApp):
                 masterApp.event_handeler.handle_state_change(SE.NEXT_SLIDE)
 
             elif button == "Timer_Pause":
-                masterApp.event_handeler.handle_state_change(SE.TIMER_PAUSE, event_data=socket_json["data"])
+                masterApp.event_handeler.handle_state_change(SE.TIMER_RUNNING, event_data=socket_json["data"])
             elif button == "Augmented":
                 if (socket_json["data"] == "true"):
                     masterApp.event_handeler.handle_state_change(SE.AUGMENTED_ON)

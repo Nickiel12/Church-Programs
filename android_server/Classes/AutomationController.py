@@ -17,15 +17,17 @@ class AutomationController:
         if debug:
             self.__getattribute__ = self.defanged
         else:
-            self.ahk_files_path = pathlib.Path(".").parent/"ahk_scripts"
+            self.ahk_files_path = pathlib.Path(".").parent / "ahk_scripts"
             self.MasterApp = MasterApp
             self.sett = self.MasterApp.settings
             self.platform_settings = self.sett[f"setup_" +
-                                            f"{self.sett.streaming_service}"]
+                                               f"{self.sett.streaming_service}"]
             self.sound_on = not self.sett.general["music_default_state-on"]
             self.toggle_sound()
-            assert os.path.exists(str(self.ahk_files_path/"window_activator.exe")), "missing required file: window_activator.exe"
-            assert os.path.exists(str(self.ahk_files_path/"music_toggle.exe")), "missing required file: music_toggle.exe"
+            assert os.path.exists(str(self.ahk_files_path / "window_activator.exe")), "missing required file: " \
+                                                                                      "window_activator.exe "
+            assert os.path.exists(str(self.ahk_files_path / "music_toggle.exe")), "missing required file: " \
+                                                                                  "music_toggle.exe "
 
     def defanged(self):
         return True
@@ -34,17 +36,17 @@ class AutomationController:
         if window_to_focus.lower() == "propresenter":
             logger.debug("WindowController: Changing active" +
                          " window to ProPresenter")
-            subprocess.call([str(self.ahk_files_path/"window_activator.exe"),
+            subprocess.call([str(self.ahk_files_path / "window_activator.exe"),
                              self.sett.windows.propresenter_re])
             time.sleep(.1)
         elif window_to_focus.lower() == "obs":
             logger.debug("WindowController: Changing active window to OBS")
-            subprocess.call([str(self.ahk_files_path/"window_activator.exe"),
+            subprocess.call([str(self.ahk_files_path / "window_activator.exe"),
                              self.sett.windows.obs_re])
             time.sleep(.1)
         elif window_to_focus.lower() == "chrome":
             logger.debug("WindowController: Changing active window to Chrome")
-            subprocess.call([str(self.ahk_files_path/"window_activator.exe"),
+            subprocess.call([str(self.ahk_files_path / "window_activator.exe"),
                              self.sett.windows.chrome_re])
             time.sleep(.1)
 
@@ -54,16 +56,16 @@ class AutomationController:
         self.MasterApp.States.sound_on = not self.sound_on
         if self.sound_on:
             # the second argument (1 or 0) determines whether the volume is going up or down.
-            subprocess.call([str(self.ahk_files_path/"music_toggle.exe"),
+            subprocess.call([str(self.ahk_files_path / "music_toggle.exe"),
                              '1', f"{self.sett.general.music_fade_time}"])
         else:
-            subprocess.call([str(self.ahk_files_path/"music_toggle.exe"),
+            subprocess.call([str(self.ahk_files_path / "music_toggle.exe"),
                              '0', f"{self.sett.general.music_fade_time}"])
 
     def get_sound_state(self) -> bool:
         return self.sound_on
 
-    def obs_send(self, scene:str):
+    def obs_send(self, scene: str):
         """Change the current obs scene
 
         Arguments:
@@ -75,19 +77,19 @@ class AutomationController:
         self.give_window_focus("obs")
         time.sleep(.4)
 
-        hotkey_dict = { 
-            "start" : self.sett.hotkeys.obs.start_stream,
-            "stop" : self.sett.hotkeys.obs.stop_stream,
-            "Camera_None" : self.sett.hotkeys.obs.camera_scene_hotkey,
-            "Screen_None" : self.sett.hotkeys.obs.screen_scene_hotkey,
-            "camera_scene_augmented" : self.sett.hotkeys.obs.camera_scene_augmented,
-            "mute" : self.sett.hotkeys.obs.mute_stream,
-            "unmute" : self.sett.hotkeys.obs.unmute_stream,
-            "Camera_Top_Right" : self.sett.hotkeys.obs.Camera_Top_Right,
-            "Camera_Bottom_Right" : self.sett.hotkeys.obs.Camera_Bottom_Right,
-            "Camera_Bottom_Left" : self.sett.hotkeys.obs.Camera_Bottom_Left,
-            "Screen_Top_Right" : self.sett.hotkeys.obs.Screen_Top_Right,
-            "Screen_Bottom_Right" : self.sett.hotkeys.obs.Screen_Bottom_Right,
+        hotkey_dict = {
+            "start": self.sett.hotkeys.obs.start_stream,
+            "stop": self.sett.hotkeys.obs.stop_stream,
+            "Camera_None": self.sett.hotkeys.obs.camera_scene_hotkey,
+            "Screen_None": self.sett.hotkeys.obs.screen_scene_hotkey,
+            "camera_scene_augmented": self.sett.hotkeys.obs.camera_scene_augmented,
+            "mute": self.sett.hotkeys.obs.mute_stream,
+            "unmute": self.sett.hotkeys.obs.unmute_stream,
+            "Camera_Top_Right": self.sett.hotkeys.obs.Camera_Top_Right,
+            "Camera_Bottom_Right": self.sett.hotkeys.obs.Camera_Bottom_Right,
+            "Camera_Bottom_Left": self.sett.hotkeys.obs.Camera_Bottom_Left,
+            "Screen_Top_Right": self.sett.hotkeys.obs.Screen_Top_Right,
+            "Screen_Bottom_Right": self.sett.hotkeys.obs.Screen_Bottom_Right,
         }
 
         hotkey = hotkey_dict.get(scene, "Failure")
