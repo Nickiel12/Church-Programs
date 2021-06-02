@@ -26,6 +26,7 @@ class EventHandeler:
             SE.NEXT_SLIDE    : partial(self.clicker, "next"),
             SE.AUTO_CHANGE_SCENE_ON   : self.automatic_on,
             SE.AUTO_CHANGE_SCENE_OFF  : self.automatic_off,
+            SE.AUTO_CHANGE_TO_CAMERA  : partial(self.auto_change_to_camera, event_data),
             SE.TOGGLE_COMPUTER_VOLUME : self.toggle_muted,
             SE.TIMER_RUNNING         : partial(self.set_timer_stopped, event_data),
             SE.TIMER_CHANGE_LENGTH : partial(self.timer_length, event_data),
@@ -46,6 +47,10 @@ class EventHandeler:
         self.MasterApp.States.augmented = False
         self.MasterApp.States.automatic_enabled = True
         self.MasterApp.set_scene_camera()
+
+    def auto_change_to_camera(self, data):
+        self.MasterApp.States.auto_change_to_camera = data
+        self.MasterApp.check_auto()
 
     def clicker(self, direction):
         self.MasterApp.auto_contro.propre_send(direction)
@@ -90,4 +95,3 @@ class EventHandeler:
             
         self.MasterApp.Timer.timer_length = self.timer_values[event_data]
         logger.debug(f"Changed timer length to {event_data}")
-        

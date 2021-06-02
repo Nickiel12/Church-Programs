@@ -19,7 +19,7 @@ class Timer:
     def _kill_timer(self, *args):
         self.MasterApp.States.timer_kill.set()
 
-    def pause_timer(self, *args):
+    def stop_timer(self, *args):
         self.MasterApp.States.timer_not_running = True
         self.MasterApp.States.timer_text = "0.0"
 
@@ -36,7 +36,7 @@ class Timer:
 
     def timer_available(self):
         self.MasterApp.States.timer_text = "0.0"
-        self.pause_timer()
+        self.stop_timer()
 
     @threaded
     def _timer(self):

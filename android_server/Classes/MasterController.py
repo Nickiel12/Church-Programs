@@ -21,13 +21,14 @@ from Classes.SocketHandler import SocketHandler
 from Classes.MessageHandler import handle_message
 
 import logging
+
 logging.basicConfig(level=logging.DEBUG,
                     format='%(funcName)s[%(asctime)s][%(levelname)s] %(message)s', datefmt='%H:%M:%S')
 logger = logging.getLogger("MasterController")
 
-class MasterController:
 
-    OPTIONS_FILE_PATH = pathlib.Path(".").parent/"extras"/"options.json"
+class MasterController:
+    OPTIONS_FILE_PATH = pathlib.Path(".").parent / "extras" / "options.json"
     settings = None
 
     def __init__(self):
@@ -53,31 +54,32 @@ class MasterController:
                              current_screen_sub_scene="Screen_None",
                              timer_text="0.0",
                              timer_length=15,
-                             timer_paused=False,
+                             timer_not_running=False,
                              timer_kill=threading.Event(),
-                             sound_on=not(self.settings.general["music_default_state-on"]),
+                             sound_on=not (self.settings.general["music_default_state-on"]),
                              callback=self.on_update,
                              )
         atexit.register(self.States.timer_kill.set)
         atexit.register(self.socket_handler.close)
-        ahk_files_path = pathlib.Path(".").parent/"ahk_scripts"
+        ahk_files_path = pathlib.Path(".").parent / "ahk_scripts"
 
         if not self.in_debug_mode:
             for name, value in self.settings.startup.items():
                 if name[:4] == "open" and value == True:
                     program = name[5:]
                     logger.debug(f"Setup program trying to open is {program}")
-                    program_path = self.settings.startup[str(program)+"_path"]
-                    subprocess.call([str(ahk_files_path/"program_opener.exe"),
-                                    f".*{program}.*", program_path])
+                    program_path = self.settings.startup[str(program) + "_path"]
+                    subprocess.call([str(ahk_files_path / "program_opener.exe"),
+                                     f".*{program}.*", program_path])
         if not self.in_debug_mode:
             self.start_hotkeys()
-        self.auto_contro = AutomationController(self, debug = self.in_debug_mode)
+        self.auto_contro = AutomationController(self, debug=self.in_debug_mode)
         self.Timer = Timer(self)
         self.event_handeler = EventHandeler(self)
 
     def start(self):
         self.socket_handler.register_message_handler(partial(handle_message, masterApp=self))
+
     def stop(self):
         self.socket_handler.close()
         self.States.timer_kill.set()
@@ -94,7 +96,7 @@ class MasterController:
             dot_dict = DotDict(json_file)
 
             path = self.OPTIONS_FILE_PATH.parent / "options" / \
-                str(dot_dict.streaming_service + ".json")
+                   str(dot_dict.streaming_service + ".json")
 
             with open(path) as f:
                 json_file_2 = json.load(f)
@@ -135,9 +137,9 @@ class MasterController:
             "current_screen_sub_scene",
         ]
         for i in send_on_update:
-            self.socket_handler.send_all(json.dumps({"states":[i, self.States.__getattribute__(i)]}))
+            self.socket_handler.send_all(json.dumps({"states": [i, self.States.__getattribute__(i)]}))
 
-    def set_scene_camera(self, change_sub_scene = False):
+    def set_scene_camera(self, change_sub_scene=False):
         if self.States.current_scene == "augmented":
             self.States.automatic_enabled = True
 
@@ -146,12 +148,12 @@ class MasterController:
             if not self.in_debug_mode:
                 self.auto_contro.obs_send(self.States.current_camera_sub_scene)
             self.States.current_scene = "camera"
-            self.Timer.pause_timer()
+            self.Timer.stop_timer()
         elif change_sub_scene:
             if not self.in_debug_mode:
                 self.auto_contro.obs_send(self.States.current_camera_sub_scene)
 
-    def set_scene_screen(self, change_sub_scene = False):
+    def set_scene_screen(self, change_sub_scene=False):
         if self.States.current_scene == "augmented":
             self.States.automatic_enabled = True
 
@@ -176,11 +178,11 @@ class MasterController:
 
     def check_auto(self, *args):
         logger.info(f"check_auto called with automatic enable = {self.States.automatic_enabled}")
-        if (self.States.automatic_enabled == False 
-            or self.States.auto_change_to_camera == False):
+        if (not self.States.automatic_enabled
+                or not self.States.auto_change_to_camera):
             logger.info(f"check_auto called while automatic_enabled is false")
             logger.info(f"pausing timer")
-            self.Timer.pause_timer()
+            self.Timer.stop_timer()
         else:
             logger.info(f"check_auto called while automatic_enabled is true")
             if self.States.current_scene == "screen":
@@ -198,10 +200,10 @@ class MasterController:
                     f"{obs_settings.camera_scene_hotkey[0]}")
 
         # screen Scene Hotkey
-        keyboard.hook_key(obs_settings.screen_sene_hotkey[0],
+        keyboard.hook_key(obs_settings.screen_scene_hotkey[0],
                           lambda x: self.handle_state_change("screen"), suppress=True)
         logger.info("binding hotkey" +
-                    f" {obs_settings.screen_sene_hotkey[0]}")
+                    f" {obs_settings.screen_scene_hotkey[0]}")
         """
         # Next Button for the clicker
         keyboard.on_release_key(general_settings.clicker_forward,
@@ -223,7 +225,7 @@ class MasterController:
             self.Timer.timer_unavailable()
             popup = WarningPopup()
             popup.open()
-            
+
             setup = Setup(popup, self)
             settings = make_functions(setup)
             for i in settings:
@@ -250,5 +252,5 @@ class MasterController:
             else:
                 logger.debug("the user said no to the question")
         finally:
-            popup.close()  
+            popup.close()
             self.Timer.timer_available()
