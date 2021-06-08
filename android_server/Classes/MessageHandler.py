@@ -24,6 +24,8 @@ def handle_message(socket_json:dict, masterApp):
             elif button == "Next_Slide":
                 masterApp.event_handeler.handle_state_change(SE.NEXT_SLIDE)
 
+            elif button == "Auto_Change_To_Camera":
+                masterApp.event_handeler.handle_state_change(SE.AUTO_CHANGE_TO_CAMERA, event_data=socket_json["data"])
             elif button == "Timer_Pause":
                 masterApp.event_handeler.handle_state_change(SE.TIMER_RUNNING, event_data=socket_json["data"])
             elif button == "Augmented":
@@ -32,7 +34,10 @@ def handle_message(socket_json:dict, masterApp):
                 else:
                     masterApp.event_handeler.handle_state_change(SE.AUGMENTED_OFF)
             elif button == "ChangeWithClicker":
-                pass
+                if socket_json["data"] == "true":
+                    masterApp.event_handler.handle_state_change(SE.AUTO_CHANGE_SCENE_ON)
+                else:
+                    masterApp.event_handler.handle_state_change(SE.AUTO_CHANGE_SCENE_OFF)
             
             elif button == "ExtraTopLeft":
                 pass
@@ -50,6 +55,10 @@ def handle_message(socket_json:dict, masterApp):
                 pass
             elif button == "ExtraBottomRight":
                 pass
+        elif type == "update":
+            specifier = socket_json["specifier"]
+            if specifier == "all":
+                masterApp.update_all()
     except Exception as e:
         logger.critical(f"Message not handled :`(  {socket_json}")
         raise e

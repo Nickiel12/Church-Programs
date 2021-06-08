@@ -126,15 +126,22 @@ class MasterController:
             self.socket_handler.send_all(json.dumps({"states": [var_name, value]}))
 
     @threaded
-    def update_page(self):
+    def update_all(self):
         send_on_update = [
-            "automatic_enabled",
-            "current_scene",
-            "timer_text",
-            "sound_on",
+            "stream_running",
+            "stream_is_setup",
+            "stream_title",
             "stream_is_muted",
+            "automatic_enabled",
+            "augmented",
+            "auto_change_to_camera",
+            "current_scene",
             "current_camera_sub_scene",
             "current_screen_sub_scene",
+            "timer_text",
+            "timer_not_running",
+            "sound_on",
+            "timer_length",
         ]
         for i in send_on_update:
             self.socket_handler.send_all(json.dumps({"states": [i, self.States.__getattribute__(i)]}))
@@ -177,14 +184,12 @@ class MasterController:
                 self.auto_contro.obs_send("camera_scene_augmented")
 
     def check_auto(self, *args):
-        logger.info(f"check_auto called with automatic enable = {self.States.automatic_enabled}")
-        if (not self.States.automatic_enabled
-                or not self.States.auto_change_to_camera):
-            logger.info(f"check_auto called while automatic_enabled is false")
+        logger.info(f"check_auto called with automatic enable = {self.States.automatic_enabled} and" + 
+                                f" auto_change_to_camera = {self.States.auto_change_to_camera}")
+        if (not self.States.auto_change_to_camera):
             logger.info(f"pausing timer")
             self.Timer.stop_timer()
         else:
-            logger.info(f"check_auto called while automatic_enabled is true")
             if self.States.current_scene == "screen":
                 logger.info(f"check_auto restarting timer")
                 self.Timer.reset_timer()
