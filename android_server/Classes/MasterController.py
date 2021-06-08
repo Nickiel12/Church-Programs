@@ -128,9 +128,9 @@ class MasterController:
     @threaded
     def update_all(self):
         send_on_update = [
-            "stream_running",
-            "stream_is_setup",
-            "stream_title",
+            #"stream_running",
+            #"stream_is_setup",
+            #"stream_title",
             "stream_is_muted",
             "automatic_enabled",
             "augmented",
