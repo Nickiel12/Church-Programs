@@ -39,7 +39,8 @@ class MasterController:
                 self.in_debug_mode = True
                 logger.warning("\nIn Debugging mode!!! Certain behavior disabled!!!\n")
 
-        self.socket_handler = SocketHandler("10.0.0.170", 5000)
+        #TODO Umm, make this flexible
+        self.socket_handler = SocketHandler("10.0.0.168", 5000)
 
         self.update_settings()
         self.States = States(stream_running=False,
@@ -75,7 +76,7 @@ class MasterController:
             self.start_hotkeys()
         self.auto_contro = AutomationController(self, debug=self.in_debug_mode)
         self.Timer = Timer(self)
-        self.event_handeler = EventHandeler(self)
+        self.event_handler = EventHandeler(self)
 
     def start(self):
         self.socket_handler.register_message_handler(partial(handle_message, masterApp=self))
@@ -223,7 +224,7 @@ class MasterController:
                     f"{general_settings.clicker_backward}")
 
     def handle_state_change(self, *args):
-        self.event_handeler.handle_state_change(*args)
+        self.event_handler.handle_state_change(*args)
 
     def setup_stream(self):
         try:

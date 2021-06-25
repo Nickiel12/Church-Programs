@@ -16,23 +16,23 @@ def handle_message(socket_json:dict, masterApp):
             button = socket_json["button"]
 
             if button == "Scene_Camera":
-                masterApp.event_handeler.handle_state_change(SE.CAMERA_SCENE)
+                masterApp.event_handler.handle_state_change(SE.CAMERA_SCENE)
             elif button == "Scene_Screen":
-                masterApp.event_handeler.handle_state_change(SE.SCREEN_SCENE)
+                masterApp.event_handler.handle_state_change(SE.SCREEN_SCENE)
             elif button == "Prev_Slide":
-                masterApp.event_handeler.handle_state_change(SE.PREV_SLIDE)
+                masterApp.event_handler.handle_state_change(SE.PREV_SLIDE)
             elif button == "Next_Slide":
-                masterApp.event_handeler.handle_state_change(SE.NEXT_SLIDE)
+                masterApp.event_handler.handle_state_change(SE.NEXT_SLIDE)
 
             elif button == "Auto_Change_To_Camera":
-                masterApp.event_handeler.handle_state_change(SE.AUTO_CHANGE_TO_CAMERA, event_data=socket_json["data"])
+                masterApp.event_handler.handle_state_change(SE.AUTO_CHANGE_TO_CAMERA, event_data=socket_json["data"])
             elif button == "Timer_Pause":
-                masterApp.event_handeler.handle_state_change(SE.TIMER_RUNNING, event_data=socket_json["data"])
+                masterApp.event_handler.handle_state_change(SE.TIMER_RUNNING, event_data=socket_json["data"])
             elif button == "Augmented":
                 if (socket_json["data"] == "true"):
-                    masterApp.event_handeler.handle_state_change(SE.AUGMENTED_ON)
+                    masterApp.event_handler.handle_state_change(SE.AUGMENTED_ON)
                 else:
-                    masterApp.event_handeler.handle_state_change(SE.AUGMENTED_OFF)
+                    masterApp.event_handler.handle_state_change(SE.AUGMENTED_OFF)
             elif button == "ChangeWithClicker":
                 if socket_json["data"] == "true":
                     masterApp.event_handler.handle_state_change(SE.AUTO_CHANGE_SCENE_ON)
