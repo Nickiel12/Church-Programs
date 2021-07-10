@@ -11,7 +11,7 @@ class States:
     stream_title: str
     stream_is_muted: bool
 
-    automatic_enabled: bool
+    change_with_clicker: bool
     augmented: bool
     auto_change_to_camera: bool
     current_scene: str

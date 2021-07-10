@@ -34,10 +34,10 @@ class EventHandeler:
         }.get(event_name)()
 
 
-    def automatic_off(self):
-        self.MasterApp.States.automatic_enabled = False
     def automatic_on(self):
-        self.MasterApp.States.automatic_enabled = True
+        self.MasterApp.States.change_with_clicker = True
+    def automatic_off(self):
+        self.MasterApp.States.change_with_clicker = False
     
     def augmented_on(self):
         self.MasterApp.States.augmented = True
@@ -45,7 +45,7 @@ class EventHandeler:
             self.MasterApp.set_scene_augmented()
     def augmented_off(self):
         self.MasterApp.States.augmented = False
-        self.MasterApp.States.automatic_enabled = True
+        self.MasterApp.States.change_with_clicker = True
         self.MasterApp.set_scene_camera()
 
     def auto_change_to_camera(self, data):
@@ -55,7 +55,7 @@ class EventHandeler:
     def clicker(self, direction):
         self.MasterApp.auto_contro.propre_send(direction)
         time.sleep(.2)
-        if self.MasterApp.States.automatic_enabled:
+        if self.MasterApp.States.change_with_clicker:
             self.MasterApp.set_scene_screen()
 
     def toggle_muted(self):

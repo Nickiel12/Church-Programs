@@ -120,7 +120,7 @@ class MasterController:
     def on_update(self, var_name, value):
         if var_name != "timer_text":
             logger.debug(f"{var_name} was changed")
-        if var_name == "automatic_enabled":
+        if var_name == "change_with_clicker":
             self.check_auto()
         if var_name != "callback":
             self.socket_handler.send_all(json.dumps({"states": [var_name, value]}))
@@ -132,7 +132,7 @@ class MasterController:
             #"stream_is_setup",
             #"stream_title",
             "stream_is_muted",
-            "automatic_enabled",
+            "change_with_clicker",
             "augmented",
             "auto_change_to_camera",
             "current_scene",
@@ -148,7 +148,7 @@ class MasterController:
 
     def set_scene_camera(self, change_sub_scene=False):
         if self.States.current_scene == "augmented":
-            self.States.automatic_enabled = True
+            self.States.change_with_clicker = True
 
         if self.States.current_scene != "camera":
             logger.debug(f"changing scene to camera")
@@ -162,7 +162,7 @@ class MasterController:
 
     def set_scene_screen(self, change_sub_scene=False):
         if self.States.current_scene == "augmented":
-            self.States.automatic_enabled = True
+            self.States.change_with_clicker = True
 
         if self.States.current_scene != "screen":
             logger.debug(f"changing scene to screen")
@@ -177,16 +177,16 @@ class MasterController:
     def set_scene_augmented(self, *args):
         if self.States.current_scene != "augmented":
             logger.debug(f"changing scene to augmented")
-            self.States.automatic_enabled = False
+            self.States.change_with_clicker = False
             self.check_auto()
             self.States.current_scene = "augmented"
             if not self.in_debug_mode:
                 self.auto_contro.obs_send("camera_scene_augmented")
 
     def check_auto(self, *args):
-        logger.info(f"check_auto called with automatic enable = {self.States.automatic_enabled} and" + 
+        logger.info(f"check_auto called with automatic enable = {self.States.change_with_clicker} and" +
                                 f" auto_change_to_camera = {self.States.auto_change_to_camera}")
-        if (not self.States.auto_change_to_camera):
+        if not self.States.auto_change_to_camera:
             logger.info(f"pausing timer")
             self.Timer.stop_timer()
         else:
