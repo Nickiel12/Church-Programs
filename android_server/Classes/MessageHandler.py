@@ -12,6 +12,9 @@ def handle_message(socket_json:dict, masterApp):
     try:    
         type = socket_json["type"]
 
+        if type == "timer":
+            masterApp.event_handler.handle_state_change(SE.TIMER_CHANGE_LENGTH, socket_json["data"])
+
         if type == "button":
             button = socket_json["button"]
 
@@ -35,26 +38,28 @@ def handle_message(socket_json:dict, masterApp):
                     masterApp.event_handler.handle_state_change(SE.AUGMENTED_OFF)
             elif button == "ChangeWithClicker":
                 if socket_json["data"] == "true":
-                    masterApp.event_handler.handle_state_change(SE.AUTO_CHANGE_SCENE_ON)
-                else:
                     masterApp.event_handler.handle_state_change(SE.AUTO_CHANGE_SCENE_OFF)
+                else:
+                    masterApp.event_handler.handle_state_change(SE.AUTO_CHANGE_SCENE_ON)
             
+
             elif button == "ExtraTopLeft":
-                pass
+                masterApp.event_handler.handle_state_change(SE.SPECIAL_SCENE, "Camera_None")
             elif button == "ExtraTopLeftMid":
-                pass
+                masterApp.event_handler.handle_state_change(SE.SPECIAL_SCENE, "Camera_Top_Right")
             elif button == "ExtraTopRightMid":
-                pass
+                masterApp.event_handler.handle_state_change(SE.SPECIAL_SCENE, "Screen_None")
             elif button == "ExtraTopRight":
-                pass
+                masterApp.event_handler.handle_state_change(SE.SPECIAL_SCENE, "Screen_Top_Right")
             elif button == "ExtraBottomLeft":
-                pass
+                masterApp.event_handler.handle_state_change(SE.SPECIAL_SCENE, "Camera_Bottom_Left")
             elif button == "ExtraBottomLeftMid":
-                pass
+                masterApp.event_handler.handle_state_change(SE.SPECIAL_SCENE, "Camera_Bottom_Right")
             elif button == "ExtraBottomRightMid":
                 pass
             elif button == "ExtraBottomRight":
-                pass
+                masterApp.event_handler.handle_state_change(SE.SPECIAL_SCENE, "Screen_Bottom_Right")
+                
         elif type == "update":
             specifier = socket_json["specifier"]
             if specifier == "all":
