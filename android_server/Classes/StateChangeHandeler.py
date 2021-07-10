@@ -24,8 +24,8 @@ class EventHandeler:
             SE.AUGMENTED_OFF : self.augmented_off,
             SE.PREV_SLIDE    : partial(self.clicker, "prev"),
             SE.NEXT_SLIDE    : partial(self.clicker, "next"),
-            SE.AUTO_CHANGE_SCENE_ON   : self.automatic_on,
-            SE.AUTO_CHANGE_SCENE_OFF  : self.automatic_off,
+            SE.CHANGE_WITH_CLICKER_ON   : self.change_with_clicker_on,
+            SE.CHANGE_WITH_CLICKER_OFF  : self.change_with_clicker_off,
             SE.AUTO_CHANGE_TO_CAMERA  : partial(self.auto_change_to_camera, event_data),
             SE.TOGGLE_COMPUTER_VOLUME : self.toggle_muted,
             SE.TIMER_RUNNING         : partial(self.set_timer_stopped, event_data),
@@ -34,9 +34,9 @@ class EventHandeler:
         }.get(event_name)()
 
 
-    def automatic_on(self):
+    def change_with_clicker_on(self):
         self.MasterApp.States.change_with_clicker = True
-    def automatic_off(self):
+    def change_with_clicker_off(self):
         self.MasterApp.States.change_with_clicker = False
     
     def augmented_on(self):
@@ -84,5 +84,5 @@ class EventHandeler:
         assert isinstance(event_data, int)
         assert event_data > 1
             
-        self.MasterApp.Timer.timer_length = self.timer_values[event_data]
+        self.MasterApp.Timer.timer_length = event_data
         logger.debug(f"Changed timer length to {event_data}")

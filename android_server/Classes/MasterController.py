@@ -39,7 +39,7 @@ class MasterController:
                 self.in_debug_mode = True
                 logger.warning("\nIn Debugging mode!!! Certain behavior disabled!!!\n")
 
-        #TODO Umm, make this flexible
+        # TODO Umm, make this flexible
         self.socket_handler = SocketHandler("10.0.0.168", 5000)
 
         self.update_settings()
@@ -47,7 +47,7 @@ class MasterController:
                              stream_is_setup=False,
                              stream_title="",
                              stream_is_muted=False,
-                             automatic_enabled=True,
+                             change_with_clicker=True,
                              augmented=True,
                              auto_change_to_camera=True,
                              current_scene="camera",
@@ -85,10 +85,9 @@ class MasterController:
         self.States.timer_kill.set()
 
     def update_settings(self):
-        have_backup = False
-        if self.settings != None:
+        tmp_settings = None
+        if self.settings is not None:
             tmp_settings = copy.deepcopy(self.settings)
-            have_backup = True
         try:
             with open(str(self.OPTIONS_FILE_PATH)) as f:
                 json_file = json.load(f)
@@ -96,7 +95,7 @@ class MasterController:
             dot_dict = DotDict(json_file)
 
             path = self.OPTIONS_FILE_PATH.parent / "options" / \
-                   str(dot_dict.streaming_service + ".json")
+                str(dot_dict.streaming_service + ".json")
 
             with open(path) as f:
                 json_file_2 = json.load(f)
@@ -107,10 +106,10 @@ class MasterController:
             self.settings = dot_dict
 
             logger.info("Successfully updated settings from file")
-        except (json.JSONDecodeError) as e:
+        except json.JSONDecodeError as e:
             logger.warning("Loading settings from file failed")
             logger.error(e)
-            if have_backup:
+            if tmp_settings is not None:
                 self.settings = tmp_settings
             else:
                 logger.error("loading the settings has failed")
@@ -128,9 +127,9 @@ class MasterController:
     @threaded
     def update_all(self):
         send_on_update = [
-            #"stream_running",
-            #"stream_is_setup",
-            #"stream_title",
+            # "stream_running",
+            # "stream_is_setup",
+            # "stream_title",
             "stream_is_muted",
             "change_with_clicker",
             "augmented",
@@ -185,7 +184,7 @@ class MasterController:
 
     def check_auto(self, *args):
         logger.info(f"check_auto called with automatic enable = {self.States.change_with_clicker} and" +
-                                f" auto_change_to_camera = {self.States.auto_change_to_camera}")
+                    f" auto_change_to_camera = {self.States.auto_change_to_camera}")
         if not self.States.auto_change_to_camera:
             logger.info(f"pausing timer")
             self.Timer.stop_timer()

@@ -12,8 +12,8 @@ class StreamEvents(enum.Flag):
 
     TIMER_RUNNING = auto()
     TIMER_CHANGE_LENGTH = auto()
-    AUTO_CHANGE_SCENE_ON = auto()
-    AUTO_CHANGE_SCENE_OFF = auto()
+    CHANGE_WITH_CLICKER_ON = auto()
+    CHANGE_WITH_CLICKER_OFF = auto()
 
     PREV_SLIDE = auto()
     NEXT_SLIDE = auto()

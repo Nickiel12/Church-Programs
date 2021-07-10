@@ -38,9 +38,9 @@ def handle_message(socket_json:dict, masterApp):
                     masterApp.event_handler.handle_state_change(SE.AUGMENTED_OFF)
             elif button == "ChangeWithClicker":
                 if socket_json["data"] == True:
-                    masterApp.event_handler.handle_state_change(SE.AUTO_CHANGE_SCENE_ON)
+                    masterApp.event_handler.handle_state_change(SE.CHANGE_WITH_CLICKER_ON)
                 else:
-                    masterApp.event_handler.handle_state_change(SE.AUTO_CHANGE_SCENE_OFF)
+                    masterApp.event_handler.handle_state_change(SE.CHANGE_WITH_CLICKER_OFF)
             
 
             elif button == "ExtraTopLeft":
