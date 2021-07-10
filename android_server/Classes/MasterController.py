@@ -72,7 +72,6 @@ class MasterController:
                     program_path = self.settings.startup[str(program) + "_path"]
                     subprocess.call([str(ahk_files_path / "program_opener.exe"),
                                      f".*{program}.*", program_path])
-        if not self.in_debug_mode:
             self.start_hotkeys()
         self.auto_contro = AutomationController(self, debug=self.in_debug_mode)
         self.Timer = Timer(self)
