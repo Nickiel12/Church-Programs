@@ -27,10 +27,10 @@ class EventHandeler:
             SE.CHANGE_WITH_CLICKER_ON   : self.change_with_clicker_on,
             SE.CHANGE_WITH_CLICKER_OFF  : self.change_with_clicker_off,
             SE.AUTO_CHANGE_TO_CAMERA  : partial(self.auto_change_to_camera, event_data),
-            SE.TOGGLE_COMPUTER_VOLUME : self.toggle_muted,
+            SE.TOGGLE_COMPUTER_VOLUME : partial(self.toggle_muted, event_data),
+            SE.TOGGLE_STREAM_VOLUME   : partial(self.toggle_stream_is_muted, event_data),
             SE.TIMER_RUNNING         : partial(self.set_timer_stopped, event_data),
             SE.TIMER_CHANGE_LENGTH : partial(self.timer_length, event_data),
-            #SE.TOGGLE_STREAM_VOLUME   : ,
         }.get(event_name)()
 
 
@@ -58,13 +58,34 @@ class EventHandeler:
         if self.MasterApp.States.change_with_clicker:
             self.MasterApp.set_scene_screen()
 
-    def toggle_muted(self):
-        if self.MasterApp.States.stream_is_muted:
-            self.MasterApp.auto_contro.obs_send("unmute")
+    def toggle_muted(self, turn_volume_down):
+        if not turn_volume_down:
+            # turn the volume UP!
+            if (not self.MasterApp.in_debug_mode):
+                self.MasterApp.auto_contro.toggle_sound(True)
+            else:
+                logger.debug("Pretend I am turning up the computer volume!")
+        else:
+            if (not self.MasterApp.in_debug_mode):
+                self.MasterApp.auto_contro.toggle_sound(False)
+            else:
+                logger.debug("Pretend I am turn the computer volume down!")
+        self.MasterApp.States.sound_on = not turn_volume_down
+
+    def toggle_stream_is_muted(self, mute_stream):
+        if not mute_stream:
+            if (not self.MasterApp.in_debug_mode):
+                self.MasterApp.auto_contro.obs_send("unmute")
+            else:
+                logger.debug("Pretend I am turning the stream sound on!")
             self.MasterApp.States.stream_is_muted = False
         else:
-            self.MasterApp.auto_contro.obs_send("mute")
+            if (not self.MasterApp.in_debug_mode):
+                self.MasterApp.auto_contro.obs_send("mute")
+            else:
+                logger.debug("Pretend I am muting the stream sound")
             self.MasterApp.States.stream_is_muted = True
+
 
     def scene_event(self, event_data):
         if event_data.startswith("Camera"):
@@ -81,8 +102,11 @@ class EventHandeler:
 
 
     def timer_length(self, event_data):
-        assert isinstance(event_data, int)
-        assert event_data > 1
-            
-        self.MasterApp.Timer.timer_length = event_data
-        logger.debug(f"Changed timer length to {event_data}")
+        try:
+            assert event_data > 1
+                
+            self.MasterApp.Timer.timer_length = event_data
+            self.MasterApp.States.timer_length = event_data
+            logger.debug(f"Changed timer length to {event_data}")
+        except AssertionError:
+            logger.debug(f"Unable to understand!")

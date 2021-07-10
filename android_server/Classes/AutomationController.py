@@ -22,8 +22,7 @@ class AutomationController:
             self.sett = self.MasterApp.settings
             self.platform_settings = self.sett[f"setup_" +
                                                f"{self.sett.streaming_service}"]
-            self.sound_on = not self.sett.general["music_default_state-on"]
-            self.toggle_sound()
+            self.toggle_sound(not self.sett.general["music_default_state-on"])
             assert os.path.exists(str(self.ahk_files_path / "window_activator.exe")), "missing required file: " \
                                                                                       "window_activator.exe "
             assert os.path.exists(str(self.ahk_files_path / "music_toggle.exe")), "missing required file: " \
@@ -51,19 +50,16 @@ class AutomationController:
             time.sleep(.1)
 
     @threaded
-    def toggle_sound(self):
-        self.sound_on = not self.sound_on
-        self.MasterApp.States.sound_on = not self.sound_on
-        if self.sound_on:
+    def toggle_sound(self, turn_up=True):
+        if turn_up:
             # the second argument (1 or 0) determines whether the volume is going up or down.
+            # 1 is up, 0 is down
             subprocess.call([str(self.ahk_files_path / "music_toggle.exe"),
                              '1', f"{self.sett.general.music_fade_time}"])
         else:
             subprocess.call([str(self.ahk_files_path / "music_toggle.exe"),
                              '0', f"{self.sett.general.music_fade_time}"])
 
-    def get_sound_state(self) -> bool:
-        return self.sound_on
 
     def obs_send(self, scene: str):
         """Change the current obs scene
