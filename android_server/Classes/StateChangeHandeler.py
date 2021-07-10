@@ -79,19 +79,10 @@ class EventHandeler:
     def set_timer_stopped(self, value):
         self.MasterApp.States.timer_not_running = value
 
-    timer_values = {
-        "5"   : 5,
-        "7.5" : 7.5,
-        "15"  : 15,
-        "30"  : 30,
-    }
 
     def timer_length(self, event_data):
-        if not (event_data in self.timer_values):
-            try:
-                event_data = int(event_data)
-            except ValueError:
-                assert False == True, "Invalid timer event data provided"
+        assert isinstance(event_data, int)
+        assert event_data > 1
             
         self.MasterApp.Timer.timer_length = self.timer_values[event_data]
         logger.debug(f"Changed timer length to {event_data}")
