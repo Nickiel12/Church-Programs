@@ -9,6 +9,7 @@ import subprocess
 from sys import argv
 import time
 import threading
+import socket
 
 from Classes.Exceptions import PopupError, PrematureExit, PopupNotExist
 from Classes.States import States
@@ -39,8 +40,7 @@ class MasterController:
                 self.in_debug_mode = True
                 logger.warning("\nIn Debugging mode!!! Certain behavior disabled!!!\n")
 
-        # TODO Umm, make this flexible
-        self.socket_handler = SocketHandler("10.0.0.168", 5000)
+        self.socket_handler = SocketHandler(socket.gethostbyname(socket.gethostname()), 5000)
 
         self.update_settings()
         self.States = States(stream_running=False,
