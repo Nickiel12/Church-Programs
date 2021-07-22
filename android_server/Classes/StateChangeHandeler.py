@@ -31,7 +31,7 @@ class EventHandeler:
             SE.TIMER_CHANGE_LENGTH : partial(self.timer_length, event_data),
             SE.TOGGLE_STREAM_VOLUME   : partial(self.toggle_stream_is_muted, event_data),
             SE.TOGGLE_COMPUTER_VOLUME : partial(self.toggle_muted, event_data),
-            SE.MEDIA_PAUSE_PLAY : self.media_pause_play,
+            SE.MEDIA_PAUSE_PLAY       : self.media_pause_play,
         }.get(event_name)()
 
 
@@ -88,7 +88,8 @@ class EventHandeler:
             self.MasterApp.States.stream_is_muted = True
 
     def media_pause_play(self):
-        pass
+        logger.warn("ding dong")
+        self.MasterApp.auto_contro.toggle_media_pause_play_global()
 
     def scene_event(self, event_data):
         if event_data.startswith("Camera"):

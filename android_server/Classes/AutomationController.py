@@ -61,7 +61,8 @@ class AutomationController:
                              '0', f"{self.sett.general.music_fade_time}"])
                 
     @threaded
-    def media_pause_play_global(self):
+    def toggle_media_pause_play_global(self):
+        logger.debug("trying to toggle media in dopamine")
         subprocess.call([str(self.ahk_files_path / "pause_play_global.exe")])
         time.sleep(.1)
         self.give_window_focus("propresenter")
