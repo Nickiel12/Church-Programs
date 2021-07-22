@@ -20,6 +20,7 @@ from utils import DotDict, threaded, Setup, make_functions
 from Classes.AutomationController import AutomationController
 from Classes.SocketHandler import SocketHandler
 from Classes.MessageHandler import handle_message
+from Classes.StreamEvents import StreamEvents as SE
 
 import logging
 
@@ -57,7 +58,7 @@ class MasterController:
                              timer_length=15,
                              timer_not_running=False,
                              timer_kill=threading.Event(),
-                             sound_on=not (self.settings.general["music_default_state-on"]),
+                             sound_on=(self.settings.general["music_default_state-on"]),
                              callback=self.on_update,
                              )
         atexit.register(self.States.timer_kill.set)
@@ -211,12 +212,12 @@ class MasterController:
         """
         # Next Button for the clicker
         keyboard.on_release_key(general_settings.clicker_forward,
-                                lambda x: self.handle_state_change("clicker_next"),
+                                lambda x: self.handle_state_change(SE.NEXT_SLIDE),
                                 suppress=True)
         logger.info(f"binding hotkey {general_settings.clicker_forward}")
         # Previous Button for the clicker
         keyboard.on_release_key(general_settings.clicker_backward,
-                                lambda x: self.handle_state_change("clicker_prev"),
+                                lambda x: self.handle_state_change(SE.PREV_SLIDE),
                                 suppress=True)
         logger.info("binding hotkey " +
                     f"{general_settings.clicker_backward}")

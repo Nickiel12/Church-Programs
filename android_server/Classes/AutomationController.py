@@ -59,6 +59,12 @@ class AutomationController:
         else:
             subprocess.call([str(self.ahk_files_path / "music_toggle.exe"),
                              '0', f"{self.sett.general.music_fade_time}"])
+                
+    @threaded
+    def media_pause_play_global(self):
+        subprocess.call([str(self.ahk_files_path / "pause_play_global.exe")])
+        time.sleep(.1)
+        self.give_window_focus("propresenter")
 
 
     def obs_send(self, scene: str):

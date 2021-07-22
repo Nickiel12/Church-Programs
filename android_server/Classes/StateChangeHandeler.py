@@ -27,10 +27,11 @@ class EventHandeler:
             SE.CHANGE_WITH_CLICKER_ON   : self.change_with_clicker_on,
             SE.CHANGE_WITH_CLICKER_OFF  : self.change_with_clicker_off,
             SE.AUTO_CHANGE_TO_CAMERA  : partial(self.auto_change_to_camera, event_data),
-            SE.TOGGLE_COMPUTER_VOLUME : partial(self.toggle_muted, event_data),
-            SE.TOGGLE_STREAM_VOLUME   : partial(self.toggle_stream_is_muted, event_data),
             SE.TIMER_RUNNING         : partial(self.set_timer_stopped, event_data),
             SE.TIMER_CHANGE_LENGTH : partial(self.timer_length, event_data),
+            SE.TOGGLE_STREAM_VOLUME   : partial(self.toggle_stream_is_muted, event_data),
+            SE.TOGGLE_COMPUTER_VOLUME : partial(self.toggle_muted, event_data),
+            SE.MEDIA_PAUSE_PLAY : self.media_pause_play,
         }.get(event_name)()
 
 
@@ -86,6 +87,8 @@ class EventHandeler:
                 logger.debug("Pretend I am muting the stream sound")
             self.MasterApp.States.stream_is_muted = True
 
+    def media_pause_play(self):
+        pass
 
     def scene_event(self, event_data):
         if event_data.startswith("Camera"):

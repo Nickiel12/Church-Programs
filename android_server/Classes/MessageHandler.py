@@ -47,6 +47,9 @@ def handle_message(socket_json:dict, masterApp):
             elif button == "Stream_Sound":
                 masterApp.event_handler.handle_state_change(SE.TOGGLE_STREAM_VOLUME, event_data=socket_json["data"])
 
+            elif button == "MediaPausePlay":
+                masterApp.event_handler.handle_state_change(SE.MEDIA_PAUSE_PLAY)
+
             elif button == "ExtraTopLeft":
                 masterApp.event_handler.handle_state_change(SE.SPECIAL_SCENE, "Camera_None")
             elif button == "ExtraTopLeftMid":
