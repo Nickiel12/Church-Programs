@@ -44,6 +44,7 @@ class MasterController:
         self.socket_handler = SocketHandler(socket.gethostbyname(socket.gethostname()), 5000)
 
         self.update_settings()
+        logger.debug(f"{self.settings.general}")
         self.States = States(stream_running=False,
                              stream_is_setup=False,
                              stream_title="",
@@ -58,7 +59,7 @@ class MasterController:
                              timer_length=15,
                              timer_not_running=False,
                              timer_kill=threading.Event(),
-                             sound_on=(self.settings.general["music_default_state-on"]),
+                             sound_on=self.settings.general["music_default_state-on"],
                              callback=self.on_update,
                              )
         atexit.register(self.States.timer_kill.set)

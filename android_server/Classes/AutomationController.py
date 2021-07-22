@@ -22,7 +22,7 @@ class AutomationController:
             self.sett = self.MasterApp.settings
             self.platform_settings = self.sett[f"setup_" +
                                                f"{self.sett.streaming_service}"]
-            self.toggle_sound(not self.sett.general["music_default_state-on"])
+            self.toggle_sound(self.MasterApp.States.sound_on)
             assert os.path.exists(str(self.ahk_files_path / "window_activator.exe")), "missing required file: " \
                                                                                       "window_activator.exe "
             assert os.path.exists(str(self.ahk_files_path / "music_toggle.exe")), "missing required file: " \
@@ -51,6 +51,7 @@ class AutomationController:
 
     @threaded
     def toggle_sound(self, turn_up=True):
+        logger.debug(f"toggle sound with {turn_up}")
         if turn_up:
             # the second argument (1 or 0) determines whether the volume is going up or down.
             # 1 is up, 0 is down
