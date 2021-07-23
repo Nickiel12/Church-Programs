@@ -109,7 +109,7 @@ class EventHandeler:
         try:
             assert event_data > 1
                 
-            self.MasterApp.Timer.timer_length = event_data
+            self.MasterApp.Timer._timer_length = event_data
             self.MasterApp.States.timer_length = event_data
             logger.debug(f"Changed timer length to {event_data}")
         except AssertionError:
