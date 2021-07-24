@@ -40,29 +40,6 @@ def with_popup(func):
     return wrapper
 
 
-@threaded
-def open_program(program, program_path=None):
-    """opens the program argument, if present, program_path is opened instead
-
-    Arguments:
-        program {str} -- either "obs", or "propresenter"
-
-    Keyword Arguments:
-        program_path {str or pathlib path object} -- a path to a file to open (default: {None})
-    """
-
-    # TODO add propresenter path
-    obs_path = pathlib.Path("C:\\ProgramData\\Microsoft\\Windows\\Start Menu" +
-                            "\\Programs\\OBS Studio\\OBS Studio (64bit).lnk")
-    pro_path = pathlib.Path("C:\\Program Files (x86)\\Renewed Vision\\+" +
-                             "ProPresenter 6\\ProPresenter.exe")
-
-    if not program_path:
-        if program.lower() == "obs":
-            os.startfile(str(obs_path))
-        elif program.lower() == "propresenter":
-            os.startfile(str(pro_path))
-
 class Setup:
     def __init__(self, popup: WarningPopup, MasterApp):
         self.auto_contro = MasterApp.auto_contro
