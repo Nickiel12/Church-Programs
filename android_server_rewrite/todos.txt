@@ -1,1 +1,5 @@
-TODO list obs SubScene Enum compliant
+[ ] list obs SubScene Enum compliant
+
+[ ]check if check_auto can be removed from master controller
+[ ]double check every logger.debug statement if should be info instead
+[*]StateChangeHandler self.MasterApp.States to self.states with a fine couthed tome
