@@ -6,6 +6,7 @@ class StreamEvents(enum.Flag):
 
     CAMERA_SCENE = auto()
     SCREEN_SCENE = auto()
+    AUGMENTED_SCENE = auto()
     SPECIAL_SCENE = auto()
     AUGMENTED_ON = auto()
     AUGMENTED_OFF = auto()
