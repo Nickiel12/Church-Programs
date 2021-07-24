@@ -25,7 +25,7 @@ class States:
     sound_on: bool
     timer_length: int
     
-    callback: FunctionType = None
+    callback: FunctionType
 
     def __setattr__(self, name, value):
         returnable = super().__setattr__(name, value)
