@@ -8,6 +8,8 @@ logging.basicConfig(level=logging.DEBUG,
 logger = logging.getLogger("MessageHandler")
 
 
+# the biggest issue with this function is the fact that all socket messages, are strings
+# so all of these have to be strings
 def handle_message(socket_json: dict, message_handler):
     logger.info("handling a message")
 
