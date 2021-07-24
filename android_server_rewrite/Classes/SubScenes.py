@@ -14,3 +14,5 @@ class SubScenes(enum.IntEnum):
         SCREEN_NONE = auto()
         SCREEN_TOP_RIGHT = auto()
         SCREEN_BOTTOM_RIGHT = auto()
+
+    AUGMENTED = auto()
