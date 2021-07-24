@@ -81,8 +81,8 @@ class SocketHandler:
                             self._close_socket(key.fileobj)
                             logger.debug("Socket Closed")
                         else:
-                            raise e
                             logger.warning(f"Socket error!  {key.data.addr}:\n{e}")
+                            raise e
 
     def _handle_incoming(self, sock, data: bytes):
         try:
@@ -128,7 +128,7 @@ class SocketHandler:
 
     def send_all(self, message: str):
         if len(self.connected_sockets) == 0:
-            logger.critical("TRY TO SEND MESSAGE TO NOTHING! regards, SocketHandler.send_all()")
+            logger.warning("TRY TO SEND MESSAGE TO NOTHING! regards, SocketHandler.send_all()")
         logger.debug("trying to send: " + message)
         for sock in self.connected_sockets:
             try:
