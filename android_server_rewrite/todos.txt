@@ -3,3 +3,5 @@
 [ ]check if check_auto can be removed from master controller
 [ ]double check every logger.debug statement if should be info instead
 [*]StateChangeHandler self.MasterApp.States to self.states with a fine couthed tome
+[ ]double check socket handler for readability, but most importantly logger levels
+[ ] replace all dotDict uses, it's a little dumb
