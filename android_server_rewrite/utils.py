@@ -80,6 +80,7 @@ class Setup:
         self.popup.set_task("Entering Text", timer_time)
         keyboard.write(text)
 
+# more black magic
 def make_functions(setup_inst):
     output = []
     platform_settings = setup_inst.platform_settings
