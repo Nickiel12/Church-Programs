@@ -247,7 +247,7 @@ class MasterController:
                     time.sleep(i[1])
                 except KeyboardInterrupt:
                     raise PrematureExit("Keyboard Inturrupt caught in sleep_check")
-            self.auto_contro.give_window_focus("propresenter")
+            self.auto_contro.give_window_focus(self.auto_contro.Windows.PROPRESENTER)
             setup.del_popup()
             self.States.stream_is_setup = True
 
