@@ -32,8 +32,8 @@ class EventHandler:
                 SE.AUGMENTED_OFF: partial(self.augmented, False),
                 SE.CHANGE_WITH_CLICKER_ON: partial(self.change_with_clicker, True),
                 SE.CHANGE_WITH_CLICKER_OFF: partial(self.change_with_clicker, False),
-                SE.PREV_SLIDE: partial(self.clicker, "prev"),
-                SE.NEXT_SLIDE: partial(self.clicker, "next"),
+                SE.PREV_SLIDE: partial(self.clicker, SE.PREV_SLIDE),
+                SE.NEXT_SLIDE: partial(self.clicker, SE.NEXT_SLIDE),
                 SE.AUTO_CHANGE_TO_CAMERA: partial(self.auto_change_to_camera, event_data),
                 SE.TIMER_RUNNING: partial(self.set_timer_stopped, event_data),
                 SE.TIMER_CHANGE_LENGTH: partial(self.timer_length, event_data),
@@ -43,13 +43,13 @@ class EventHandler:
                 SE.UPDATE_REQUEST: partial(self.update, event_data)
             }.get(event_name)()
 
-    def change_with_clicker(self, value):
+    def change_with_clicker(self, value: bool):
         self.states.change_with_clicker = value
 
     def augmented(self, yes):
         self.states = yes
         if yes:
-            if not (self.states.current_scene == "augmented"):
+            if not (self.states.current_scene == SE.AUGMENTED_SCENE):
                 self.MasterApp.set_scene_augmented()
         else:
             self.states.change_with_clicker = True
@@ -61,34 +61,38 @@ class EventHandler:
 
     def clicker(self, direction):
         self.MasterApp.auto_contro.propre_send(direction)
-        time.sleep(.2)
-        if self.states.change_with_clicker:
-            self.MasterApp.set_scene_screen()
+        # TODO Check if this can be optimized because this is part of the clicker lag
+        if not self.states.current_scene == SE.SCREEN_SCENE:
+            if self.states.change_with_clicker:
+                # TODO find tune this timing, might get away with no sleep time
+                time.sleep(.2)
+                self.MasterApp.set_scene_screen()
 
     def toggle_muted(self, turn_volume_down):
         if not turn_volume_down:
             # turn the volume UP!
-            if (not self.MasterApp.in_debug_mode):
+            if not self.MasterApp.in_debug_mode:
                 self.MasterApp.auto_contro.toggle_sound(True)
             else:
                 logger.debug("Pretend I am turning up the computer volume!")
         else:
-            if (not self.MasterApp.in_debug_mode):
+            if not self.MasterApp.in_debug_mode:
                 self.MasterApp.auto_contro.toggle_sound(False)
             else:
                 logger.debug("Pretend I am turn the computer volume down!")
+        # set like this because turn_volume_down is the opposite of sound on
         self.states.sound_on = not turn_volume_down
 
     def toggle_stream_is_muted(self, mute_stream):
         if not mute_stream:
-            if (not self.MasterApp.in_debug_mode):
-                self.MasterApp.auto_contro.obs_send("unmute")
+            if not self.MasterApp.in_debug_mode:
+                self.MasterApp.auto_contro.obs_send(SE.MEDIA_VOLUME_UP)
             else:
                 logger.debug("Pretend I am turning the stream sound on!")
             self.states.stream_is_muted = False
         else:
             if not self.MasterApp.in_debug_mode:
-                self.MasterApp.auto_contro.obs_send("mute")
+                self.MasterApp.auto_contro.obs_send(SE.MEDIA_VOLUME_DOWN)
             else:
                 logger.debug("Pretend I am muting the stream sound")
             self.states.stream_is_muted = True
@@ -111,7 +115,7 @@ class EventHandler:
         if specifier == "all":
             self.MasterApp.update_all()
 
-    def set_timer_stopped(self, value):
+    def set_timer_stopped(self, value: bool):
         self.states.timer_not_running = value
 
     def timer_length(self, event_data):
@@ -123,4 +127,4 @@ class EventHandler:
             self.states.timer_length = event_data
             logger.debug(f"Changed timer length to {event_data}")
         except AssertionError:
-            logger.debug(f"Unable to understand!")
+            logger.debug(f"Unable to understand new timer length")
