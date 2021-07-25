@@ -21,6 +21,9 @@ class StreamEvents(enum.Flag):
     NEXT_SLIDE = auto()
     TOGGLE_COMPUTER_VOLUME = auto()
     TOGGLE_STREAM_VOLUME = auto()
+
     MEDIA_PAUSE_PLAY = auto()
+    MEDIA_VOLUME_DOWN = auto()
+    MEDIA_VOLUME_UP = auto()
 
     UPDATE_REQUEST = auto()
