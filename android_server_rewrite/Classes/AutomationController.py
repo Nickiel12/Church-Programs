@@ -1,3 +1,4 @@
+import enum
 import keyboard
 import pathlib
 import logging
@@ -7,12 +8,20 @@ import subprocess
 import time
 import threading
 
-from utils import threaded, open_program
+from utils import threaded
+
+from Classes.StreamEvents import StreamEvents as SE
+from Classes.SubScenes import SubScenes as SS
 
 logger = logging.getLogger(__name__)
 
 
 class AutomationController:
+    class Windows(enum.Enum):
+        PROPRESENTER = enum.auto()
+        OBS = enum.auto()
+        CHROME = enum.auto()
+
     def __init__(self, MasterApp, default_browser="CHROME", debug=False):
         if debug:
             self.__getattribute__ = self.defanged
@@ -22,7 +31,7 @@ class AutomationController:
             self.sett = self.MasterApp.settings
             self.platform_settings = self.sett[f"setup_" +
                                                f"{self.sett.streaming_service}"]
-            self.toggle_sound(self.MasterApp.States.sound_on)
+            self.toggle_sound(SE.MEDIA_VOLUME_UP if self.MasterApp.States.sound_on else SE.MEDIA_VOLUME_DOWN)
             assert os.path.exists(str(self.ahk_files_path / "window_activator.exe")), "missing required file: " \
                                                                                       "window_activator.exe "
             assert os.path.exists(str(self.ahk_files_path / "music_toggle.exe")), "missing required file: " \
@@ -32,44 +41,45 @@ class AutomationController:
         return True
 
     def give_window_focus(self, window_to_focus):
-        if window_to_focus.lower() == "propresenter":
+        if window_to_focus == self.Windows.PROPRESENTER:
             logger.debug("WindowController: Changing active" +
                          " window to ProPresenter")
             subprocess.call([str(self.ahk_files_path / "window_activator.exe"),
                              self.sett.windows.propresenter_re])
             time.sleep(.1)
-        elif window_to_focus.lower() == "obs":
+        elif window_to_focus == self.Windows.OBS:
             logger.debug("WindowController: Changing active window to OBS")
             subprocess.call([str(self.ahk_files_path / "window_activator.exe"),
                              self.sett.windows.obs_re])
             time.sleep(.1)
-        elif window_to_focus.lower() == "chrome":
+        elif window_to_focus == self.Windows.CHROME:
             logger.debug("WindowController: Changing active window to Chrome")
             subprocess.call([str(self.ahk_files_path / "window_activator.exe"),
                              self.sett.windows.chrome_re])
             time.sleep(.1)
 
     @threaded
-    def toggle_sound(self, turn_up=True):
+    def toggle_sound(self, turn_up=SE.MEDIA_VOLUME_UP):
         logger.debug(f"toggle sound with {turn_up}")
-        if turn_up:
+        if turn_up == SE.MEDIA_VOLUME_UP:
             # the second argument (1 or 0) determines whether the volume is going up or down.
             # 1 is up, 0 is down
             subprocess.call([str(self.ahk_files_path / "music_toggle.exe"),
                              '1', f"{self.sett.general.music_fade_time}"])
-        else:
+        elif turn_up == SE.MEDIA_VOLUME_DOWN:
             subprocess.call([str(self.ahk_files_path / "music_toggle.exe"),
                              '0', f"{self.sett.general.music_fade_time}"])
-                
+        else:
+            logger.critical(f"Toggle Sound received a non-flag argument!")
+
     @threaded
     def toggle_media_pause_play_global(self):
         logger.debug("trying to toggle media in dopamine")
         subprocess.call([str(self.ahk_files_path / "pause_play_global.exe")])
         time.sleep(.05)
-        self.give_window_focus("propresenter")
+        self.give_window_focus(self.Windows.PROPRESENTER)
 
-
-    def obs_send(self, scene: str):
+    def obs_send(self, scene):
         """Change the current obs scene
 
         Arguments:
@@ -78,22 +88,22 @@ class AutomationController:
         """
         logger.debug(f"Sending {scene}'s hotkey to obs")
 
-        self.give_window_focus("obs")
+        self.give_window_focus(self.Windows.OBS)
         time.sleep(.4)
 
         hotkey_dict = {
-            "start": self.sett.hotkeys.obs.start_stream,
-            "stop": self.sett.hotkeys.obs.stop_stream,
-            "Camera_None": self.sett.hotkeys.obs.camera_scene_hotkey,
-            "Screen_None": self.sett.hotkeys.obs.screen_scene_hotkey,
-            "camera_scene_augmented": self.sett.hotkeys.obs.camera_scene_augmented,
-            "mute": self.sett.hotkeys.obs.mute_stream,
-            "unmute": self.sett.hotkeys.obs.unmute_stream,
-            "Camera_Top_Right": self.sett.hotkeys.obs.Camera_Top_Right,
-            "Camera_Bottom_Right": self.sett.hotkeys.obs.Camera_Bottom_Right,
-            "Camera_Bottom_Left": self.sett.hotkeys.obs.Camera_Bottom_Left,
-            "Screen_Top_Right": self.sett.hotkeys.obs.Screen_Top_Right,
-            "Screen_Bottom_Right": self.sett.hotkeys.obs.Screen_Bottom_Right,
+            SE.START_STREAM: self.sett["hotkeys"]["obs"]["start_stream"],
+            SE.STOP_STREAM: self.sett["hotkeys"]["obs"]["stop_stream"],
+            SS.Camera.CAMERA_NONE: self.sett["hotkeys"]["obs"]["camera_scene_hotkey"],
+            SS.Camera.CAMERA_TOP_RIGHT: self.sett["hotkeys"]["obs"]["Camera_Top_Right"],
+            SS.Camera.CAMERA_BOTTOM_RIGHT: self.sett["hotkeys"]["obs"]["Camera_Bottom_Right"],
+            SS.Camera.CAMERA_BOTTOM_LEFT: self.sett["hotkeys"]["obs"]["Camera_Bottom_Left"],
+            SS.Screen.SCREEN_NONE: self.sett["hotkeys"]["obs"]["screen_scene_hotkey"],
+            SS.Screen.SCREEN_TOP_RIGHT: self.sett["hotkeys"]["obs"]["Screen_Top_Right"],
+            SS.Screen.SCREEN_BOTTOM_RIGHT: self.sett["hotkeys"]["obs"]["Screen_Bottom_Right"],
+            SS.AUGMENTED: self.sett["hotkeys"]["obs"]["camera_scene_augmented"],
+            SE.OBS_MUTE: self.sett["hotkeys"]["obs"]["mute_stream"],
+            SE.OBS_UNMUTE: self.sett["hotkeys"]["obs"]["unmute_stream"],
         }
 
         hotkey = hotkey_dict.get(scene, "Failure")
@@ -104,15 +114,15 @@ class AutomationController:
 
         logger.debug(f"Sending to obs: '{hotkey}'")
         keyboard.send(hotkey)
-        self.give_window_focus("propresenter")
+        self.give_window_focus(self.Windows.PROPRESENTER)
 
     def propre_send(self, hotkey):
-        self.give_window_focus("propresenter")
+        self.give_window_focus(self.Windows.PROPRESENTER)
 
-        if hotkey.lower() == "next":
-            hotkey = self.sett.hotkeys.general.clicker_forward
-        elif hotkey.lower() == "prev":
-            hotkey = self.sett.hotkeys.general.clicker_backward
+        if hotkey.lower() == SE.NEXT_SLIDE:
+            hotkey = self.sett["hotkeys"]["general"]["clicker_forward"]
+        elif hotkey.lower() == SE.PREV_SLIDE:
+            hotkey = self.sett["hotkeys"]["general"]["clicker_backward"]
 
         logger.debug(f"Sending {hotkey} to ProPresenter")
         keyboard.send(hotkey)
@@ -121,15 +131,15 @@ class AutomationController:
     @threaded
     def go_live(self):
         logger.debug("Going Live")
-        self.give_window_focus("chrome")
+        self.give_window_focus(self.Windows.CHROME)
         time.sleep(1)
         mouse_pos = self.sett["go_live"]
         mouse.move(mouse_pos[0], mouse_pos[1])
         mouse.click()
         time.sleep(.5)
-        self.give_window_focus("propresenter")
+        self.give_window_focus(self.Windows.PROPRESENTER)
 
     @threaded
     def end_stream(self):
-        self.obs_send("stop")
+        self.obs_send(SE.STOP_STREAM)
         logger.debug("stopping the stream")
