@@ -22,8 +22,14 @@ class StreamEvents(enum.Flag):
     TOGGLE_COMPUTER_VOLUME = auto()
     TOGGLE_STREAM_VOLUME = auto()
 
+    # Media buttons
     MEDIA_PAUSE_PLAY = auto()
     MEDIA_VOLUME_DOWN = auto()
     MEDIA_VOLUME_UP = auto()
+
+    OBS_MUTE = auto()
+    OBS_UNMUTE = auto()
+    START_STREAM = auto()
+    STOP_STREAM = auto()
 
     UPDATE_REQUEST = auto()
