@@ -9,7 +9,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG,
                     format='[%(asctime)s][%(levelname)s] %(message)s', datefmt='%H:%M:%S')
 # datefmt='%m/%d/%Y %H:%M:%S'
-logger = logging.getLogger("SocketHandeler")
+logger = logging.getLogger("SocketHandler")
 
 
 class SocketHandler:
@@ -57,7 +57,7 @@ class SocketHandler:
 
             recv_data = sock.recv(1)
             recv_data = sock.recv(int.from_bytes(recv_data, "big"))
-            logger.debug(f"Recieve from {data.addr}: {recv_data}")
+            logger.info(f"Received from {data.addr}: {recv_data}")
 
             if recv_data:
                 self._handle_incoming(sock, recv_data)
@@ -129,7 +129,7 @@ class SocketHandler:
     def send_all(self, message: str):
         if len(self.connected_sockets) == 0:
             logger.warning("TRY TO SEND MESSAGE TO NOTHING! regards, SocketHandler.send_all()")
-        logger.debug("trying to send: " + message)
+        logger.info("Sending to all sockets: " + message)
         for sock in self.connected_sockets:
             try:
                 sock.sendall(message.encode("utf-8") + b"\n")
@@ -140,7 +140,7 @@ class SocketHandler:
                 self._close_socket(sock)
 
     def register_message_handler(self, function):
-        """register function to be called when a message is recieve from the socket
+        """register function to be called when a message is received from the socket
 
         Args:
             function ([function(json.JSON)]): [description]
