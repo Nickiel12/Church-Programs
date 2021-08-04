@@ -2,7 +2,7 @@ import enum
 from enum import auto
 
 
-class SubScenes(enum.IntEnum):
+class SubScenes:
 
     class Camera(enum.IntEnum):
         CAMERA_NONE = auto()

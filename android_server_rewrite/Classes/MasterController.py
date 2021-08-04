@@ -43,7 +43,6 @@ class MasterController:
                 logger.warning("\nIn Debugging mode!!! Certain behavior disabled!!!\n")
 
         self.socket_handler = SocketHandler(socket.gethostbyname(socket.gethostname()), 5000)
-        self.socket_handler.register_message_handler(partial(handle_message, masterApp=self))
 
         self.update_settings()
         logger.debug(f"{self.settings.general}")
@@ -80,8 +79,10 @@ class MasterController:
                                      f".*{program}.*", program_path])
             self.start_hotkeys()
         self.auto_contro = AutomationController(self, debug=self.in_debug_mode)
-        self.Timer = Timer(self)
+        self.Timer = Timer(self.States.timer_length)
         self.event_handler = EventHandler(self)
+        self.socket_handler.register_message_handler(partial(handle_message,
+                                                             message_handler=self.event_handler.handle_state_change))
 
     def stop(self):
         self.socket_handler.close()

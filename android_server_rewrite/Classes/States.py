@@ -29,6 +29,7 @@ class States:
 
     def __setattr__(self, name, value):
         returnable = super().__setattr__(name, value)
-        if self.callback:
-            self.callback(name, value)
+        if hasattr(self, "callback"):
+            if self.callback:
+                self.callback(name, value)
         return returnable
