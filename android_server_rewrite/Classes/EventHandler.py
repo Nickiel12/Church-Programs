@@ -21,9 +21,8 @@ class EventHandler:
         logger.debug(f"event_name {event_name} caught")
 
         # if event is part of SubScenes enum
-        if isinstance(event_name, SS):
+        if SS.is_member(event_name):
             self.scene_event(event_name)
-            return
         else:
             {
                 SE.CAMERA_SCENE: self.MasterApp.set_scene_camera,
@@ -50,9 +49,12 @@ class EventHandler:
         if yes:
             if not (self.states.current_scene == SE.AUGMENTED_SCENE):
                 self.MasterApp.set_scene_augmented()
+                self.states.augmented = True
         else:
             self.states.change_with_clicker = True
             self.MasterApp.set_scene_camera()
+            self.states.augmented = False
+        self.MasterApp.check_auto()
 
     def auto_change_to_camera(self, data):
         self.states.auto_change_to_camera = data
@@ -68,6 +70,8 @@ class EventHandler:
                 # TODO find tune this timing, might get away with no sleep time
                 time.sleep(.2)
                 self.MasterApp.set_scene_screen()
+        else:
+            self.MasterApp.check_auto()
 
     def toggle_muted(self, turn_volume_down):
         if not turn_volume_down:
@@ -99,15 +103,16 @@ class EventHandler:
             self.states.stream_is_muted = True
 
     def media_pause_play(self):
-        self.MasterApp.auto_contro.toggle_media_pause_play_global()
+        if not self.MasterApp.in_debug_mode:
+            self.MasterApp.auto_contro.toggle_media_pause_play_global()
 
     def scene_event(self, event_data):
-        if isinstance(event_data, SS.Camera):
+        if SS.Camera.is_member(event_data):
             self.states.current_camera_sub_scene = event_data
             if self.states.current_scene == SE.CAMERA_SCENE:
                 self.MasterApp.set_scene_camera(change_sub_scene=True)
 
-        elif isinstance(event_data, SS.Screen):
+        elif SS.Screen.is_member(event_data):
             self.states.current_screen_sub_scene = event_data
             if self.states.current_scene == SE.SCREEN_SCENE:
                 self.MasterApp.set_scene_screen(change_sub_scene=True)
