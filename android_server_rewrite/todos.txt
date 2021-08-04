@@ -10,8 +10,8 @@ General TODOs
 [ ] double check every logger.debug statement if should be info instead
 [*] StateChangeHandler self.MasterApp.States to self.states with a fine couthed tome
 [*] double check socket handler for readability, but most importantly logger levels
-[ ] replace all dotDict uses, it's a little dumb
-[ ] make sure clicker send in obs takes flags
+[*] replace all dotDict uses, it's a little dumb
+[*] make sure clicker send in obs takes flags
 [ ] check if assignment in MasterController set_XXXX_scene current_scene assignments are necessary, and if it should change
 [ ] EventHandler augmented is messed up, streamline it
 [ ] remove MasterController.handle_state_change, have all calls processed directly by EventHandler
