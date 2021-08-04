@@ -15,7 +15,7 @@ from Classes.Exceptions import PopupError, PrematureExit, PopupNotExist
 from Classes.States import States
 from Classes.Timer import Timer
 from Classes.Popups import WarningPopup, Question
-from Classes.StateChangeHandeler import EventHandler
+from Classes.EventHandler import EventHandler
 from utils import DotDict, threaded, Setup, make_functions
 from Classes.AutomationController import AutomationController
 from Classes.SocketHandler import SocketHandler
@@ -51,7 +51,7 @@ class MasterController:
                              stream_title="",
                              stream_is_muted=False,
                              change_with_clicker=True,
-                             augmented=True,
+                             augmented=False,
                              auto_change_to_camera=True,
                              current_scene="camera",
                              current_camera_sub_scene="Camera_None",
@@ -171,8 +171,8 @@ class MasterController:
         if not self.in_debug_mode:
             self.auto_contro.obs_send(self.States.current_screen_sub_scene)
 
-        # I know this could be a redundant call, but it is one extra update
-        # sent across the server
+        # I know this could be a redundant call, but it is only one extra update
+        # sent across the server, but I don't think it is redundant
         self.States.current_scene = SE.SCREEN_SCENE
 
         self.check_auto()

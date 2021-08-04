@@ -47,7 +47,6 @@ class EventHandler:
         self.states.change_with_clicker = value
 
     def augmented(self, yes):
-        self.states = yes
         if yes:
             if not (self.states.current_scene == SE.AUGMENTED_SCENE):
                 self.MasterApp.set_scene_augmented()
@@ -60,7 +59,9 @@ class EventHandler:
         self.MasterApp.check_auto()
 
     def clicker(self, direction):
-        self.MasterApp.auto_contro.propre_send(direction)
+        if not self.MasterApp.in_debug_mode:
+            self.MasterApp.auto_contro.propre_send(direction)
+
         # TODO Check if this can be optimized because this is part of the clicker lag
         if not self.states.current_scene == SE.SCREEN_SCENE:
             if self.states.change_with_clicker:

@@ -82,6 +82,7 @@ class Timer:
         while not self._timer_kill.is_set():
             try:
                 if self._timer_running:
+                    logger.debug("check")
                     end_time = self._timer_start_time + self._timer_length
                     time_left = end_time - time.time()
 
