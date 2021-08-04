@@ -53,11 +53,11 @@ class MasterController:
                              change_with_clicker=True,
                              augmented=False,
                              auto_change_to_camera=True,
-                             current_scene="camera",
-                             current_camera_sub_scene="Camera_None",
-                             current_screen_sub_scene="Screen_None",
+                             current_scene=SE.CAMERA_SCENE,
+                             current_camera_sub_scene=SS.Camera.CAMERA_NONE,
+                             current_screen_sub_scene=SS.Screen.SCREEN_NONE,
                              timer_text="0.0",
-                             timer_length=15,
+                             timer_length=self.settings["general"]["default_timer_length"],
                              timer_not_running=False,
                              timer_kill=threading.Event(),
                              sound_on=self.settings.general["music_default_state-on"],
@@ -77,7 +77,7 @@ class MasterController:
                     program_path = self.settings.startup[str(program) + "_path"]
                     subprocess.call([str(ahk_files_path / "program_opener.exe"),
                                      f".*{program}.*", program_path])
-            self.start_hotkeys()
+            self.auto_contro.start_hotkeys()
         self.auto_contro = AutomationController(self, debug=self.in_debug_mode)
         self.Timer = Timer(self.States.timer_length)
         self.event_handler = EventHandler(self)
@@ -200,37 +200,8 @@ class MasterController:
                 logger.info(f"check_auto restarting timer")
                 self.Timer.reset_timer()
 
-    # TODO move this to auto controller
-    def start_hotkeys(self):
-        obs_settings = self.settings.hotkeys.obs
-        general_settings = self.settings.hotkeys.general
-        """ 
-        # Camera Hotkey
-        keyboard.hook_key(obs_settings.camera_scene_hotkey[0],
-                          lambda x: self.handle_state_change("camera"), suppress=True)
-        logger.info("binding hotkey " +
-                    f"{obs_settings.camera_scene_hotkey[0]}")
-
-        # screen Scene Hotkey
-        keyboard.hook_key(obs_settings.screen_scene_hotkey[0],
-                          lambda x: self.handle_state_change("screen"), suppress=True)
-        logger.info("binding hotkey" +
-                    f" {obs_settings.screen_scene_hotkey[0]}")
-        """
-        # Next Button for the clicker
-        keyboard.on_release_key(general_settings.clicker_forward,
-                                lambda x: self.handle_state_change(SE.NEXT_SLIDE),
-                                suppress=True)
-        logger.info(f"binding hotkey {general_settings.clicker_forward}")
-        # Previous Button for the clicker
-        keyboard.on_release_key(general_settings.clicker_backward,
-                                lambda x: self.handle_state_change(SE.PREV_SLIDE),
-                                suppress=True)
-        logger.info("binding hotkey " +
-                    f"{general_settings.clicker_backward}")
-
-    def handle_state_change(self, *args):
-        self.event_handler.handle_state_change(*args)
+    def handle_state_change(self, *args, **kwargs):
+        self.event_handler.handle_state_change(*args, **kwargs)
 
     def setup_stream(self):
         try:

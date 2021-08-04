@@ -128,6 +128,34 @@ class AutomationController:
         keyboard.send(hotkey)
         time.sleep(.2)
 
+    def start_hotkeys(self):
+        obs_settings = self.sett["hotkeys"]["obs"]
+        general_settings = self.sett["hotkeys"]["general"]
+        """ 
+        # Camera Hotkey
+        keyboard.hook_key(obs_settings.camera_scene_hotkey[0],
+                          lambda x: self.handle_state_change("camera"), suppress=True)
+        logger.info("binding hotkey " +
+                    f"{obs_settings.camera_scene_hotkey[0]}")
+
+        # screen Scene Hotkey
+        keyboard.hook_key(obs_settings.screen_scene_hotkey[0],
+                          lambda x: self.handle_state_change("screen"), suppress=True)
+        logger.info("binding hotkey" +
+                    f" {obs_settings.screen_scene_hotkey[0]}")
+        """
+        # Next Button for the clicker
+        keyboard.on_release_key(general_settings["clicker_forward"],
+                                lambda x: self.MasterApp.handle_state_change(SE.NEXT_SLIDE),
+                                suppress=True)
+        logger.info(f"binding hotkey {general_settings['clicker_forward']}")
+        # Previous Button for the clicker
+        keyboard.on_release_key(general_settings["clicker_backward"],
+                                lambda x: self.MasterApp.handle_state_change(SE.PREV_SLIDE),
+                                suppress=True)
+        logger.info("binding hotkey " +
+                    f"{general_settings['clicker_backward']}")
+
     @threaded
     def go_live(self):
         logger.debug("Going Live")
