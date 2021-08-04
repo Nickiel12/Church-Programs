@@ -80,6 +80,7 @@ class MasterController:
             self.auto_contro.start_hotkeys()
         self.auto_contro = AutomationController(self, debug=self.in_debug_mode)
         self.Timer = Timer(self.States.timer_length)
+        self.register_timer_events()
         self.event_handler = EventHandler(self)
         self.socket_handler.register_message_handler(partial(handle_message,
                                                              message_handler=self.event_handler.handle_state_change))
@@ -192,7 +193,7 @@ class MasterController:
     def check_auto(self, *args):
         logger.info(f"check_auto called with automatic enable = {self.States.change_with_clicker} and" +
                     f" auto_change_to_camera = {self.States.auto_change_to_camera}")
-        if not self.States.auto_change_to_camera:
+        if not self.States.auto_change_to_camera or self.States.current_scene == SS.AUGMENTED:
             logger.info(f"pausing timer")
             self.Timer.stop_timer()
         else:
@@ -202,6 +203,21 @@ class MasterController:
 
     def handle_state_change(self, *args, **kwargs):
         self.event_handler.handle_state_change(*args, **kwargs)
+
+    def register_timer_events(self):
+
+        def on_timer_text_update(text: str):
+            self.States.timer_text = text
+        self.Timer.add_timer_callback(Timer.TimerEvents.TIMER_TEXT_UPDATE, on_timer_text_update)
+
+        def on_timer_run_out():
+            self.States.timer_not_running = True
+            self.event_handler.handle_state_change(SE.CAMERA_SCENE)
+        self.Timer.add_timer_callback(Timer.TimerEvents.TIMER_RUN_OUT, on_timer_run_out)
+
+        def on_timer_start():
+            self.States.timer_not_running = False
+        self.Timer.add_timer_callback(Timer.TimerEvents.TIMER_START, on_timer_start)
 
     def setup_stream(self):
         try:

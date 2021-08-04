@@ -22,6 +22,7 @@ class Timer:
     _timer_running = False
     _timer_start_time = None
     _timer_length = 0
+    _timer_interval = 0.1
 
     def __init__(self, default_length=15.0):
         self._timer_length = default_length
@@ -53,7 +54,7 @@ class Timer:
     def remove_timer_callback(self, callback, timer_event: TimerEvents):
         self.timer_callbacks[timer_event].remove(callback)
 
-    def add_timer_callback(self, callback, timer_event: TimerEvents):
+    def add_timer_callback(self, timer_event: TimerEvents, callback):
         """
         Adds a callback to be called when TimerEvents event occurs
         """
@@ -82,7 +83,6 @@ class Timer:
         while not self._timer_kill.is_set():
             try:
                 if self._timer_running:
-                    logger.debug("check")
                     end_time = self._timer_start_time + self._timer_length
                     time_left = end_time - time.time()
 
@@ -91,6 +91,7 @@ class Timer:
 
                     if not (time_left >= 0):
                         self._event(self.TimerEvents.TIMER_RUN_OUT)
+                    time.sleep(self._timer_interval)
                 else:
                     time.sleep(.3)
             except KeyboardInterrupt:
