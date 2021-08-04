@@ -146,12 +146,12 @@ class AutomationController:
         """
         # Next Button for the clicker
         keyboard.on_release_key(general_settings["clicker_forward"],
-                                lambda x: self.MasterApp.handle_state_change(SE.NEXT_SLIDE),
+                                lambda x: self.MasterApp.event_handler.handle_state_change(SE.NEXT_SLIDE),
                                 suppress=True)
         logger.info(f"binding hotkey {general_settings['clicker_forward']}")
         # Previous Button for the clicker
         keyboard.on_release_key(general_settings["clicker_backward"],
-                                lambda x: self.MasterApp.handle_state_change(SE.PREV_SLIDE),
+                                lambda x: self.MasterApp.event_handler.handle_state_change(SE.PREV_SLIDE),
                                 suppress=True)
         logger.info("binding hotkey " +
                     f"{general_settings['clicker_backward']}")

@@ -199,9 +199,6 @@ class MasterController:
                 logger.info(f"check_auto restarting timer")
                 self.Timer.reset_timer()
 
-    def handle_state_change(self, *args, **kwargs):
-        self.event_handler.handle_state_change(*args, **kwargs)
-
     def register_timer_events(self):
 
         def on_timer_text_update(text: str):
