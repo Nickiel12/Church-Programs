@@ -16,7 +16,7 @@ from Classes.States import States
 from Classes.Timer import Timer
 from Classes.Popups import WarningPopup, Question
 from Classes.EventHandler import EventHandler
-from utils import DotDict, threaded, Setup, make_functions
+from utils import threaded, Setup, make_functions
 from Classes.AutomationController import AutomationController
 from Classes.SocketHandler import SocketHandler
 from Classes.MessageHandler import handle_message
@@ -45,7 +45,6 @@ class MasterController:
         self.socket_handler = SocketHandler(socket.gethostbyname(socket.gethostname()), 5000)
 
         self.update_settings()
-        logger.debug(f"{self.settings.general}")
         self.States = States(stream_running=False,
                              stream_is_setup=False,
                              stream_title="",
@@ -60,7 +59,7 @@ class MasterController:
                              timer_length=self.settings["general"]["default_timer_length"],
                              timer_not_running=False,
                              timer_kill=threading.Event(),
-                             sound_on=self.settings.general["music_default_state-on"],
+                             sound_on=self.settings['general']["music_default_state-on"],
                              callback=self.on_update,
                              )
         atexit.register(self.States.timer_kill.set)
@@ -70,11 +69,11 @@ class MasterController:
 
         if not self.in_debug_mode:
             # Dark grey magic. Phoosh! Be amazed!
-            for name, value in self.settings.startup.items():
+            for name, value in self.settings['startup'].items():
                 if name[:4] == "open" and value:
                     program = name[5:]
                     logger.debug(f"Setup program trying to open is {program}")
-                    program_path = self.settings.startup[str(program) + "_path"]
+                    program_path = self.settings['startup'][str(program) + "_path"]
                     subprocess.call([str(ahk_files_path / "program_opener.exe"),
                                      f".*{program}.*", program_path])
             self.auto_contro.start_hotkeys()
@@ -97,18 +96,17 @@ class MasterController:
             with open(str(self.OPTIONS_FILE_PATH)) as f:
                 json_file = json.load(f)
 
-            dot_dict = DotDict(json_file)
+            settings_dictionary = json_file
 
-            path = self.OPTIONS_FILE_PATH.parent / "options" / \
-                   str(dot_dict.streaming_service + ".json")
+            path = self.OPTIONS_FILE_PATH.parent / "options" / str(settings_dictionary['streaming_service'] + ".json")
 
             with open(path) as f:
                 json_file_2 = json.load(f)
 
-            dot_dict["setup_" +
-                     dot_dict.streaming_service] = DotDict(json_file_2)
+            settings_dictionary["setup_" +
+                                settings_dictionary['streaming_service']] = json_file_2
 
-            self.settings = dot_dict
+            self.settings = settings_dictionary
 
             logger.info("Successfully updated settings from file")
         except json.JSONDecodeError as e:
@@ -208,15 +206,18 @@ class MasterController:
 
         def on_timer_text_update(text: str):
             self.States.timer_text = text
+
         self.Timer.add_timer_callback(Timer.TimerEvents.TIMER_TEXT_UPDATE, on_timer_text_update)
 
         def on_timer_run_out():
             self.States.timer_not_running = True
             self.event_handler.handle_state_change(SE.CAMERA_SCENE)
+
         self.Timer.add_timer_callback(Timer.TimerEvents.TIMER_RUN_OUT, on_timer_run_out)
 
         def on_timer_start():
             self.States.timer_not_running = False
+
         self.Timer.add_timer_callback(Timer.TimerEvents.TIMER_START, on_timer_start)
 
     def setup_stream(self):

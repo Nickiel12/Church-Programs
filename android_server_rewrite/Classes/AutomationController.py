@@ -30,7 +30,7 @@ class AutomationController:
             self.MasterApp = MasterApp
             self.sett = self.MasterApp.settings
             self.platform_settings = self.sett[f"setup_" +
-                                               f"{self.sett.streaming_service}"]
+                                               f"{self.sett['streaming_service']}"]
             self.toggle_sound(SE.MEDIA_VOLUME_UP if self.MasterApp.States.sound_on else SE.MEDIA_VOLUME_DOWN)
             assert os.path.exists(str(self.ahk_files_path / "window_activator.exe")), "missing required file: " \
                                                                                       "window_activator.exe "
@@ -45,17 +45,17 @@ class AutomationController:
             logger.debug("WindowController: Changing active" +
                          " window to ProPresenter")
             subprocess.call([str(self.ahk_files_path / "window_activator.exe"),
-                             self.sett.windows.propresenter_re])
+                             self.sett['windows']['propresenter_re']])
             time.sleep(.1)
         elif window_to_focus == self.Windows.OBS:
             logger.debug("WindowController: Changing active window to OBS")
             subprocess.call([str(self.ahk_files_path / "window_activator.exe"),
-                             self.sett.windows.obs_re])
+                             self.sett['windows']['obs_re']])
             time.sleep(.1)
         elif window_to_focus == self.Windows.CHROME:
             logger.debug("WindowController: Changing active window to Chrome")
             subprocess.call([str(self.ahk_files_path / "window_activator.exe"),
-                             self.sett.windows.chrome_re])
+                             self.sett['windows']['chrome_re']])
             time.sleep(.1)
 
     @threaded
@@ -65,10 +65,10 @@ class AutomationController:
             # the second argument (1 or 0) determines whether the volume is going up or down.
             # 1 is up, 0 is down
             subprocess.call([str(self.ahk_files_path / "music_toggle.exe"),
-                             '1', f"{self.sett.general.music_fade_time}"])
+                             '1', f"{self.sett['general']['music_fade_time']}"])
         elif turn_up == SE.MEDIA_VOLUME_DOWN:
             subprocess.call([str(self.ahk_files_path / "music_toggle.exe"),
-                             '0', f"{self.sett.general.music_fade_time}"])
+                             '0', f"{self.sett['general']['music_fade_time']}"])
         else:
             logger.critical(f"Toggle Sound received a non-flag argument!")
 

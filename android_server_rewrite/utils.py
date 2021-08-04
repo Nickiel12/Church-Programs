@@ -1,33 +1,31 @@
-import atexit
-import json
-import math
-import pathlib
 import threading
 import keyboard
 import mouse
 from functools import partial, wraps
-import os
 import time
 import webbrowser
 import logging
 
-logger = logging.getLogger(__name__)
 
 from Classes.Exceptions import PopupNotExist
 from Classes.Popups import WarningPopup, Question
+from Classes.StreamEvents import StreamEvents as SE
+
+logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG,
-        format='%(asctime)s - %(levelname)s - %(message)s')
+                        format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def threaded(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        #logger.debug(f"starting thread with target {func}")
+        # logger.debug(f"starting thread with target {func}")
         thread = threading.Thread(target=func, args=args, kwargs=kwargs)
         thread.start()
         return thread
+
     return wrapper
 
 
@@ -37,6 +35,7 @@ def with_popup(func):
         if self.popup is False:
             raise PopupNotExist
         func(self, *args, **kwargs)
+
     return wrapper
 
 
@@ -47,7 +46,7 @@ class Setup:
         self.stream_title = MasterApp.States.stream_title
         self.settings = MasterApp.settings
         self.platform_settings = self.settings[f"setup_" +
-                                    f"{self.settings.streaming_service}"]
+                                               f"{self.settings['streaming_service']}"]
 
     def del_popup(self):
         self.popup = False
@@ -80,8 +79,9 @@ class Setup:
         self.popup.set_task("Entering Text", timer_time)
         keyboard.write(text)
 
+
 # more black magic
-def make_functions(setup_inst):
+def make_functions(setup_inst: Setup):
     output = []
     platform_settings = setup_inst.platform_settings
     length = len(platform_settings)
@@ -89,34 +89,18 @@ def make_functions(setup_inst):
         current_type = platform_settings[str(i)]["type"]
         if current_type == "Open URL":
             output.append([partial(setup_inst.open_url,
-                          platform_settings[str(i)]["value"], .2), .2])
+                                   platform_settings[str(i)]["value"], .2), .2])
         elif current_type == "Wait":
-            output.append([partial(setup_inst.sleep, 
-                           platform_settings[str(i)]["value"]), platform_settings[str(i)]["value"]])
+            output.append([partial(setup_inst.sleep,
+                                   platform_settings[str(i)]["value"]), platform_settings[str(i)]["value"]])
         elif current_type == "Mouse Movement":
             output.append([partial(setup_inst.mouse_click,
-                           platform_settings[str(i)]["value"], .5), .5])
+                                   platform_settings[str(i)]["value"], .5), .5])
         elif current_type == "Text Field":
             output.append([partial(setup_inst.write,
-                           setup_inst.stream_title, 1), 1])
+                                   setup_inst.stream_title, 1), 1])
         elif current_type == "Go Live":
-            setup_inst.auto_contro.settings["go_live"]= platform_settings[str(i)]["value"]
+            setup_inst.auto_contro.settings["go_live"] = platform_settings[str(i)]["value"]
     output.append([partial(setup_inst.auto_contro.obs_send,
-        "start"), 1])
+                           SE.START_STREAM), 1])
     return output
-
-
-class DotDict(dict):
-    """dot.notation access to dictionary attributes"""
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
-
-    def __init__(self, iterable):
-        super().__init__()
-        if isinstance(iterable, dict):
-            for k, v in iterable.items():
-                self[k] = v
-
-    def __getattr__(*args):
-        val = dict.get(*args)
-        return DotDict(val) if type(val) is dict else val
