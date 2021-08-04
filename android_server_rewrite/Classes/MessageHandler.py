@@ -18,7 +18,7 @@ def handle_message(socket_json: dict, message_handler=None):
     try:
         message_type = socket_json["type"]
 
-        if message_type == "timer_length":
+        if message_type == "Timer_Length":
             message_handler(SE.TIMER_CHANGE_LENGTH, socket_json["data"])
 
         if message_type == "button":
@@ -42,33 +42,33 @@ def handle_message(socket_json: dict, message_handler=None):
                     message_handler(SE.AUGMENTED_ON)
                 else:
                     message_handler(SE.AUGMENTED_OFF)
-            elif button == "ChangeWithClicker":
+            elif button == "Change_With_Clicker":
                 if socket_json["data"]:
                     message_handler(SE.CHANGE_WITH_CLICKER_ON)
                 else:
                     message_handler(SE.CHANGE_WITH_CLICKER_OFF)
 
-            elif button == "Computer_Sound":
+            elif button == "Toggle_Computer_Volume":
                 message_handler(SE.TOGGLE_COMPUTER_VOLUME, event_data=socket_json["data"])
-            elif button == "Stream_Sound":
+            elif button == "Toggle_Stream_Volume":
                 message_handler(SE.TOGGLE_STREAM_VOLUME, event_data=socket_json["data"])
 
-            elif button == "MediaPausePlay":
+            elif button == "Media_Pause_Play":
                 message_handler(SE.MEDIA_PAUSE_PLAY)
 
-            elif button == "CameraNoneButton":
+            elif button == "Camera_None":
                 message_handler(SS.Camera.CAMERA_NONE)
-            elif button == "CameraTopRightButton":
+            elif button == "Camera_Top_Right":
                 message_handler(SS.Camera.CAMERA_TOP_RIGHT)
-            elif button == "CameraBottomRightButton":
+            elif button == "Camera_Bottom_Right":
                 message_handler(SS.Camera.CAMERA_BOTTOM_RIGHT)
-            elif button == "CameraBottomLeftButton":
+            elif button == "Camera_Bottom_Left":
                 message_handler(SS.Camera.CAMERA_BOTTOM_LEFT)
-            elif button == "ScreenNoneButton":
+            elif button == "Screen_None":
                 message_handler(SS.Screen.SCREEN_NONE)
-            elif button == "ScreenTopRightButton":
+            elif button == "Screen_Top_Right":
                 message_handler(SS.Screen.SCREEN_TOP_RIGHT)
-            elif button == "ScreenBottomRightButton":
+            elif button == "Screen_Bottom_Right":
                 message_handler(SS.Screen.SCREEN_BOTTOM_RIGHT)
 
             # sitting here, doing nothing, neglected

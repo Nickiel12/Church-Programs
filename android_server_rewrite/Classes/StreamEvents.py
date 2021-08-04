@@ -1,35 +1,33 @@
-import enum
 from enum import auto
 
 
-class StreamEvents(enum.Flag):
+class StreamEvents:
 
-    CAMERA_SCENE = auto()
-    SCREEN_SCENE = auto()
-    AUGMENTED_SCENE = auto()
-    SPECIAL_SCENE = auto()
-    AUGMENTED_ON = auto()
-    AUGMENTED_OFF = auto()
-    AUTO_CHANGE_TO_CAMERA = auto()
+    CAMERA_SCENE = "Scene_Camera"
+    SCREEN_SCENE = "Scene_Screen"
+    AUGMENTED_SCENE = "Augmented"
+    AUGMENTED_ON = "Augmented_On"
+    AUGMENTED_OFF = "Augmented_Off"
+    AUTO_CHANGE_TO_CAMERA = "Auto_Change_To_Camera"
 
-    TIMER_RUNNING = auto()
-    TIMER_CHANGE_LENGTH = auto()
-    CHANGE_WITH_CLICKER_ON = auto()
-    CHANGE_WITH_CLICKER_OFF = auto()
+    TIMER_RUNNING = "Timer_Pause"
+    TIMER_CHANGE_LENGTH = "Timer_Length"
+    CHANGE_WITH_CLICKER_ON = "Change_With_Clicker_On"
+    CHANGE_WITH_CLICKER_OFF = "Change_With_Clicker_Off"
 
-    PREV_SLIDE = auto()
-    NEXT_SLIDE = auto()
-    TOGGLE_COMPUTER_VOLUME = auto()
-    TOGGLE_STREAM_VOLUME = auto()
+    PREV_SLIDE = "Prev_Slide"
+    NEXT_SLIDE = "Next_Slide"
+    TOGGLE_COMPUTER_VOLUME = "Toggle_Computer_Volume"
+    TOGGLE_STREAM_VOLUME = "Toggle_Stream_Volume"
 
     # Media buttons
-    MEDIA_PAUSE_PLAY = auto()
-    MEDIA_VOLUME_DOWN = auto()
-    MEDIA_VOLUME_UP = auto()
+    MEDIA_PAUSE_PLAY = "Media_Pause_Play"
+    MEDIA_VOLUME_DOWN = "Media_Volume_Down"
+    MEDIA_VOLUME_UP = "Media_Volume_Up"
 
-    OBS_MUTE = auto()
-    OBS_UNMUTE = auto()
-    START_STREAM = auto()
-    STOP_STREAM = auto()
+    OBS_MUTE = "OBS_Mute"
+    OBS_UNMUTE = "OBS_Unmute"
+    START_STREAM = "Start_Stream"
+    STOP_STREAM = "Stop_Stream"
 
-    UPDATE_REQUEST = auto()
+    UPDATE_REQUEST = "Update_Request"
