@@ -119,9 +119,9 @@ class AutomationController:
     def propre_send(self, hotkey):
         self.give_window_focus(self.Windows.PROPRESENTER)
 
-        if hotkey.lower() == SE.NEXT_SLIDE:
+        if hotkey == SE.NEXT_SLIDE:
             hotkey = self.sett["hotkeys"]["general"]["clicker_forward"]
-        elif hotkey.lower() == SE.PREV_SLIDE:
+        elif hotkey == SE.PREV_SLIDE:
             hotkey = self.sett["hotkeys"]["general"]["clicker_backward"]
 
         logger.debug(f"Sending {hotkey} to ProPresenter")

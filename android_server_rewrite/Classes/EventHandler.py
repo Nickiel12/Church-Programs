@@ -77,12 +77,12 @@ class EventHandler:
         if not turn_volume_down:
             # turn the volume UP!
             if not self.MasterApp.in_debug_mode:
-                self.MasterApp.auto_contro.toggle_sound(True)
+                self.MasterApp.auto_contro.toggle_sound(SE.MEDIA_VOLUME_UP)
             else:
                 logger.debug("Pretend I am turning up the computer volume!")
         else:
             if not self.MasterApp.in_debug_mode:
-                self.MasterApp.auto_contro.toggle_sound(False)
+                self.MasterApp.auto_contro.toggle_sound(SE.MEDIA_VOLUME_DOWN)
             else:
                 logger.debug("Pretend I am turn the computer volume down!")
         # set like this because turn_volume_down is the opposite of sound on
@@ -91,13 +91,13 @@ class EventHandler:
     def toggle_stream_is_muted(self, mute_stream):
         if not mute_stream:
             if not self.MasterApp.in_debug_mode:
-                self.MasterApp.auto_contro.obs_send(SE.MEDIA_VOLUME_UP)
+                self.MasterApp.auto_contro.obs_send(SE.OBS_UNMUTE)
             else:
                 logger.debug("Pretend I am turning the stream sound on!")
             self.states.stream_is_muted = False
         else:
             if not self.MasterApp.in_debug_mode:
-                self.MasterApp.auto_contro.obs_send(SE.MEDIA_VOLUME_DOWN)
+                self.MasterApp.auto_contro.obs_send(SE.OBS_MUTE)
             else:
                 logger.debug("Pretend I am muting the stream sound")
             self.states.stream_is_muted = True

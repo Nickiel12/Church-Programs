@@ -4,8 +4,9 @@ from Classes.MasterController import MasterController
 
 import logging
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='[%(asctime)s][%(levelname)s] %(message)s', datefmt='%H:%M:%S')
+logging.basicConfig(level=logging.INFO,
+                    format='[%(asctime)s][%(levelname)s] %(message)s', datefmt='%H:%M:%S',
+                    filename="log.txt")
 # datefmt='%m/%d/%Y %H:%M:%S'
 logger = logging.getLogger("Main")
 

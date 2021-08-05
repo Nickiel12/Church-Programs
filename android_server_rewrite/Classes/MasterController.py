@@ -183,7 +183,7 @@ class MasterController:
             self.check_auto()
             self.States.current_scene = SS.AUGMENTED
             if not self.in_debug_mode:
-                self.auto_contro.obs_send("camera_scene_augmented")
+                self.auto_contro.obs_send(SS.AUGMENTED)
 
     # This function is meant to be sporadically called by other updates
     # to ensure that the timer is behaving correctly

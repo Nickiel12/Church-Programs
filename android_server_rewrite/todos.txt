@@ -3,6 +3,7 @@ Android Studio
 [ ] Implement permissions lifecycle for the wifi and location access (android studio)
 
 Need TODOs
+[ ] change the logger.info to logger.debug because debug is lower than info
 
 General TODOs
 [?] check if check_auto can be removed from master controller (line 60 StateChangeHandler, line 82 && 129(?) Automation Controller)
