@@ -67,6 +67,7 @@ class MasterController:
         ahk_files_path = pathlib.Path(".").parent / "ahk_scripts"
         assert ahk_files_path.exists(), f"There is an error! expected {str(ahk_files_path)} does not exist!"
 
+        self.auto_contro = AutomationController(self, debug=self.in_debug_mode)
         if not self.in_debug_mode:
             # Dark grey magic. Phoosh! Be amazed!
             for name, value in self.settings['startup'].items():
@@ -77,7 +78,6 @@ class MasterController:
                     subprocess.call([str(ahk_files_path / "program_opener.exe"),
                                      f".*{program}.*", program_path])
             self.auto_contro.start_hotkeys()
-        self.auto_contro = AutomationController(self, debug=self.in_debug_mode)
         self.Timer = Timer(self.States.timer_length)
         self.register_timer_events()
         self.event_handler = EventHandler(self)
