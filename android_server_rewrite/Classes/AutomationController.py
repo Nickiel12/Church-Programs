@@ -13,7 +13,7 @@ from utils import threaded
 from Classes.StreamEvents import StreamEvents as SE
 from Classes.SubScenes import SubScenes as SS
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Main." + __name__)
 
 
 class AutomationController:

@@ -3,9 +3,7 @@ from Classes.SubScenes import SubScenes as SS
 
 import logging
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='[%(asctime)s][%(levelname)s] %(message)s', datefmt='%H:%M:%S')
-logger = logging.getLogger("MessageHandler")
+logger = logging.getLogger(__name__)
 
 
 # the biggest issue with this function is the fact that all socket messages, are strings

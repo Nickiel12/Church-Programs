@@ -6,7 +6,7 @@ from threading import Event
 
 from utils import threaded
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Main." + __name__)
 
 
 class Timer:
@@ -28,7 +28,7 @@ class Timer:
         self._timer_length = default_length
 
         self._timer_kill = Event()
-        atexit.register(self._kill_timer)
+        atexit.register(self.kill_timer)
 
         self.timer_callbacks = {
             self.TimerEvents.TIMER_START: [],
@@ -48,7 +48,7 @@ class Timer:
             for callback in self.timer_callbacks[timer_event]:
                 callback()
 
-    def _kill_timer(self, *args):
+    def kill_timer(self):
         self._timer_kill.set()
 
     def remove_timer_callback(self, callback, timer_event: TimerEvents):

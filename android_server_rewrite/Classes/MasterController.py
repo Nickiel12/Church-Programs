@@ -25,9 +25,7 @@ from Classes.SubScenes import SubScenes as SS
 
 import logging
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(funcName)s[%(asctime)s][%(levelname)s] %(message)s', datefmt='%H:%M:%S')
-logger = logging.getLogger("MasterController")
+logger = logging.getLogger("Main." + __name__)
 
 
 class MasterController:
@@ -86,7 +84,7 @@ class MasterController:
 
     def stop(self):
         self.socket_handler.close()
-        self.States.timer_kill.set()
+        self.Timer.kill_timer()
 
     def update_settings(self):
         tmp_settings = None
