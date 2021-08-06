@@ -6,7 +6,6 @@ import mouse
 import os
 import subprocess
 import time
-import threading
 
 from utils import threaded
 
@@ -60,7 +59,7 @@ class AutomationController:
 
     @threaded
     def toggle_sound(self, turn_up=SE.MEDIA_VOLUME_UP):
-        logger.debug(f"toggle sound with {turn_up}")
+        logger.info(f"toggle sound with {turn_up}")
         if turn_up == SE.MEDIA_VOLUME_UP:
             # the second argument (1 or 0) determines whether the volume is going up or down.
             # 1 is up, 0 is down
@@ -74,7 +73,7 @@ class AutomationController:
 
     @threaded
     def toggle_media_pause_play_global(self):
-        logger.debug("trying to toggle media in dopamine")
+        logger.info("trying to toggle media in dopamine")
         subprocess.call([str(self.ahk_files_path / "pause_play_global.exe")])
         time.sleep(.05)
         self.give_window_focus(self.Windows.PROPRESENTER)
@@ -109,7 +108,7 @@ class AutomationController:
         hotkey = hotkey_dict.get(scene, "Failure")
 
         if hotkey == "Failure":
-            logger.debug(f"Unable to find hotkey for: '{scene}'")
+            logger.critical(f"Unable to find hotkey for: '{scene}'")
             return
 
         logger.debug(f"Sending to obs: '{hotkey}'")
@@ -158,7 +157,7 @@ class AutomationController:
 
     @threaded
     def go_live(self):
-        logger.debug("Going Live")
+        logger.info("Going Live")
         self.give_window_focus(self.Windows.CHROME)
         time.sleep(1)
         mouse_pos = self.sett["go_live"]
@@ -170,4 +169,4 @@ class AutomationController:
     @threaded
     def end_stream(self):
         self.obs_send(SE.STOP_STREAM)
-        logger.debug("stopping the stream")
+        logger.info("stopping the stream")

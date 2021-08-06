@@ -28,7 +28,7 @@ class SocketHandler:
         socket = s.socket(s.AF_INET, s.SOCK_STREAM)
         socket.bind((self.host_addr, self.port))
         socket.listen()
-        logger.debug(f"Socket listening on: {self.host_addr}:{self.port}")
+        logger.info(f"Socket listening on: {self.host_addr}:{self.port}")
 
         socket.setblocking(False)
         self.sel.register(socket, selectors.EVENT_READ, data=None)
@@ -54,7 +54,7 @@ class SocketHandler:
 
             recv_data = sock.recv(1)
             recv_data = sock.recv(int.from_bytes(recv_data, "big"))
-            logger.info(f"Received from {data.addr}: {recv_data}")
+            logger.debug(f"Received from {data.addr}: {recv_data}")
 
             if recv_data:
                 self._handle_incoming(sock, recv_data)
@@ -126,7 +126,7 @@ class SocketHandler:
     def send_all(self, message: str):
         if len(self.connected_sockets) == 0:
             logger.warning("TRY TO SEND MESSAGE TO NOTHING! regards, SocketHandler.send_all()")
-        logger.info("Sending to all sockets: " + message)
+        logger.debug("Sending to all sockets: " + message)
         for sock in self.connected_sockets:
             try:
                 sock.sendall(message.encode("utf-8") + b"\n")

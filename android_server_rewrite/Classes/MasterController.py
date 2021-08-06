@@ -71,7 +71,7 @@ class MasterController:
             for name, value in self.settings['startup'].items():
                 if name[:4] == "open" and value:
                     program = name[5:]
-                    logger.debug(f"Setup program trying to open is {program}")
+                    logger.info(f"Setup program trying to open is {program}")
                     program_path = self.settings['startup'][str(program) + "_path"]
                     subprocess.call([str(ahk_files_path / "program_opener.exe"),
                                      f".*{program}.*", program_path])
@@ -119,7 +119,7 @@ class MasterController:
     @threaded
     def on_update(self, var_name, value):
         if var_name != "timer_text":
-            logger.info(f"{var_name} was changed")
+            logger.debug(f"{var_name} was changed")
         if var_name == "change_with_clicker":
             # only legit use?
             self.check_auto()
@@ -187,8 +187,8 @@ class MasterController:
     # to ensure that the timer is behaving correctly
     # TODO check if this function an be safely removed
     def check_auto(self, *args):
-        logger.info(f"check_auto called with automatic enable = {self.States.change_with_clicker} and" +
-                    f" auto_change_to_camera = {self.States.auto_change_to_camera}")
+        logger.debug(f"check_auto called with automatic enable = {self.States.change_with_clicker} and" +
+                     f" auto_change_to_camera = {self.States.auto_change_to_camera}")
         if not self.States.auto_change_to_camera or self.States.current_scene == SS.AUGMENTED:
             logger.info(f"pausing timer")
             self.Timer.stop_timer()
@@ -239,13 +239,13 @@ class MasterController:
             if popup.timer_thread and popup.timer_thread.isAlive():
                 popup.timer_event.set()
         except (PopupNotExist, PrematureExit):
-            logger.debug("Popup was closed unexpectedly")
+            logger.warning("Popup was closed unexpectedly")
             if Question("Setup was canceled before it was finished\n" +
                         "Would you like to restart setup?", "Python"):
                 popup.close()
                 self.setup_stream()
             else:
-                logger.debug("the user said no to the question")
+                logger.info("the user said no to the question")
         finally:
             popup.close()
             self.States.timer_text = "0.0"

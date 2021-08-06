@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 def handle_message(socket_json: dict, message_handler=None):
     if message_handler is None:
         return
-    logger.info("handling a message")
+    logger.debug("handling a message")
 
     try:
         message_type = socket_json["type"]

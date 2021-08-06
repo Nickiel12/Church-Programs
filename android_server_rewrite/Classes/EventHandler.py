@@ -76,12 +76,12 @@ class EventHandler:
             if not self.MasterApp.in_debug_mode:
                 self.MasterApp.auto_contro.toggle_sound(SE.MEDIA_VOLUME_UP)
             else:
-                logger.debug("Pretend I am turning up the computer volume!")
+                logger.info("Pretend I am turning up the computer volume!")
         else:
             if not self.MasterApp.in_debug_mode:
                 self.MasterApp.auto_contro.toggle_sound(SE.MEDIA_VOLUME_DOWN)
             else:
-                logger.debug("Pretend I am turn the computer volume down!")
+                logger.info("Pretend I am turn the computer volume down!")
         # set like this because turn_volume_down is the opposite of sound on
         self.states.sound_on = not turn_volume_down
 
@@ -90,13 +90,13 @@ class EventHandler:
             if not self.MasterApp.in_debug_mode:
                 self.MasterApp.auto_contro.obs_send(SE.OBS_UNMUTE)
             else:
-                logger.debug("Pretend I am turning the stream sound on!")
+                logger.info("Pretend I am turning the stream sound on!")
             self.states.stream_is_muted = False
         else:
             if not self.MasterApp.in_debug_mode:
                 self.MasterApp.auto_contro.obs_send(SE.OBS_MUTE)
             else:
-                logger.debug("Pretend I am muting the stream sound")
+                logger.info("Pretend I am muting the stream sound")
             self.states.stream_is_muted = True
 
     def media_pause_play(self):
@@ -130,4 +130,4 @@ class EventHandler:
             self.states.timer_length = event_data
             logger.debug(f"Changed timer length to {event_data}")
         except AssertionError:
-            logger.debug(f"Unable to understand new timer length")
+            logger.warning(f"Unable to understand new timer length")
