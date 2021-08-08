@@ -102,28 +102,17 @@ p {
 #timer {
     font-size: 70px;
 }
-.custom_radio {
-    position: absolute;
-    cursor: pointer;
-    opacity: 50;
-}
 
 .c_radio_label {
-    background-color: #ffff00;
-    color: #ff00ff;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-right: 25px;
-    padding-left: 5px;
-    
+    color: white;
     cursor: pointer;
 }
 
 .c_radio_label:hover{
-    background-color: #eee;
+    background-color: rgb(165, 165, 165);
 }
 
-.c_radio_label .custom_radio:checked{
+.custom_radio:checked + .c_radio_label{
     background-color: #0000ff;
 }
 #mid_spacer1 {

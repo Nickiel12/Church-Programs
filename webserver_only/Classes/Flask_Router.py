@@ -48,6 +48,11 @@ def route(app:flask.Flask, socketio:SocketIO, MasterApp:MasterController):
     def on_scene_camera(event=None):
         MasterApp.handle_state_change("camera")
 
+    @socketio.on("message")
+    def on_socket_message(event=None):
+        print("Ring Ring! You have a message:\n")
+        print(event)
+
 
     @socketio.on("scene_screen")
     def on_scene_screen(event=None):

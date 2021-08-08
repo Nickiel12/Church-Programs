@@ -12,6 +12,9 @@ __pycache__/
 # Visual Studio
 .vs/
 
+# PyCharm
+.idea/
+
 # Distribution / packaging
 .Python
 build/
@@ -118,3 +121,19 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties

@@ -1,0 +1,42 @@
+{
+    "startup" : {
+        "open_OBS" : true,
+        "OBS_path" : "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\OBS Studio\\OBS Studio (64bit).lnk",
+        "open_ProPresenter" : false,
+        "ProPresenter_path" : "C:\\Program Files (x86)\\Renewed Vision\\ProPresenter 6\\ProPresenter.exe",
+        "open_itunes" : false,
+        "itunes_path" : " Not Implemented "
+    },
+    "streaming_service": "w3schools",
+    "general":{
+        "music_default_state-on" : true,
+        "music_fade_time": 5,
+        "default_timer_length": 15
+    },
+    "windows":{
+        "obs_re": "OBS ",
+        "propresenter_re": "ProPresenter - .*",
+        "chrome_re": ".* - Google Chrome"
+    },
+    "hotkeys":{
+        "obs":{
+            "camera_scene_hotkey" : "shift+alt+ctrl+*", 
+            "screen_scene_hotkey" : "shift+alt+ctrl+/",
+            "camera_scene_augmented" : "shift+alt+ctrl+-",
+            "unmute_stream" : "shift+alt+ctrl+u",
+            "mute_stream" : "shift+alt+ctrl+i",
+            "start_stream" : "ctrl+shift+j",
+            "stop_stream" : "ctrl+alt+j",
+            "Camera_Top_Right" : "ctrl+alt+]",
+            "Camera_Bottom_Right" : "ctrl+shift+]",
+            "Camera_Bottom_Left" : "ctrl+shift+alt+]",
+            "Screen_Top_Right" : "ctrl+alt+[",
+            "Screen_Bottom_Right" : "ctrl+shift+["
+        },
+        "general":{
+            "clicker_forward" : "page down", 
+            "clicker_backward" : "page up"
+        }
+    }
+    
+}

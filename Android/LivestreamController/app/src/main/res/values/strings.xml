@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">Livestream Controller</string>
+    <string name="ClickerAutomaticSwitchText">Clicker Change Scene</string>
+    <string name="SceneIsAugmented">Is Augmented</string>
+    <string name="ShowHideExtraPanelButtonText">Extra Scenes</string>
+
+    <string name="WifiPlaceHolder">Wifi: %1$s</string>
+    <string name="WifiText">Wifi: None</string>
+
+    <string name="CameraSceneButtonText">Camera Scene</string>
+    <string name="ScreenSceneButtonText">Screen Scene</string>
+
+    <string name="SlideControlsLockUnlockButtonText">Lock Controls</string>
+    <string name="NextSlideButtonText">Next Slide</string>
+    <string name="PrevSlideButtonText">Prev Slide</string>
+
+    <string name="TimerDefault">0.0</string>
+    <string name="TimerCanRunButtonText">Timer Can Run</string>
+
+    <string name="TimerLengthPanelButtonText">Change Timer Length</string>
+    <string name="TimerLengthButton1Text">5</string>
+    <string name="TimerLengthButton2Text">7.5</string>
+    <string name="TimerLengthButton3Text">15</string>
+    <string name="TimerLengthButton4Text">30</string>
+    <string name="TimerCustomInputHint">15.0</string>
+    <string name="TimerCustomLengthSubmitText">Submit</string>
+
+    <string name="ShowStreamRecordPanelButton">Show Recording/Stream\nControls</string>
+    <string name="RecordButtonTextDefault">Cannot control Recording</string>
+    <string name="RecordButtonTextStart">Start Recording</string>
+    <string name="RecordButtonTextStop">Stop Recording</string>
+    <string name="StreamButtonTextDefault">Cannot control Stream</string>
+    <string name="StreamButtonTextStart">Start Stream</string>
+    <string name="StreamButtonTextStop">Stop Stream</string>
+
+    <string name="ComputerVolumeOn">Volume: On</string>
+    <string name="ComputerVolumeOff">Volume: Off</string>
+    <string name="StreamSoundOn">Sound: On</string>
+    <string name="StreamSoundOff">Sound: Off</string>
+    <string name="StreamSoundButtonText">Stream Sound</string>
+    <string name="ComputerSoundButtonText">Computer Sound</string>
+    <string name="ComputerMediaPausePlay">Media Control</string>
+    <string name="MediaPausePlayText">Pause/Play</string>
+
+    <string name="socket_dialog_message">There was an error concerning the socket\n
+        \nPlease ensure the IP Address is correct.</string>
+    <string name="socket_dialog_submit">Submit</string>
+    <string name="socket_dialog_cancel">Cancel</string>
+    <string name="socket_dialog_ip_hint">IP Address</string>
+    <string name="socket_dialog_port_hint">Port Number</string>
+    <string name="socket_error_dialog_title">Socket Error!</string>
+    <string name="SocketNotConnectedSnackBarText">The Socket is not connected!
+        Refresh the page to pull up the dialog</string>
+
+    <string name="ShowClickerControlsButtonText">Show Slide Controls</string>
+    <string name="ShowMediaControlsButtonText">Show Media Controls</string>
+
+    <string name="StayOnSwitchText">Keep screen awake</string>
+
+    <dimen name="TitleBarImageSize">30dp</dimen>
+    <dimen name="ExtraButtonHeight">60dp</dimen>
+    <dimen name="ExtraButtonWidth">120dp</dimen>
+    <dimen name="SoundButtonSize">100dp</dimen>
+    <dimen name="StayOnSwitchWidth">50dp</dimen>
+
+    <color name="GREEN">#00FF00</color>
+    <color name="RED">#FF0000</color>
+
+    <color name="buttonBarBackground">#656565</color>
+    <color name="buttonBarButtonTextColor">#FFFFFF</color>
+</resources>

@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/MasterConstraint"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/TitleLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/purple_500"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/WifiText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:gravity="center"
+            android:text="@string/WifiText"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/StatusImageView"
+            android:layout_width="@dimen/TitleBarImageSize"
+            android:layout_height="@dimen/TitleBarImageSize"
+            android:layout_marginEnd="20dp"
+            app:srcCompat="@drawable/dot"
+            app:tint="#FF0000"
+            tools:ignore="ImageContrastCheck" />
+    </LinearLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
+        app:layout_constraintTop_toTopOf="@id/TitleLayout"
+        tools:layout_editor_absoluteX="-16dp">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TableLayout
+                    android:id="@+id/ExtraButtonsTable"
+                    android:layout_width="match_parent"
+                    android:layout_height="116dp"
+                    android:layout_marginTop="30dp"
+                    android:gravity="center_horizontal|center_vertical">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/CameraNoneButton"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:foreground="@drawable/camera_main"
+                            app:iconTint="#FFFFFF" />
+
+                        <Button
+                            android:id="@+id/CameraTopRightButton"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:foreground="@drawable/camera_main_top_right"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                        <Button
+                            android:id="@+id/ScreenNoneButton"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:foreground="@drawable/screen_main"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                        <Button
+                            android:id="@+id/ScreenTopRightButton"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:foreground="@drawable/screen_main_top_right"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/CameraBottomLeftButton"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:foreground="@drawable/camera_main_bottom_left"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                        <Button
+                            android:id="@+id/CameraBottomRightButton"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:foreground="@drawable/camera_main_bottom_right" />
+
+                        <Button
+                            android:id="@+id/ExtraBottomRightMiddle"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                        <Button
+                            android:id="@+id/ScreenBottomRightButton"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:foreground="@drawable/screen_main_bottom_right"
+                            tools:ignore="SpeakableTextPresentCheck" />
+                    </TableRow>
+
+                </TableLayout>
+
+                <TableRow
+                    android:id="@+id/ShowHideIsAugmentedBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Button
+                        android:id="@+id/ShowHideTopPanel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_weight="0"
+                        android:gravity="center"
+                        android:text="@string/ShowHideExtraPanelButtonText" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/AugmentSwitch"
+                        android:layout_width="150dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="20dp"
+                        android:text="@string/SceneIsAugmented" />
+                </TableRow>
+
+                <LinearLayout
+                    android:id="@+id/SceneSelectionRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/SetSceneCameraButton"
+                        android:layout_width="130dp"
+                        android:layout_height="153dp"
+                        android:layout_marginEnd="30dp"
+                        android:text="@string/CameraSceneButtonText" />
+
+                    <Button
+                        android:id="@+id/SetSceneScreenButton"
+                        android:layout_width="130dp"
+                        android:layout_height="153dp"
+                        android:layout_marginStart="30dp"
+                        android:text="@string/ScreenSceneButtonText" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/TimerAndClickerBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="30dp"
+                    android:baselineAligned="false"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/ChangeWithClickerSwitch"
+                            android:layout_width="153dp"
+                            android:layout_height="48dp"
+                            android:layout_marginBottom="11dp"
+                            android:text="@string/ClickerAutomaticSwitchText" />
+
+                        <Button
+                            android:id="@+id/ShowHideTimerExtras"
+                            android:layout_width="157dp"
+                            android:layout_height="52dp"
+                            android:text="@string/TimerLengthPanelButtonText"
+                            android:textAllCaps="false" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/TimerTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="@string/TimerDefault"
+                            android:textSize="34sp" />
+
+                        <Button
+                            android:id="@+id/TimerRunsButton"
+                            android:layout_width="113dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/TimerCanRunButtonText"
+                            android:textAllCaps="false" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <TableLayout
+                    android:id="@+id/TimerTimeTable"
+                    android:layout_width="355dp"
+                    android:layout_height="96dp"
+                    android:layout_marginTop="30dp"
+                    android:visibility="gone">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/TimerLengthButton1"
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:text="@string/TimerLengthButton1Text" />
+
+                        <Button
+                            android:id="@+id/TimerLengthButton2"
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:text="@string/TimerLengthButton2Text" />
+
+                        <Button
+                            android:id="@+id/TimerLengthButton3"
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:text="@string/TimerLengthButton3Text" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <Button
+                            android:id="@+id/TimerLengthButton4"
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.35"
+                            android:text="@string/TimerLengthButton4Text" />
+
+                        <EditText
+                            android:id="@+id/TimerLengthInput"
+                            android:layout_width="0px"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="end"
+                            android:layout_weight="1.7"
+                            android:ems="10"
+                            android:hint="@string/TimerCustomInputHint"
+                            android:importantForAutofill="no"
+                            android:inputType="numberDecimal"
+                            android:singleLine="true" />
+
+                        <Button
+                            android:id="@+id/TimerLengthSubmitButton"
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.2"
+                            android:text="@string/TimerCustomLengthSubmitText" />
+
+                    </TableRow>
+
+                </TableLayout>
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp">
+
+                    <TableRow
+                        style="?android:attr/buttonBarStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@color/buttonBarBackground"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:weightSum="6">
+
+                        <Button
+                            android:id="@+id/ShowHideSlideControls"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ShowClickerControlsButtonText"
+                            android:textAllCaps="false"
+                            android:textColor="@color/buttonBarButtonTextColor" />
+
+                        <Button
+                            android:id="@+id/ShowHideMediaControls"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ShowMediaControlsButtonText"
+                            android:textAllCaps="false"
+                            android:textColor="@color/buttonBarButtonTextColor" />
+
+                    </TableRow>
+
+                    <TableRow
+                        style="?android:attr/buttonBarStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@color/buttonBarBackground"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:weightSum="3">
+
+                        <Button
+                            android:id="@+id/ShowHideRecordStreamPanel"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ShowStreamRecordPanelButton"
+                            android:textAllCaps="false"
+                            android:textColor="@color/buttonBarButtonTextColor" />
+
+
+                        <Button
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAllCaps="false"
+                            android:textColor="@color/buttonBarButtonTextColor"
+                            tools:ignore="SpeakableTextPresentCheck" />
+                    </TableRow>
+
+                </TableLayout>
+
+                <LinearLayout
+                    android:id="@+id/SlideButtonRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="#7A7A7A"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/PrevSlideButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="25dp"
+                        android:text="@string/PrevSlideButtonText" />
+
+                    <Button
+                        android:id="@+id/NextSlideButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="25dp"
+                        android:text="@string/NextSlideButtonText" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/SoundControlRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="#8C8B8B"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ComputerMediaPausePlay"
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <Button
+                            android:id="@+id/MediaPausePlayButton"
+                            android:layout_width="@dimen/SoundButtonSize"
+                            android:layout_height="@dimen/SoundButtonSize"
+                            android:background="@drawable/play_circle_black_24dp"
+                            android:text="@string/MediaPausePlayText"
+                            android:textAllCaps="false" />
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/StreamVolumeText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/StreamSoundOn"
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+
+                        <Button
+                            android:id="@+id/StreamSoundButton"
+                            android:layout_width="@dimen/SoundButtonSize"
+                            android:layout_height="@dimen/SoundButtonSize"
+                            android:background="@drawable/volume_on"
+                            android:text="@string/StreamSoundButtonText"
+                            android:textAllCaps="false" />
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/ComputerVolumeText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ComputerVolumeOn"
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+
+                        <Button
+                            android:id="@+id/ComputerSoundButton"
+                            android:layout_width="@dimen/SoundButtonSize"
+                            android:layout_height="@dimen/SoundButtonSize"
+                            android:background="@drawable/volume_on"
+                            android:text="@string/ComputerSoundButtonText"
+                            android:textAllCaps="false"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/RecordStreamBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <Button
+                            android:id="@+id/RecordButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:text="@string/RecordButtonTextDefault" />
+
+                        <ImageView
+                            android:id="@+id/imageView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/dot"
+                            app:tint="@color/black" />
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <Button
+                            android:id="@+id/StreamButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:text="@string/StreamButtonTextDefault" />
+
+                        <ImageView
+                            android:id="@+id/imageView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/dot"
+                            app:tint="@color/black" />
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/StayOnSwitch"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/StayOnSwitchText" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+
+            </LinearLayout>
+        </ScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
