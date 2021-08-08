@@ -1,6 +1,5 @@
 import atexit
 import copy
-import keyboard
 import json
 import pathlib
 from functools import partial

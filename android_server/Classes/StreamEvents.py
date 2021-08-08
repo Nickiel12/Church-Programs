@@ -1,4 +1,3 @@
-from enum import auto
 
 
 class StreamEvents:
