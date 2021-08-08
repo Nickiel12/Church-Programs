@@ -1,8 +1,5 @@
-from enum import Enum
 from functools import partial
 import pathlib2
-from types import SimpleNamespace
-import threading
 import time
 import os
 import wx
