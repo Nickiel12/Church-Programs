@@ -19,7 +19,7 @@ greenlet==0.4.15
 idna==2.8
 isort==4.3.21
 itsdangerous==1.1.0
-Jinja2==2.10.1
+Jinja2==2.11.3
 keyboard==0.13.3
 Kivy==1.11.1
 kivy-deps.glew==0.1.12
