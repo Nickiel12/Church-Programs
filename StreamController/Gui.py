@@ -96,7 +96,7 @@ class ChurchGui:
                 self.test_stream = False
                 self.full_test = False
             else:
-                if stream_title == "test stream":
+                if self.stream_title == "test stream":
                     self.test_stream = True
                 else:
                     self.full_test = True
