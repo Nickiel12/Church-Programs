@@ -75,28 +75,35 @@ class AutomationController:
         Logger.debug(f"Sending {scene}'s hotkey to obs")
         if scene == "camera":
             self.give_window_focus("obs")
-            time.sleep(.3)
+            time.sleep(.5)
             keyboard.send(self.sett.hotkeys.obs.camera_scene_hotkey[1])
             Logger.debug(f"Sending to obs: " + 
                          f"{self.sett.hotkeys.obs.camera_scene_hotkey[1]}")
         elif scene == "center":
             self.give_window_focus("obs")
-            time.sleep(.3)
+            time.sleep(.5)
             keyboard.send(self.sett.hotkeys.obs.center_screen_hotkey[1])
             Logger.debug(f"Sending to obs: " +
                          f"{self.sett.hotkeys.obs.center_screen_hotkey[1]}")
         elif scene == "start":
             self.give_window_focus("obs")
-            time.sleep(.3)
+            time.sleep(.5)
             keyboard.send(self.sett.hotkeys.obs.start_stream)
             Logger.debug(f"Sending to obs: " +
                          f"{self.sett.hotkeys.obs.start_stream}")
         elif scene == "stop":
             self.give_window_focus("obs")
-            time.sleep(.3)
+            time.sleep(.5)
             keyboard.send(self.sett.hotkeys.obs.stop_stream)
             Logger.debug(f"Sending to obs: " +
                          f"{self.sett.hotkeys.obs.stop_stream}")
+        elif scene == "center_augmented":
+            self.give_window_focus("obs")
+            time.sleep(.5)
+            keyboard.send(self.sett.hotkeys.obs.center_augmented[1])
+            Logger.debug
+            print(f"Sending to obs: " +
+                        f"{self.sett.hotkeys.obs.center_augmented[1]}")
         self.give_window_focus("propresenter")
 
     def propre_send(self, hotkey):
@@ -117,8 +124,9 @@ class AutomationController:
     @threaded
     def go_live(self):
         self.give_window_focus("chrome")
-        time.sleep(.2)
-        mouse_pos = self.platform_settings["go_live"]
+        time.sleep(1)
+        print(self.platform_settings)
+        mouse_pos = self.sett["go_live"]
         mouse.move(mouse_pos[0], mouse_pos[1])
         mouse.click()
         Logger.debug("clicking the facebook go_live button in chrome")
@@ -131,6 +139,8 @@ class AutomationController:
         time.sleep(.2)
         mouse_pos = self.platform_settings["go_live"]
         time.sleep(.1)
+        mouse.move(mouse_pos[0], mouse_pos[1])
+        time.sleep(.5)
         mouse.click()
         time.sleep(.2)
         self.obs_send("stop")
@@ -145,7 +155,7 @@ class Setup:
         self.stream_title = stream_title
         self.settings = Settings()
         self.platform_settings = self.settings[f"setup_" +
-                                    f"{self.settings['streaming_service']}"]
+                                    f"{self.settings.streaming_service}"]
 
     def del_popup(self):
         self.popup = False
@@ -162,7 +172,7 @@ class Setup:
     @threaded
     def sleep(self, time_to_sleep):
         Logger.info(f"setup is sleeping for {time_to_sleep}")
-        self.popup.set_task("Next Task In", time_to_sleep)
+        self.popup.set_task("Waiting", time_to_sleep)
         time.sleep(time_to_sleep)
 
     @with_popup

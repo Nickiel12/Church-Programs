@@ -53,9 +53,29 @@ p {
 #timer {
     font-size: 70px;
 }
-#mid_spacer {
+#mid_spacer1 {
+    display: block;
     width: 100%;
-    height: 40%;
+    height: 10%;
+}
+#options_row_1{
+    display: block;
+    width: 100%;
+    height: 10%;
+}
+#toggle_center_button{
+    display: block;
+    background-color: turquoise;
+    height: 100%;
+    width: 40%;
+    margin-left: 6%;
+    color: white;
+    font-size: large;
+}
+#mid_spacer2 {
+    display: block;
+    width: 100%;
+    height: 20%;
 }
 #extra_buttons {
     position: absolute;

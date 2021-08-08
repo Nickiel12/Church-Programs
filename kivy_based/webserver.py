@@ -37,7 +37,8 @@ def loop():
                                 SceneController.current_scene == "center",
                                 SceneController.ids.SCQAutomatic.ids.cb.active,
                                 SceneController.ids.TimerLabel.text,
-                                master_app.auto_contro.get_sound_state()
+                                master_app.auto_contro.get_sound_state(),
+                                SceneController.is_center_augmented
                                 ]})
                 time.sleep(.2)
         else:
@@ -49,7 +50,8 @@ def loop():
                                     False,
                                     True,
                                     "Test",
-                                    True
+                                    True, 
+                                    False
                                 ]})
                 time.sleep(1)
     except KeyboardInterrupt:
@@ -60,7 +62,7 @@ def loop():
 def send_to_index():
     global SceneController
     if __name__ != "__main__":
-        if master_app.stream_setup:
+        if master_app.stream_setup or master_app.stream_running:
             return flask.redirect(flask.url_for("index"))
         else:
             return flask.redirect(flask.url_for('setup_stream'))
@@ -134,6 +136,11 @@ def on_slide_prev(event):
 def toggle_volume(event):
     global master_app
     master_app.auto_contro.toggle_sound()
+
+
+@socketio.on("center_toggle")
+def on_toggle_center(event):
+    SceneController.on_hotkey("toggle_center_augmented")
 
 
 def start_web_server():

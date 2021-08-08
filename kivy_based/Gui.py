@@ -155,11 +155,13 @@ class StreamController(AnchorLayout):
         if self.app.stream_running is True:
             self.app.auto_contro.end_stream()
             self.app.stream_running = False
-            self.on_key_up()
+            self.check_button_color()
+            self.check_button_text()
         else:
             self.app.auto_contro.go_live()
             self.app.stream_running = True
-            self.on_key_up()
+            self.check_button_color()
+            self.check_button_text()
 
     def check_button_color(self):
         if self.app.stream_running:
@@ -167,12 +169,7 @@ class StreamController(AnchorLayout):
         else:
             self.ids.go_live_button.background_color = [0, 1, 0, 1]
 
-    def on_key_up(self, *args):
-        print("got keycode ", args[-1], " expected keycode 128")
-        if 128 == args[-1]:
-            print("skipping key_up")
-            return
-        self.check_button_color()
+    def check_button_text(self):
         kivy_setts = self.app.settings.kivy
         if not self.app._modifier_down():
             print("modifier not down")
@@ -180,6 +177,17 @@ class StreamController(AnchorLayout):
                 self.ids.go_live_button.text =f"{kivy_setts.stream_state_running}\n{kivy_setts.stream_toggle_default_state}"
             else:
                 self.ids.go_live_button.text = f"{kivy_setts.stream_state_stopped}\n{kivy_setts.stream_toggle_default_state}"
+
+    def on_key_up(self, *args):
+        try:
+            print("got keycode ", args[-1], " expected keycode 128")
+            if 128 == args[-1]:
+                print("skipping key_up")
+                return
+        except IndexError:
+            print("on_key_up key error")
+        self.check_button_color()
+        self.check_button_text()
 
     def on_key_down(self, *args):
         self.check_button_color()
@@ -195,6 +203,8 @@ class StreamController(AnchorLayout):
 class SceneController(AnchorLayout):
 
     on = BooleanProperty(True)
+    auto_state = True
+    is_center_augmented = False
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -333,9 +343,28 @@ class SceneController(AnchorLayout):
             else:
                 if self.auto_state:
                     self._do_fake_press_center()
+        elif hotkey == "toggle_center_augmented" or event == "toggle_center_augmented":
+            print("toggleing center augmented")
+            if (self.is_center_augmented == False):
+                self.ids.center_screen.ids.cb.active = False
+                self.ids.live_camera.ids.cb.active = False
+                self.ids.SCQAutomatic.ids.cb.active = False
+                self.on_auto()
+                self.app.auto_contro.obs_send("center_augmented")
+                self.current_scene = "augmented"
+                self.is_center_augmented = True
+            else:
+                self.ids.SCQAutomatic.ids.cb.active = True
+                self.ids.live_camera.ids.cb.active = True
+                self._do_fake_press_camera()
+                self.is_center_augmented = False
 
     def _do_fake_press_camera(self):
-        if self.ids.live_camera.ids.cb.active is True:
+        if self.current_scene == "augmented":
+            self.ids.live_camera.ids.cb.active = True
+            self.is_center_augmented = False
+            self.ids.SCQAutomatic.ids.cb.active = True
+        elif self.ids.live_camera.ids.cb.active is True:
             Logger.info(f"Hotkeys: Doing fake press camera, with" +
                         " button selected")
             self.on_camera()
@@ -345,7 +374,11 @@ class SceneController(AnchorLayout):
             self.ids.live_camera.ids.cb._do_press()
 
     def _do_fake_press_center(self):
-        if self.ids.center_screen.ids.cb.active is True:
+        if self.current_scene == "augmented":
+            self.ids.center_screen.ids.cb.active = True
+            self.is_center_augmented = False
+            self.ids.SCQAutomatic.ids.cb.active = True
+        elif self.ids.center_screen.ids.cb.active is True:
             Logger.info(f"Hotkeys: Doing fake press center, with" +
                         " button selected")
             self.on_center_screen()
