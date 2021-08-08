@@ -103,6 +103,7 @@ class SocketHandler:
                 index = 0
 
     def _close_socket(self, sock):
+        self._prune_sockets()
         try:
             self.connected_sockets.remove(self._find_same_addr_index(sock))
         except ValueError:
