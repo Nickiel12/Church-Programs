@@ -34,7 +34,7 @@ pypiwin32==223
 PyRect==0.1.4
 PyScreeze==0.1.22
 PyTweening==1.0.3
-pywin32==224
+pywin32==301
 pywin32-ctypes==0.2.0
 pywinauto==0.6.7
 requests==2.22.0
