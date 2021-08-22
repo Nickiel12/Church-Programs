@@ -96,11 +96,14 @@ class SocketHandler:
             i(usable_json)
 
     def _prune_sockets(self):
-        index = 0
-        while index < len(self.connected_sockets):
-            if self.connected_sockets[index].fileno() == -1:
-                del self.connected_sockets[index]
-                index = 0
+        try:
+            index = 0
+            while index < len(self.connected_sockets):
+                if self.connected_sockets[index].fileno() == -1:
+                    del self.connected_sockets[index]
+                    index = 0
+        except Exception as e:
+            logger.critical(repr(e))
 
     def _close_socket(self, sock):
         self._prune_sockets()
