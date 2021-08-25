@@ -60,7 +60,11 @@ class SocketHandler:
                 self._handle_incoming(sock, recv_data)
             else:
                 logger.debug(f"closing connection to {data.addr}")
-                self._close_socket(sock)
+                try:
+                    self.sel.unregister(sock)
+                    self.connected_sockets.remove(sock)
+                except KeyError or ValueError:
+                    logger.info(f"There was a failure in unregistering the socket, but should still work fine")
 
     def _listener_loop(self):
         while not self.doShutdown.is_set():
@@ -75,7 +79,11 @@ class SocketHandler:
                         self._service_connection(key, mask)
                     except Exception as e:
                         if str(e).startswith("[WinError 10054]"):
-                            self._close_socket(key.fileobj)
+                            try:
+                                self.sel.unregister(key.fileobj)
+                                self.connected_sockets.remove(key.fileobj)
+                            except ValueError or KeyError as e:
+                                logger.debug(f"Error removing socket! {repr(e)}")
                             logger.debug("Socket Closed")
                         else:
                             logger.warning(f"Socket error!  {key.data.addr}:\n{e}")
@@ -95,37 +103,6 @@ class SocketHandler:
         for i in self.handler_list:
             i(usable_json)
 
-    def _prune_sockets(self):
-        try:
-            index = 0
-            while index < len(self.connected_sockets):
-                if self.connected_sockets[index].fileno() == -1:
-                    del self.connected_sockets[index]
-                    index = 0
-        except Exception as e:
-            logger.critical(repr(e))
-
-    def _close_socket(self, sock):
-        self._prune_sockets()
-        try:
-            self.connected_sockets.remove(self._find_same_addr_index(sock))
-        except ValueError:
-            pass
-        except Exception as e:
-            logger.warning(f"Error removing socket from list: {repr(e)}")
-
-        try:
-            self.sel.unregister(sock)
-            sock.close()
-        except Exception as e:
-            logger.warning(f"Error unregistering or closing socket: {repr(e)}")
-
-        self._prune_sockets()
-
-    def _find_same_addr_index(self, sock):
-        for i in range(len(self.connected_sockets) - 1):
-            if self.connected_sockets[i].raddr == sock.raddr:
-                return i
 
     def send_all(self, message: str):
         if len(self.connected_sockets) == 0:
@@ -138,7 +115,11 @@ class SocketHandler:
                 logger.critical(f"Sending IO Error!  {repr(e)}")
             except ConnectionResetError:
                 logger.warning("Socket Forcibly close by host")
-                self._close_socket(sock)
+                try:
+                    self.connected_sockets.remove(sock)
+                    self.sel.unregister(sock)
+                except ValueError  or KeyError:
+                    logger.info(f"failed to unregister from something.")
 
     def register_message_handler(self, function):
         """register function to be called when a message is received from the socket
@@ -156,4 +137,6 @@ class SocketHandler:
         if len(self.connected_sockets) == 0:
             return
         for i in range(len(self.connected_sockets)):
-            self._close_socket(self.connected_sockets[i])
+            self.sel.unregister(self.connected_sockets[i])
+
+        del self.connected_sockets
