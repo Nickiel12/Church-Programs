@@ -1,14 +1,5 @@
 package com.example.livestreamcontroller;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.os.HandlerCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.OnLifecycleEvent;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -32,6 +23,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.os.HandlerCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.livestreamcontroller.SocketService.SocketAddressDialog;
 import com.example.livestreamcontroller.SocketService.SocketErrorDialog;

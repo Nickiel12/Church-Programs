@@ -6,7 +6,7 @@ android {
     compileSdkVersion 30
 
     defaultConfig {
-        applicationId "com.example.livestreamcontroller"
+        applicationId 'com.example.livestreamcontroller'
         minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
