@@ -87,6 +87,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:foreground="@drawable/camera_main"
+                            tools:ignore="SpeakableTextPresentCheck"
                             app:iconTint="#FFFFFF" />
 
                         <Button
@@ -137,6 +138,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
+                            tools:ignore="SpeakableTextPresentCheck"
                             android:foreground="@drawable/camera_main_bottom_right" />
 
                         <Button
@@ -351,29 +353,28 @@
                     android:layout_marginTop="20dp">
 
                     <TableRow
-                        style="?android:attr/buttonBarStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:background="@color/buttonBarBackground"
                         android:gravity="center"
-                        android:orientation="horizontal"
-                        android:weightSum="6">
+                        android:orientation="horizontal">
 
                         <Button
                             android:id="@+id/ShowHideSlideControls"
-                            style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
                             android:text="@string/ShowClickerControlsButtonText"
                             android:textAllCaps="false"
                             android:textColor="@color/buttonBarButtonTextColor" />
 
                         <Button
                             android:id="@+id/ShowHideMediaControls"
-                            style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
                             android:text="@string/ShowMediaControlsButtonText"
                             android:textAllCaps="false"
                             android:textColor="@color/buttonBarButtonTextColor" />
@@ -381,7 +382,6 @@
                     </TableRow>
 
                     <TableRow
-                        style="?android:attr/buttonBarStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
@@ -392,18 +392,19 @@
 
                         <Button
                             android:id="@+id/ShowHideRecordStreamPanel"
-                            style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
                             android:text="@string/ShowStreamRecordPanelButton"
                             android:textAllCaps="false"
                             android:textColor="@color/buttonBarButtonTextColor" />
 
 
                         <Button
-                            style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
                             android:textAllCaps="false"
                             android:textColor="@color/buttonBarButtonTextColor"
                             tools:ignore="SpeakableTextPresentCheck" />
