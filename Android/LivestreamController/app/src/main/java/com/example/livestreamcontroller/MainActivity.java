@@ -395,15 +395,15 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     public boolean onTimerTimeInput(TextView v, int actionId, KeyEvent event){
         hideKeyboard(this);
-        boolean handled = false;
+        v.clearFocus();
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             String socketMessage = buttonHandler.handleTextView(v);
 
             sendSocketData(socketMessage);
 
-            handled = true;
+            return true;
         }
-        return handled;
+        return false;
     }
 
     public void sendSocketData(String message){
@@ -435,12 +435,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     public void wireButtons(){
 
-        findViewById(R.id.ShowHideTopPanel).setOnClickListener(this::showHidePanel);
-        findViewById(R.id.ShowHideTimerExtras).setOnClickListener(this::showHidePanel);
-        findViewById(R.id.ShowHideSlideControls).setOnClickListener(this::showHidePanel);
-        findViewById(R.id.ShowHideMediaControls).setOnClickListener(this::showHidePanel);
-        findViewById(R.id.ShowHideRecordStreamPanel).setOnClickListener(this::showHidePanel);
-
         findViewById(R.id.TimerLengthSubmitButton).setOnClickListener(this::onTimerTimeInput);
         ((EditText) findViewById(R.id.TimerLengthInput)).setOnEditorActionListener(this::onTimerTimeInput);
 
@@ -449,6 +443,18 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         findViewById(R.id.WifiText).setOnClickListener((View view) -> {
             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
         });
+
+        int[] idsForShowHidePanel = new int[]{
+                R.id.ShowHideTopPanel,
+                R.id.ShowHideTimerExtras,
+                R.id.ShowHideSlideControls,
+                R.id.ShowHideMediaControls,
+                R.id.ShowHideRecordStreamPanel,
+        };
+
+        for (int i : idsForShowHidePanel){
+            findViewById(i).setOnClickListener(this::showHidePanel);
+        }
 
         int[] idsForOnControllerPress = new int[]{
                 R.id.CameraBottomLeftButton,
