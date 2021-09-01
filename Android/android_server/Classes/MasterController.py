@@ -118,9 +118,9 @@ class MasterController:
     @threaded
     def on_update(self, var_name, value):
         if var_name != "timer_text":
-            logger.debug(f"{var_name} was changed")
+            logger.debug(f"{var_name}'s state was changed")
         if var_name == "change_with_clicker":
-            # only legit use?
+            # only legit use of check auto?
             self.check_auto()
         if var_name != "callback":
             self.socket_handler.send_all(json.dumps({"states": [var_name, value]}))
@@ -146,20 +146,19 @@ class MasterController:
         for i in send_on_update:
             self.socket_handler.send_all(json.dumps({"states": [i, self.States.__getattribute__(i)]}))
 
-    def set_scene_camera(self, change_sub_scene=False):
+    def set_scene_camera(self):
         if self.States.current_scene == SE.AUGMENTED_SCENE:
             self.States.change_with_clicker = True
 
         logger.info(f"changing scene to camera")
 
-        if not change_sub_scene:
-            self.States.current_scene = SE.CAMERA_SCENE
-            self.Timer.stop_timer()
+        self.States.current_scene = SE.CAMERA_SCENE
+        self.Timer.stop_timer()
 
         if not self.in_debug_mode:
             self.auto_contro.obs_send(self.States.current_camera_sub_scene)
 
-    def set_scene_screen(self, change_sub_scene=False):
+    def set_scene_screen(self):
         if self.States.current_scene == SE.AUGMENTED_SCENE:
             self.States.change_with_clicker = True
 

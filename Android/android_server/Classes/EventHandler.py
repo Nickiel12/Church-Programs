@@ -73,32 +73,30 @@ class EventHandler:
     def toggle_muted(self, turn_volume_down):
         self.states.sound_on = not turn_volume_down
 
-        if not turn_volume_down:
-            # turn the volume UP!
-            if not self.MasterApp.in_debug_mode:
-                self.MasterApp.auto_contro.toggle_sound(SE.MEDIA_VOLUME_UP)
-            else:
-                logger.info("Pretend I am turning up the computer volume!")
-        else:
+        if turn_volume_down:
             if not self.MasterApp.in_debug_mode:
                 self.MasterApp.auto_contro.toggle_sound(SE.MEDIA_VOLUME_DOWN)
             else:
                 logger.info("Pretend I am turn the computer volume down!")
-        # set like this because turn_volume_down is the opposite of sound on
+        else:
+            if not self.MasterApp.in_debug_mode:
+                self.MasterApp.auto_contro.toggle_sound(SE.MEDIA_VOLUME_UP)
+            else:
+                logger.info("Pretend I am turning up the computer volume!")
 
     def toggle_stream_is_muted(self, mute_stream):
-        if not mute_stream:
-            if not self.MasterApp.in_debug_mode:
-                self.MasterApp.auto_contro.obs_send(SE.OBS_UNMUTE)
-            else:
-                logger.info("Pretend I am turning the stream sound on!")
-            self.states.stream_is_muted = False
-        else:
+        if mute_stream:
             if not self.MasterApp.in_debug_mode:
                 self.MasterApp.auto_contro.obs_send(SE.OBS_MUTE)
             else:
                 logger.info("Pretend I am muting the stream sound")
             self.states.stream_is_muted = True
+        else:
+            if not self.MasterApp.in_debug_mode:
+                self.MasterApp.auto_contro.obs_send(SE.OBS_UNMUTE)
+            else:
+                logger.info("Pretend I am turning the stream sound on!")
+            self.states.stream_is_muted = False
 
     def media_pause_play(self):
         if not self.MasterApp.in_debug_mode:
@@ -108,12 +106,12 @@ class EventHandler:
         if SS.Camera.is_member(event_data):
             self.states.current_camera_sub_scene = event_data
             if self.states.current_scene == SE.CAMERA_SCENE:
-                self.MasterApp.set_scene_camera(change_sub_scene=True)
+                self.MasterApp.set_scene_camera()
 
         elif SS.Screen.is_member(event_data):
             self.states.current_screen_sub_scene = event_data
             if self.states.current_scene == SE.SCREEN_SCENE:
-                self.MasterApp.set_scene_screen(change_sub_scene=True)
+                self.MasterApp.set_scene_screen()
 
     def update(self, specifier):
         if specifier == "all":
