@@ -113,6 +113,9 @@ public class SocketHandlerService extends Service implements SocketHandler.Socke
     private Runnable updateNetworkStatusesRunnable = null;
     public void setUpdateNetworkStatusesRunnable(Runnable runnable){
         updateNetworkStatusesRunnable = runnable;
+        if (socketShouldBeOpen){
+            updateStatuses();
+        }
     }
 
     public void updateStatuses(){

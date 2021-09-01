@@ -132,7 +132,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             socketService.setUpdateNetworkStatusesRunnable(MainActivity.this::updateStatuses);
 
             streamStates = socketService.getStreamStates();
-            streamStates.setCallback((event, value) -> updateVisualFromEvent(event, value));
+
+            // TODO: Make sure this didn't break something
+            streamStates.setCallback(MainActivity.this::updateVisualFromEvent);
 
             buttonHandler.setStreamStates(streamStates);
             socketIsBound = true;
