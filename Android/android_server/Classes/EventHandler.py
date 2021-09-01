@@ -57,20 +57,22 @@ class EventHandler:
         self.states.auto_change_to_camera = data
         self.MasterApp.check_auto()
 
+    # TODO Check if this can be optimized because this is part of the clicker lag
     def clicker(self, direction):
-        if not self.MasterApp.in_debug_mode:
-            self.MasterApp.auto_contro.propre_send(direction)
-
-        # TODO Check if this can be optimized because this is part of the clicker lag
         if not self.states.current_scene == SE.SCREEN_SCENE:
             if self.states.change_with_clicker:
                 # TODO find tune this timing, might get away with no sleep time
-                time.sleep(.2)
+                #time.sleep(.2)
                 self.MasterApp.set_scene_screen()
         else:
             self.MasterApp.check_auto()
 
+        if not self.MasterApp.in_debug_mode:
+            self.MasterApp.auto_contro.propre_send(direction)
+
     def toggle_muted(self, turn_volume_down):
+        self.states.sound_on = not turn_volume_down
+
         if not turn_volume_down:
             # turn the volume UP!
             if not self.MasterApp.in_debug_mode:
@@ -83,7 +85,6 @@ class EventHandler:
             else:
                 logger.info("Pretend I am turn the computer volume down!")
         # set like this because turn_volume_down is the opposite of sound on
-        self.states.sound_on = not turn_volume_down
 
     def toggle_stream_is_muted(self, mute_stream):
         if not mute_stream:

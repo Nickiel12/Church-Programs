@@ -21,13 +21,20 @@ class AutomationController:
         OBS = enum.auto()
         CHROME = enum.auto()
 
-    def __init__(self, MasterApp, default_browser="CHROME", debug=False):
+    SCREEN_SWITCH_DELAY_LENGTH = 0
+    OBS_SWITCH_DELAY_LENGTH = 0
+
+    def __init__(self, MasterApp, default_browser=Windows.CHROME, debug=False):
         if debug:
             self.__getattribute__ = self.defanged
         else:
             self.ahk_files_path = pathlib.Path(".").parent / "ahk_scripts"
             self.MasterApp = MasterApp
             self.sett = self.MasterApp.settings
+
+            self.SCREEN_SWITCH_DELAY_LENGTH = self.sett["general"]["windows_change_delay_length"]
+            self.OBS_SWITCH_DELAY_LENGTH = self.sett["general"]["obs_screen_switch_delay_length"]
+
             self.platform_settings = self.sett[f"setup_" +
                                                f"{self.sett['streaming_service']}"]
             self.toggle_sound(SE.MEDIA_VOLUME_UP if self.MasterApp.States.sound_on else SE.MEDIA_VOLUME_DOWN)
@@ -45,17 +52,18 @@ class AutomationController:
                          " window to ProPresenter")
             subprocess.call([str(self.ahk_files_path / "window_activator.exe"),
                              self.sett['windows']['propresenter_re']])
-            time.sleep(.1)
         elif window_to_focus == self.Windows.OBS:
             logger.debug("WindowController: Changing active window to OBS")
             subprocess.call([str(self.ahk_files_path / "window_activator.exe"),
                              self.sett['windows']['obs_re']])
-            time.sleep(.1)
         elif window_to_focus == self.Windows.CHROME:
             logger.debug("WindowController: Changing active window to Chrome")
             subprocess.call([str(self.ahk_files_path / "window_activator.exe"),
                              self.sett['windows']['chrome_re']])
-            time.sleep(.1)
+        else:
+            logger.warning(f"AutomationController.give_window_focus received an unknown windows_to_focus: {window_to_focus}")
+            return
+        time.sleep(self.SCREEN_SWITCH_DELAY_LENGTH)
 
     @threaded
     def toggle_sound(self, turn_up=SE.MEDIA_VOLUME_UP):
@@ -88,7 +96,7 @@ class AutomationController:
         logger.debug(f"Sending {scene}'s hotkey to obs")
 
         self.give_window_focus(self.Windows.OBS)
-        time.sleep(.4)
+        time.sleep(self.OBS_SWITCH_DELAY_LENGTH)
 
         hotkey_dict = {
             SE.START_STREAM: self.sett["hotkeys"]["obs"]["start_stream"],

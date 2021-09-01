@@ -151,25 +151,25 @@ class MasterController:
             self.States.change_with_clicker = True
 
         logger.info(f"changing scene to camera")
-        if not self.in_debug_mode:
-            self.auto_contro.obs_send(self.States.current_camera_sub_scene)
 
-        # If we are not only changing the sub scene, ensure these are correct
         if not change_sub_scene:
             self.States.current_scene = SE.CAMERA_SCENE
             self.Timer.stop_timer()
+
+        if not self.in_debug_mode:
+            self.auto_contro.obs_send(self.States.current_camera_sub_scene)
 
     def set_scene_screen(self, change_sub_scene=False):
         if self.States.current_scene == SE.AUGMENTED_SCENE:
             self.States.change_with_clicker = True
 
         logger.info(f"changing scene to screen")
-        if not self.in_debug_mode:
-            self.auto_contro.obs_send(self.States.current_screen_sub_scene)
-
         # I know this could be a redundant call, but it is only one extra update
         # sent across the server, but I don't think it is redundant
         self.States.current_scene = SE.SCREEN_SCENE
+
+        if not self.in_debug_mode:
+            self.auto_contro.obs_send(self.States.current_screen_sub_scene)
 
         self.check_auto()
 

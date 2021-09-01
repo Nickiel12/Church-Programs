@@ -11,7 +11,9 @@
     "general":{
         "music_default_state-on" : true,
         "music_fade_time": 5,
-        "default_timer_length": 15
+        "default_timer_length": 15,
+        "windows_change_delay_length": 0.1,
+        "obs_screen_switch_delay_length": 0.4
     },
     "windows":{
         "obs_re": "OBS ",
