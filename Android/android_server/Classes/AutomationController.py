@@ -7,6 +7,7 @@ import os
 import subprocess
 import time
 
+from win32gui import GetWindowText, GetForegroundWindow
 from utils import threaded
 
 from Classes.StreamEvents import StreamEvents as SE
@@ -34,6 +35,7 @@ class AutomationController:
 
             self.SCREEN_SWITCH_DELAY_LENGTH = self.sett["general"]["windows_change_delay_length"]
             self.OBS_SWITCH_DELAY_LENGTH = self.sett["general"]["obs_screen_switch_delay_length"]
+            self.PROPRESENTER_SEND_DELAY = self.sett["general"]["propresenter_send_delay"]
 
             self.platform_settings = self.sett[f"setup_" +
                                                f"{self.sett['streaming_service']}"]
@@ -124,16 +126,17 @@ class AutomationController:
         self.give_window_focus(self.Windows.PROPRESENTER)
 
     def propre_send(self, hotkey):
-        self.give_window_focus(self.Windows.PROPRESENTER)
+        if self.sett['windows']['propresenter_re'] not in GetWindowText(GetForegroundWindow()):
+            self.give_window_focus(self.Windows.PROPRESENTER)
 
-        if hotkey == SE.NEXT_SLIDE:
-            hotkey = self.sett["hotkeys"]["general"]["clicker_forward"]
-        elif hotkey == SE.PREV_SLIDE:
-            hotkey = self.sett["hotkeys"]["general"]["clicker_backward"]
+            if hotkey == SE.NEXT_SLIDE:
+                hotkey = self.sett["hotkeys"]["general"]["clicker_forward"]
+            elif hotkey == SE.PREV_SLIDE:
+                hotkey = self.sett["hotkeys"]["general"]["clicker_backward"]
 
-        logger.debug(f"Sending {hotkey} to ProPresenter")
-        keyboard.send(hotkey)
-        time.sleep(.2)
+            logger.debug(f"Sending {hotkey} to ProPresenter")
+            keyboard.send(hotkey)
+        time.sleep(self.PROPRESENTER_SEND_DELAY)
 
     def start_hotkeys(self):
         obs_settings = self.sett["hotkeys"]["obs"]

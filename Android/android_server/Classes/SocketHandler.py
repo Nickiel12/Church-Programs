@@ -124,11 +124,17 @@ class SocketHandler:
             if self.connected_sockets[i].raddr == sock.raddr:
                 return i
 
+    nothing = False
+
     def send_all(self, message: str):
         if len(self.connected_sockets) == 0:
-            logger.warning("TRY TO SEND MESSAGE TO NOTHING! regards, SocketHandler.send_all()")
+            if not self.nothing:
+                logger.warning("TRY TO SEND MESSAGE TO NOTHING! regards, SocketHandler.send_all()")
+                self.nothing = True
+            return
         logger.debug("Sending to all sockets: " + message)
         for sock in self.connected_sockets:
+            self.nothing = False
             try:
                 sock.sendall(message.encode("utf-8") + b"\n")
             except BlockingIOError as e:
