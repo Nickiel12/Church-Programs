@@ -12,7 +12,6 @@ import androidx.annotation.RequiresApi;
 import com.example.livestreamcontroller.SocketMessageHandler;
 import com.example.livestreamcontroller.StreamEvents;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -50,7 +49,6 @@ public class SocketHandlerService extends Service implements SocketHandler.Socke
     public int getPort(){
         return socketAddress;
     }
-
     @Override
     public IBinder onBind(Intent intent){
         return binder;
@@ -148,72 +146,71 @@ public class SocketHandlerService extends Service implements SocketHandler.Socke
     private final SocketMessageHandler messageHandler =
             message -> {
                 try {
+                    //need to change this to backwards compatible with the sending patterns
                     System.out.println("I shall handle thou message");
                     JSONObject reader = new JSONObject(message);
-                    JSONArray names = reader.names();
-                    if (names != null){
-                        if (names.get(0).equals("states")){
-                            JSONArray data = (JSONArray) reader.get("states");
-                            String event = ((String) data.get(0)).toLowerCase();
+                    String names = (String) reader.get("type");
+                    if (names.equals("button")){
+                        {
+                            String button = (String) reader.get("button");
 
-                            switch (event) {
-                                case "stream_running":
+                            switch (button) {
+                                case "Stream_Running":
                                     streamStates.setValue(StreamEvents.STREAM_RUNNING,
-                                            data.get(1).toString());
+                                            reader.get("data").toString());
                                     break;
-                                case "stream_is_setup":
+                                case "Stream_Is_Setup":
                                     streamStates.setValue(StreamEvents.STREAM_IS_SETUP,
-                                            data.get(1).toString());
+                                            reader.get("data").toString());
                                     break;
-                                case "stream_title":
+                                case "Stream_Title":
                                     streamStates.setValue(StreamEvents.STREAM_TITLE,
-                                            (String) data.get(1));
+                                            reader.get("data").toString());
                                     break;
-                                case "stream_is_muted":
-                                    String value = data.get(1).toString();
+                                case "Stream_Is_Muted":
+                                    String value = reader.get("data").toString();
                                     // Note that we are receiving 'if the stream is muted'
                                     // but are saving the value 'is stream on'
                                     // the incoming value needs to be inverted
                                     value = (value.equals("true")) ? "false" : "true";
                                     streamStates.setValue(StreamEvents.STREAM_SOUND_ON, value);
                                     break;
-                                case "change_with_clicker":
+                                case "Change_With_Clicker":
                                     streamStates.setValue(StreamEvents.CHANGE_WITH_CLICKER,
-                                            data.get(1).toString());
+                                            reader.get("data").toString());
                                     break;
-                                case "auto_change_to_camera":
-                                    streamStates.setValue(StreamEvents.AUTO_CHANGE_TO_CAMERA,
-                                            data.get(1).toString());
+                                case "Timer_Can_Run":
+                                    streamStates.setValue(StreamEvents.TIMER_CAN_RUN,
+                                            reader.get("data").toString());
                                     break;
-                                case "augmented":
-                                    streamStates.setValue(StreamEvents.AUGMENTED,
-                                            data.get(1).toString());
+                                case "Scene_Is_Augmented":
+                                    streamStates.setValue(StreamEvents.SCENE_IS_AUGMENTED,
+                                            reader.get("data").toString());
                                     break;
-                                case "current_scene":
-                                    streamStates.setValue(StreamEvents.CURRENT_SCENE, (String) data.get(1));
+                                case "Scene":
+                                    streamStates.setValue(StreamEvents.CURRENT_SCENE,
+                                            reader.get("Scene").toString());
                                     break;
-                                case "current_camera_sub_scene":
-                                    streamStates.setValue(StreamEvents.CURRENT_CAMERA_SUB_SCENE,
-                                            (String) data.get(1));
+                                case "SubScene":
+                                    if (reader.get("SubScene").toString().startsWith("Camera")){
+                                        streamStates.setValue(StreamEvents.CURRENT_CAMERA_SUB_SCENE,
+                                                reader.get("SubScene").toString());
+                                    } else if (reader.get("SubScene").toString().startsWith("Screen")){
+                                        streamStates.setValue(StreamEvents.CURRENT_SCREEN_SUB_SCENE,
+                                                reader.get("SubScene").toString());
+                                    }
                                     break;
-                                case "current_screen_sub_scene":
-                                    streamStates.setValue(StreamEvents.CURRENT_SCREEN_SUB_SCENE,
-                                            (String) data.get(1));
-                                    break;
-                                case "sound_on":
+                                case "Computer_Sound_Is_On":
                                     streamStates.setValue(StreamEvents.COMPUTER_SOUND_ON,
-                                            data.get(1).toString());
+                                            reader.get("data").toString());
                                     break;
-                                case "timer_not_running":
-                                    streamStates.setValue(StreamEvents.TIMER_NOT_RUNNING,
-                                            data.get(1).toString());
+                                case "Timer_Text":
+                                    streamStates.setValue(StreamEvents.TIMER_TEXT,
+                                            reader.get("data").toString());
                                     break;
-                                case "timer_text":
-                                    streamStates.setValue(StreamEvents.TIMER_TEXT, data.get(1).toString());
-                                    break;
-                                case "timer_length":
+                                case "Timer_Length":
                                     streamStates.setValue(StreamEvents.TIMER_LENGTH,
-                                            data.get(1).toString());
+                                            reader.get("data").toString());
                             }
                         }
                     }
