@@ -23,30 +23,30 @@ public class ButtonHandler {
 
     public String handleButtonPress(View view){
         if (view instanceof Button) {
-            String buttonName = "", data = "";
+            String updateType = "", data = "";
             int id = view.getId();
-            if      (id == R.id.CameraNoneButton)       buttonName = "Camera_None";
-            else if (id == R.id.CameraTopRightButton)   buttonName = "Camera_Top_Right";
-            else if (id == R.id.CameraBottomLeftButton) buttonName = "Camera_Bottom_Left";
-            else if (id == R.id.CameraBottomRightButton)buttonName = "Camera_Bottom_Right";
+            if      (id == R.id.CameraNoneButton)       {updateType = "SubScene"; data = "Camera_None";}
+            else if (id == R.id.CameraTopRightButton)   {updateType = "SubScene"; data = "Camera_Top_Right";}
+            else if (id == R.id.CameraBottomLeftButton) {updateType = "SubScene"; data = "Camera_Bottom_Left";}
+            else if (id == R.id.CameraBottomRightButton){updateType = "SubScene"; data = "Camera_Bottom_Right";}
 
             // What is this even doing???
-            else if (id == R.id.ExtraBottomRightMiddle) buttonName = "ExtraBottomRightMid";
+            else if (id == R.id.ExtraBottomRightMiddle) updateType = "ExtraBottomRightMid";
 
-            else if (id == R.id.ScreenNoneButton)       buttonName = "Screen_None";
-            else if (id == R.id.ScreenTopRightButton)   buttonName = "Screen_Top_Right";
-            else if (id == R.id.ScreenBottomRightButton)buttonName = "Screen_Bottom_Right";
+            else if (id == R.id.ScreenNoneButton)       {updateType = "SubScene"; data = "Screen_None";}
+            else if (id == R.id.ScreenTopRightButton)   {updateType = "SubScene"; data = "Screen_Top_Right";}
+            else if (id == R.id.ScreenBottomRightButton){updateType = "SubScene"; data = "Screen_Bottom_Right";}
 
-            else if (id == R.id.SetSceneCameraButton)   buttonName = "Scene_Camera";
-            else if (id == R.id.SetSceneScreenButton)   buttonName = "Scene_Screen";
-            else if (id == R.id.PrevSlideButton)        buttonName = "Prev_Slide";
-            else if (id == R.id.NextSlideButton)        buttonName = "Next_Slide";
+            else if (id == R.id.SetSceneCameraButton)   {updateType = "SubScene"; data = "Scene_Camera";}
+            else if (id == R.id.SetSceneScreenButton)   {updateType = "SubScene"; data = "Scene_Screen";}
+            else if (id == R.id.PrevSlideButton)        updateType = "Prev_Slide";
+            else if (id == R.id.NextSlideButton)        updateType = "Next_Slide";
 
-            else if (id == R.id.MediaPausePlayButton)   buttonName = "Media_Pause_Play";
+            else if (id == R.id.MediaPausePlayButton)   updateType = "Media_Pause_Play";
 
 
             else if (id == R.id.TimerRunsButton) {
-                buttonName = "Timer_Can_Run";
+                updateType = "Timer_Can_Run";
                 data = streamStates.get(StreamEvents.TIMER_CAN_RUN);
                 //These are inverted because we are taking the current state,
                 //and telling the server to change it to the other one
@@ -54,19 +54,19 @@ public class ButtonHandler {
 
             }
             else if (id == R.id.AugmentSwitch){
-                buttonName = "Scene_Is_Augmented";
+                updateType = "Scene_Is_Augmented";
                 data = (((SwitchMaterial) view).isChecked()) ? "true" : "false";
             }
             else if (id == R.id.ChangeWithClickerSwitch){
-                buttonName = "Change_With_Clicker";
+                updateType = "Change_With_Clicker";
                 data = (((SwitchMaterial) view).isChecked()) ? "true" : "false";
             }
             else if (id == R.id.ComputerSoundButton){
-                buttonName = "Toggle_Computer_Volume";
+                updateType = "Toggle_Computer_Volume";
                 data = streamStates.get(StreamEvents.COMPUTER_SOUND_ON);
             }
             else if (id == R.id.StreamSoundButton){
-                buttonName = "Toggle_Stream_Volume";
+                updateType = "Toggle_Stream_Volume";
                 data = streamStates.get(StreamEvents.STREAM_SOUND_ON);
             }
 
@@ -80,13 +80,13 @@ public class ButtonHandler {
                 else if (id == R.id.TimerLengthButton3) timerLength = 15.0;
                 else timerLength = 30.0; //this is if TimerLengthButton4
 
-                return "{\"type\":\"Timer_Length\"," +
-                        "\"data\":" + timerLength + "}";
+                updateType = "Timer_Length";
+                data = String.valueOf(timerLength);
             }
 
             StringBuilder output = new StringBuilder();
-            output.append("{\"type\":\"button\",");
-            output.append("\"button\":\"").append(buttonName).append("\"");
+            output.append("{\"type\":\"update\",");
+            output.append("\"update\":\"").append(updateType).append("\"");
 
             if (data.isEmpty()) output.append("}");
             else output.append(",\"data\":\"").append(data).append("\"}");

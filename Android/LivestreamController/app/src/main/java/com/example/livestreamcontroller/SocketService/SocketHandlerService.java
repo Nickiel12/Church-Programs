@@ -150,9 +150,9 @@ public class SocketHandlerService extends Service implements SocketHandler.Socke
                     System.out.println("I shall handle thou message");
                     JSONObject reader = new JSONObject(message);
                     String names = (String) reader.get("type");
-                    if (names.equals("button")){
+                    if (names.equals("update")){
                         {
-                            String button = (String) reader.get("button");
+                            String button = (String) reader.get("update");
 
                             switch (button) {
                                 case "Stream_Running":
