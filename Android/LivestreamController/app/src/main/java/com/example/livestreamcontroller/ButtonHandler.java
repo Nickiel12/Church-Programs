@@ -46,15 +46,15 @@ public class ButtonHandler {
 
 
             else if (id == R.id.TimerRunsButton) {
-                buttonName = "Auto_Change_To_Camera";
-                data = streamStates.get(StreamEvents.AUTO_CHANGE_TO_CAMERA);
+                buttonName = "Timer_Can_Run";
+                data = streamStates.get(StreamEvents.TIMER_CAN_RUN);
                 //These are inverted because we are taking the current state,
                 //and telling the server to change it to the other one
                 data = (data.equals("true")) ? "false" : "true";
 
             }
             else if (id == R.id.AugmentSwitch){
-                buttonName = "Augmented";
+                buttonName = "Scene_Is_Augmented";
                 data = (((SwitchMaterial) view).isChecked()) ? "true" : "false";
             }
             else if (id == R.id.ChangeWithClickerSwitch){
