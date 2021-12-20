@@ -189,15 +189,16 @@ public class SocketHandlerService extends Service implements SocketHandler.Socke
                                     break;
                                 case "Scene":
                                     streamStates.setValue(StreamEvents.CURRENT_SCENE,
-                                            reader.get("Scene").toString());
+                                            reader.get("data").toString());
                                     break;
                                 case "SubScene":
-                                    if (reader.get("SubScene").toString().startsWith("Camera")){
+                                    String data = reader.get("data").toString();
+                                    if (data.startsWith("Camera")){
                                         streamStates.setValue(StreamEvents.CURRENT_CAMERA_SUB_SCENE,
-                                                reader.get("SubScene").toString());
-                                    } else if (reader.get("SubScene").toString().startsWith("Screen")){
+                                                data);
+                                    } else if (data.startsWith("Screen")){
                                         streamStates.setValue(StreamEvents.CURRENT_SCREEN_SUB_SCENE,
-                                                reader.get("SubScene").toString());
+                                                data);
                                     }
                                     break;
                                 case "Computer_Sound_Is_On":
