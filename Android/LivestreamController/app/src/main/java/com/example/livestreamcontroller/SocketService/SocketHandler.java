@@ -114,7 +114,6 @@ public class SocketHandler {
     public void sendData(String data, ExecutorService execServ) {
         execServ.submit(() -> {
             try {
-                socketOutStream.write(data.length());
                 socketOutStream.write(data);
                 socketOutStream.flush();
                 System.out.printf("Sent to socket: %s\n", data);
