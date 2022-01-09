@@ -21,28 +21,46 @@ public class ButtonHandler {
 
     public void setStreamStates(StreamStates streamStates){this.streamStates = streamStates;}
 
-    public String handleButtonPress(View view){
+    public String handleButtonPress(View view) {
         if (view instanceof Button) {
             String updateType = "", data = "";
             int id = view.getId();
-            if      (id == R.id.CameraNoneButton)       {updateType = "SubScene"; data = "Camera_None";}
-            else if (id == R.id.CameraTopRightButton)   {updateType = "SubScene"; data = "Camera_Top_Right";}
-            else if (id == R.id.CameraBottomLeftButton) {updateType = "SubScene"; data = "Camera_Bottom_Left";}
-            else if (id == R.id.CameraBottomRightButton){updateType = "SubScene"; data = "Camera_Bottom_Right";}
+            if (id == R.id.CameraNoneButton) {
+                updateType = "SubScene";
+                data = "Camera_None";
+            } else if (id == R.id.CameraTopRightButton) {
+                updateType = "SubScene";
+                data = "Camera_Top_Right";
+            } else if (id == R.id.CameraBottomLeftButton) {
+                updateType = "SubScene";
+                data = "Camera_Bottom_Left";
+            } else if (id == R.id.CameraBottomRightButton) {
+                updateType = "SubScene";
+                data = "Camera_Bottom_Right";
+            }
 
             // What is this even doing???
             else if (id == R.id.ExtraBottomRightMiddle) updateType = "ExtraBottomRightMid";
 
-            else if (id == R.id.ScreenNoneButton)       {updateType = "SubScene"; data = "Screen_None";}
-            else if (id == R.id.ScreenTopRightButton)   {updateType = "SubScene"; data = "Screen_Top_Right";}
-            else if (id == R.id.ScreenBottomRightButton){updateType = "SubScene"; data = "Screen_Bottom_Right";}
+            else if (id == R.id.ScreenNoneButton) {
+                updateType = "SubScene";
+                data = "Screen_None";
+            } else if (id == R.id.ScreenTopRightButton) {
+                updateType = "SubScene";
+                data = "Screen_Top_Right";
+            } else if (id == R.id.ScreenBottomRightButton) {
+                updateType = "SubScene";
+                data = "Screen_Bottom_Right";
+            } else if (id == R.id.SetSceneCameraButton) {
+                updateType = "Scene";
+                data = "Scene_Camera";
+            } else if (id == R.id.SetSceneScreenButton) {
+                updateType = "Scene";
+                data = "Scene_Screen";
+            } else if (id == R.id.PrevSlideButton) updateType = "Prev_Slide";
+            else if (id == R.id.NextSlideButton) updateType = "Next_Slide";
 
-            else if (id == R.id.SetSceneCameraButton)   {updateType = "SubScene"; data = "Scene_Camera";}
-            else if (id == R.id.SetSceneScreenButton)   {updateType = "SubScene"; data = "Scene_Screen";}
-            else if (id == R.id.PrevSlideButton)        updateType = "Prev_Slide";
-            else if (id == R.id.NextSlideButton)        updateType = "Next_Slide";
-
-            else if (id == R.id.MediaPausePlayButton)   updateType = "Media_Pause_Play";
+            else if (id == R.id.MediaPausePlayButton) updateType = "Media_Pause_Play";
 
 
             else if (id == R.id.TimerRunsButton) {
@@ -52,26 +70,22 @@ public class ButtonHandler {
                 //and telling the server to change it to the other one
                 data = (data.equals("true")) ? "false" : "true";
 
-            }
-            else if (id == R.id.AugmentSwitch){
+            } else if (id == R.id.AugmentSwitch) {
                 updateType = "Scene_Is_Augmented";
                 data = (((SwitchMaterial) view).isChecked()) ? "true" : "false";
-            }
-            else if (id == R.id.ChangeWithClickerSwitch){
+            } else if (id == R.id.ChangeWithClickerSwitch) {
                 updateType = "Change_With_Clicker";
                 data = (((SwitchMaterial) view).isChecked()) ? "true" : "false";
-            }
-            else if (id == R.id.ComputerSoundButton){
+            } else if (id == R.id.ComputerSoundButton) {
                 updateType = "Toggle_Computer_Volume";
                 data = streamStates.get(StreamEvents.COMPUTER_SOUND_ON);
-            }
-            else if (id == R.id.StreamSoundButton){
+            } else if (id == R.id.StreamSoundButton) {
                 updateType = "Toggle_Stream_Volume";
                 data = streamStates.get(StreamEvents.STREAM_SOUND_ON);
             }
 
             if (id == R.id.TimerLengthButton1 || id == R.id.TimerLengthButton2
-                || id == R.id.TimerLengthButton3 || id == R.id.TimerLengthButton4){
+                    || id == R.id.TimerLengthButton3 || id == R.id.TimerLengthButton4) {
 
                 double timerLength;
 
@@ -84,14 +98,7 @@ public class ButtonHandler {
                 data = String.valueOf(timerLength);
             }
 
-            StringBuilder output = new StringBuilder();
-            output.append("{\"type\":\"update\",");
-            output.append("\"update\":\"").append(updateType).append("\"");
-
-            if (data.isEmpty()) output.append("}");
-            else output.append(",\"data\":\"").append(data).append("\"}");
-
-            return output.toString();
+            return formatSocketMessage(updateType, data);
         }
         return null;
     }
@@ -102,11 +109,20 @@ public class ButtonHandler {
             double timerLength;
 
             timerLength = Double.parseDouble(view.getText().toString());
-
-            return "{\"type\":\"Timer_Length\"," +
-                    "\"data\":" + timerLength + "}";
+            return formatSocketMessage("Timer_Length", String.valueOf(timerLength));
         }
         else return "";
+    }
+
+    public String formatSocketMessage(String type, String data) {
+        StringBuilder output = new StringBuilder();
+        output.append("{\"type\":\"update\",");
+        output.append("\"update\":\"").append(type).append("\"");
+
+        if (data.isEmpty()) output.append("}");
+        else output.append(",\"data\":\"").append(data).append("\"}");
+
+        return output.toString();
     }
 
 }
