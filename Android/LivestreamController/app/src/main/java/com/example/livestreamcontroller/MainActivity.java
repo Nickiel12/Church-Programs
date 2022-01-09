@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 break;
             case TIMER_TEXT:
                 ((TextView) findViewById(R.id.TimerTextView)).setText(eventValue);
-
+                break;
             case TIMER_LENGTH:
                 EditText timerLengthInput =(findViewById(R.id.TimerLengthInput));
                 timerLengthInput.setText(eventValue);
@@ -456,7 +456,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         int[] idsForOnControllerPress = new int[]{
                 R.id.CameraBottomLeftButton,
                 R.id.CameraBottomRightButton,
-                R.id.ExtraBottomRightMiddle,
+                //R.id.ExtraBottomRightMiddle,
                 R.id.ScreenBottomRightButton,
                 R.id.CameraNoneButton,
                 R.id.CameraTopRightButton,

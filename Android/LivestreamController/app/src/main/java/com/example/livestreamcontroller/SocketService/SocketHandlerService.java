@@ -140,7 +140,7 @@ public class SocketHandlerService extends Service implements SocketHandler.Socke
 
 
     public void updateAllStates(){
-        socket.sendData("{\"type\":\"update\", \"specifier\":\"all\"}", executorService);
+        socket.sendData("{\"type\":\"update\", \"update\":\"all\"}", executorService);
     }
 
     private final SocketMessageHandler messageHandler =
