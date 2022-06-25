@@ -82,6 +82,9 @@ public class ButtonHandler {
             } else if (id == R.id.StreamSoundButton) {
                 updateType = "Toggle_Stream_Volume";
                 data = streamStates.get(StreamEvents.STREAM_SOUND_ON);
+            } else if (id == R.id.TimerTextView) {
+                updateType = "Pause_Timer";
+                data = streamStates.get(StreamEvents.PAUSE_TIMER).equals("true") ? "false" : "true";
             }
 
             if (id == R.id.TimerLengthButton1 || id == R.id.TimerLengthButton2

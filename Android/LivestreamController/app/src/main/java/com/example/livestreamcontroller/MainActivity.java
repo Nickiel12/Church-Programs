@@ -219,6 +219,18 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             case CHANGE_WITH_CLICKER:
                 ((SwitchMaterial) findViewById(R.id.ChangeWithClickerSwitch)).setChecked(eventValue.equals("true"));
                 break;
+            case PAUSE_TIMER:
+                TextView textView = findViewById(R.id.TimerTextView);
+                    if (eventValue.equals("true")) {
+                        textView.setForeground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.padlock));
+                        textView.setBackgroundColor(getColor(R.color.paused_yellow));
+                        findViewById(R.id.TimerRunsButton).setBackgroundColor(getColor(R.color.paused_yellow));
+                    } else {
+                        textView.setForeground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.camera_main));
+                        textView.setBackgroundColor(getColor(R.color.white));
+                        findViewById(R.id.TimerRunsButton).setBackgroundColor(getColor(R.color.GREEN));
+                    }
+                break;
             case TIMER_CAN_RUN:
                 if (eventValue.equals("true"))
                     findViewById(R.id.TimerRunsButton).setBackgroundColor(getColor(R.color.GREEN));
@@ -476,6 +488,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 R.id.StreamSoundButton,
                 R.id.ComputerSoundButton,
                 R.id.MediaPausePlayButton,
+                R.id.TimerTextView,
             };
 
         for (int i : idsForOnControllerPress){

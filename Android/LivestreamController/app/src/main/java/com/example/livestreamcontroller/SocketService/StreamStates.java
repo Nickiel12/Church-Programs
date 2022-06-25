@@ -28,6 +28,7 @@ public class StreamStates {
         streamStates.put(StreamEvents.CURRENT_CAMERA_SUB_SCENE, "Camera_None");
         streamStates.put(StreamEvents.CURRENT_SCREEN_SUB_SCENE, "Screen_None");
         streamStates.put(StreamEvents.SCENE_IS_AUGMENTED, "false");
+        streamStates.put(StreamEvents.PAUSE_TIMER, "false");
         streamStates.put(StreamEvents.TIMER_TEXT, "0.0");
         streamStates.put(StreamEvents.TIMER_LENGTH, "15");
         streamStates.put(StreamEvents.STREAM_SOUND_ON, "true");

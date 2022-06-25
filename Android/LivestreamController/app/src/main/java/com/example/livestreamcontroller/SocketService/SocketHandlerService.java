@@ -167,7 +167,7 @@ public class SocketHandlerService extends Service implements SocketHandler.Socke
                                     streamStates.setValue(StreamEvents.STREAM_TITLE,
                                             reader.get("data").toString());
                                     break;
-                                case "Stream_Is_Muted":
+                                case "Toggle_Stream_Volume":
                                     String value = reader.get("data").toString();
                                     // Note that we are receiving 'if the stream is muted'
                                     // but are saving the value 'is stream on'
@@ -187,6 +187,10 @@ public class SocketHandlerService extends Service implements SocketHandler.Socke
                                     streamStates.setValue(StreamEvents.SCENE_IS_AUGMENTED,
                                             reader.get("data").toString());
                                     break;
+                                case "Pause_Timer":
+                                    streamStates.setValue(StreamEvents.PAUSE_TIMER,
+                                            reader.get("data").toString());
+                                    break;
                                 case "Scene":
                                     streamStates.setValue(StreamEvents.CURRENT_SCENE,
                                             reader.get("data").toString());
@@ -201,7 +205,7 @@ public class SocketHandlerService extends Service implements SocketHandler.Socke
                                                 data);
                                     }
                                     break;
-                                case "Computer_Sound_Is_On":
+                                case "Toggle_Computer_Volume":
                                     streamStates.setValue(StreamEvents.COMPUTER_SOUND_ON,
                                             reader.get("data").toString());
                                     break;
