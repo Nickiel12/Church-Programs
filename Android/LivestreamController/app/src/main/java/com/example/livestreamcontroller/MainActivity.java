@@ -222,11 +222,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             case PAUSE_TIMER:
                 TextView textView = findViewById(R.id.TimerTextView);
                     if (eventValue.equals("true")) {
-                        textView.setForeground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.padlock));
+                        textView.setBackground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.padlock));
                         textView.setBackgroundColor(getColor(R.color.paused_yellow));
                         findViewById(R.id.TimerRunsButton).setBackgroundColor(getColor(R.color.paused_yellow));
                     } else {
-                        textView.setForeground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.camera_main));
+                        textView.setBackground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.camera_main));
                         textView.setBackgroundColor(getColor(R.color.white));
                         findViewById(R.id.TimerRunsButton).setBackgroundColor(getColor(R.color.GREEN));
                     }
