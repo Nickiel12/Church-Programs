@@ -5,6 +5,10 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="rust_red_primary">#9A1919</color>
+    <color name="rust_red_secondary">#7C1414</color>
+    <color name="rust_red_secondary_night">#D63F3F</color>
+    <color name="paused_yellow">#FFFFEB3B</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

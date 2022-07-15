@@ -11,7 +11,7 @@
         android:id="@+id/TitleLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/purple_500"
+        android:background="@color/rust_red_primary"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent">
@@ -253,9 +253,13 @@
 
                         <TextView
                             android:id="@+id/TimerTextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#FFFFFF"
+                            android:clickable="true"
+                            android:focusable="true"
                             android:text="@string/TimerDefault"
+                            android:textAlignment="center"
                             android:textSize="34sp" />
 
                         <Button

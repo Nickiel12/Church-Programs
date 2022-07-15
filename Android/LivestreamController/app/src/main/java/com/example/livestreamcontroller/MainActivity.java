@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             }
         } else
         switch (event) {
-            case AUGMENTED:
+            case SCENE_IS_AUGMENTED:
                 if (eventValue.equals("true")){
                     ((SwitchMaterial) findViewById(R.id.AugmentSwitch)).setChecked(true);
                     findViewById(R.id.SetSceneScreenButton).setBackgroundColor(getColor(R.color.RED));
@@ -219,7 +219,19 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             case CHANGE_WITH_CLICKER:
                 ((SwitchMaterial) findViewById(R.id.ChangeWithClickerSwitch)).setChecked(eventValue.equals("true"));
                 break;
-            case AUTO_CHANGE_TO_CAMERA:
+            case PAUSE_TIMER:
+                TextView textView = findViewById(R.id.TimerTextView);
+                    if (eventValue.equals("true")) {
+                        textView.setBackground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.padlock));
+                        textView.setBackgroundColor(getColor(R.color.paused_yellow));
+                        findViewById(R.id.TimerRunsButton).setBackgroundColor(getColor(R.color.paused_yellow));
+                    } else {
+                        textView.setBackground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.camera_main));
+                        textView.setBackgroundColor(getColor(R.color.white));
+                        findViewById(R.id.TimerRunsButton).setBackgroundColor(getColor(R.color.GREEN));
+                    }
+                break;
+            case TIMER_CAN_RUN:
                 if (eventValue.equals("true"))
                     findViewById(R.id.TimerRunsButton).setBackgroundColor(getColor(R.color.GREEN));
                 else  findViewById(R.id.TimerRunsButton).setBackgroundColor(getColor(R.color.RED));
@@ -252,10 +264,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 break;
             case TIMER_TEXT:
                 ((TextView) findViewById(R.id.TimerTextView)).setText(eventValue);
-            case TIMER_NOT_RUNNING:
                 break;
             case TIMER_LENGTH:
-                EditText timerLengthInput =((EditText) findViewById(R.id.TimerLengthInput));
+                EditText timerLengthInput =(findViewById(R.id.TimerLengthInput));
                 timerLengthInput.setText(eventValue);
 
                 int colorFrom = Color.GREEN;
@@ -440,9 +451,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         findViewById(R.id.StayOnSwitch).setOnClickListener(this::setKeepAwake);
 
-        findViewById(R.id.WifiText).setOnClickListener((View view) -> {
-            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-        });
+        findViewById(R.id.WifiText).setOnClickListener((View view) -> startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)));
 
         int[] idsForShowHidePanel = new int[]{
                 R.id.ShowHideTopPanel,
@@ -459,7 +468,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         int[] idsForOnControllerPress = new int[]{
                 R.id.CameraBottomLeftButton,
                 R.id.CameraBottomRightButton,
-                R.id.ExtraBottomRightMiddle,
+                //R.id.ExtraBottomRightMiddle,
                 R.id.ScreenBottomRightButton,
                 R.id.CameraNoneButton,
                 R.id.CameraTopRightButton,
@@ -479,6 +488,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 R.id.StreamSoundButton,
                 R.id.ComputerSoundButton,
                 R.id.MediaPausePlayButton,
+                R.id.TimerTextView,
             };
 
         for (int i : idsForOnControllerPress){
