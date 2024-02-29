@@ -23,7 +23,7 @@ public class SocketHandlerService extends Service implements SocketHandler.Socke
 
     private final IBinder binder = new SocketBinder();
 
-    private String IPAddress = "10.0.0.209";
+    private String IPAddress = "10.0.0.210";
     private int socketAddress = 5000;
 
     private SocketHandler socket;
